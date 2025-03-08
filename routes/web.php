@@ -12,9 +12,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Session::put('locale', 'en');
-App::setLocale('en');
-
 
 
 Route::middleware([
@@ -42,6 +39,14 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 });
 
 Route::get('/send-sms', [SmsController::class, 'sendTestSms']);
+
+Route::get('/lang/{locale}', function ($locale) {
+    if (in_array($locale, ['en', 'ar'])) {
+        Session::put('locale', $locale);
+        App::setLocale($locale);
+    }
+    return redirect()->back();
+});
 
 
 //Route::resource('/notes', NoteController::class);
