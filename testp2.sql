@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 08, 2025 at 03:47 AM
+-- Generation Time: Mar 07, 2025 at 04:11 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -24,22 +24,6 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `articles`
---
-
-CREATE TABLE `articles` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `title` varchar(255) NOT NULL,
-  `content` text NOT NULL,
-  `image` varchar(255) DEFAULT NULL,
-  `user_id` bigint(20) UNSIGNED NOT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `cache`
 --
 
@@ -54,8 +38,10 @@ CREATE TABLE `cache` (
 --
 
 INSERT INTO `cache` (`key`, `value`, `expiration`) VALUES
-('laravel_cache_1aa5f41e96e8d1297658170bbba8f709', 'i:1;', 1741398385),
-('laravel_cache_1aa5f41e96e8d1297658170bbba8f709:timer', 'i:1741398385;', 1741398385);
+('laravel_cache_00fb7db0851d1b0feb961293877b789d', 'i:1;', 1741312495),
+('laravel_cache_00fb7db0851d1b0feb961293877b789d:timer', 'i:1741312495;', 1741312495),
+('laravel_cache_b@gmail.com|127.0.0.1', 'i:1;', 1741312495),
+('laravel_cache_b@gmail.com|127.0.0.1:timer', 'i:1741312495;', 1741312495);
 
 -- --------------------------------------------------------
 
@@ -142,9 +128,7 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (3, '0001_01_01_000002_create_jobs_table', 1),
 (4, '2025_03_06_190544_add_two_factor_columns_to_users_table', 1),
 (5, '2025_03_06_190630_create_personal_access_tokens_table', 1),
-(6, '2025_03_07_015809_create_permission_tables', 2),
-(7, '2025_03_07_create_notes_table', 3),
-(8, '2025_03_07_create_articles_table', 4);
+(6, '2025_03_07_015809_create_permission_tables', 2);
 
 -- --------------------------------------------------------
 
@@ -175,29 +159,7 @@ CREATE TABLE `model_has_roles` (
 --
 
 INSERT INTO `model_has_roles` (`role_id`, `model_type`, `model_id`) VALUES
-(1, 'App\\Models\\User', 2);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `notes`
---
-
-CREATE TABLE `notes` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `title` varchar(255) NOT NULL,
-  `content` text NOT NULL,
-  `user_id` bigint(20) UNSIGNED NOT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `notes`
---
-
-INSERT INTO `notes` (`id`, `title`, `content`, `user_id`, `created_at`, `updated_at`) VALUES
-(3, 'ييث', 'قققق', 2, '2025-03-07 19:42:24', '2025-03-07 19:42:24');
+(3, 'App\\Models\\User', 2);
 
 -- --------------------------------------------------------
 
@@ -318,8 +280,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('OOCrRFRJePP2NdPWOKTU5kzaT5j1iWVgvt4TcDKx', 2, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36', 'YTo3OntzOjY6ImxvY2FsZSI7czoyOiJhciI7czo2OiJfdG9rZW4iO3M6NDA6IjlOOEQ4WEF3UXB5NUd1Q3NoeTlRZ01DNXkwOFZ4eGdQVDFvY2ZTVmgiO3M6MzoidXJsIjthOjA6e31zOjk6Il9wcmV2aW91cyI7YToxOntzOjM6InVybCI7czozNDoiaHR0cDovLzEyNy4wLjAuMToyMjAxL25vdGVzL2NyZWF0ZSI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjI7czoyMToicGFzc3dvcmRfaGFzaF9zYW5jdHVtIjtzOjYwOiIkMnkkMTIkeVdwL1p3Zm9sUW1NbllpQk1OZ3ovTy5rdXRmSXNoajhnRnJzQW9DVUsyWG1yTkk4N0pESzYiO30=', 1741401805),
-('V4SWOWDhqMhWd87cXo2jIzgGe6Fe5fRuB2F9u0om', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiaGdwSEZrN1c0WHpQc2FTY0xSWUdpSTNTQ0x2anhNVlRGRjVUN1haViI7czozOiJ1cmwiO2E6MTp7czo4OiJpbnRlbmRlZCI7czozMToiaHR0cDovLzEyNy4wLjAuMToyMjAxL2Rhc2hib2FyZCI7fXM6OToiX3ByZXZpb3VzIjthOjE6e3M6MzoidXJsIjtzOjMxOiJodHRwOi8vMTI3LjAuMC4xOjIyMDEvZGFzaGJvYXJkIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1741398296);
+('pXup37v1Xo12mTnAY6tiK3KD1YUOVNdRUZBi3jBN', 2, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiTGNHUk9ON0VYN1ljT0txRmxRVUZzOXFtNG5lMUJCczBYY1lSWW1sWiI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzE6Imh0dHA6Ly8xMjcuMC4wLjE6MjIwMS9kYXNoYm9hcmQiO31zOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToyO3M6MjE6InBhc3N3b3JkX2hhc2hfc2FuY3R1bSI7czo2MDoiJDJ5JDEyJHlXcC9ad2ZvbFFtTW5ZaUJNTmd6L08ua3V0ZklzaGo4Z0Zyc0FvQ1VLMlhtck5JODdKREs2Ijt9', 1741316634);
 
 -- --------------------------------------------------------
 
@@ -354,13 +315,6 @@ INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `tw
 --
 -- Indexes for dumped tables
 --
-
---
--- Indexes for table `articles`
---
-ALTER TABLE `articles`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `articles_user_id_foreign` (`user_id`);
 
 --
 -- Indexes for table `cache`
@@ -413,13 +367,6 @@ ALTER TABLE `model_has_permissions`
 ALTER TABLE `model_has_roles`
   ADD PRIMARY KEY (`role_id`,`model_id`,`model_type`),
   ADD KEY `model_has_roles_model_id_model_type_index` (`model_id`,`model_type`);
-
---
--- Indexes for table `notes`
---
-ALTER TABLE `notes`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `notes_user_id_foreign` (`user_id`);
 
 --
 -- Indexes for table `password_reset_tokens`
@@ -476,12 +423,6 @@ ALTER TABLE `users`
 --
 
 --
--- AUTO_INCREMENT for table `articles`
---
-ALTER TABLE `articles`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
 -- AUTO_INCREMENT for table `failed_jobs`
 --
 ALTER TABLE `failed_jobs`
@@ -497,13 +438,7 @@ ALTER TABLE `jobs`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
-
---
--- AUTO_INCREMENT for table `notes`
---
-ALTER TABLE `notes`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `permissions`
@@ -534,12 +469,6 @@ ALTER TABLE `users`
 --
 
 --
--- Constraints for table `articles`
---
-ALTER TABLE `articles`
-  ADD CONSTRAINT `articles_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
-
---
 -- Constraints for table `model_has_permissions`
 --
 ALTER TABLE `model_has_permissions`
@@ -550,12 +479,6 @@ ALTER TABLE `model_has_permissions`
 --
 ALTER TABLE `model_has_roles`
   ADD CONSTRAINT `model_has_roles_role_id_foreign` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE;
-
---
--- Constraints for table `notes`
---
-ALTER TABLE `notes`
-  ADD CONSTRAINT `notes_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `role_has_permissions`
