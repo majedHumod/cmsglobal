@@ -15,6 +15,20 @@
                     <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+
+                    <!-- Notes Link - Visible to both admin and user roles -->
+                    @hasanyrole('admin|user')
+                    <x-nav-link href="{{ route('notes.index') }}" :active="request()->routeIs('notes.*')">
+                        {{ __('Notes') }}
+                    </x-nav-link>
+                    @endhasanyrole
+
+                    <!-- Articles Link - Visible only to admin role -->
+                    @role('admin')
+                    <x-nav-link href="{{ route('articles.index') }}" :active="request()->routeIs('articles.*')">
+                        {{ __('Articles') }}
+                    </x-nav-link>
+                    @endrole
                 </div>
             </div>
 
@@ -142,6 +156,20 @@
             <x-responsive-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+
+            <!-- Responsive Notes Link - Visible to both admin and user roles -->
+            @hasanyrole('admin|user')
+            <x-responsive-nav-link href="{{ route('notes.index') }}" :active="request()->routeIs('notes.*')">
+                {{ __('Notes') }}
+            </x-responsive-nav-link>
+            @endhasanyrole
+
+            <!-- Responsive Articles Link - Visible only to admin role -->
+            @role('admin')
+            <x-responsive-nav-link href="{{ route('articles.index') }}" :active="request()->routeIs('articles.*')">
+                {{ __('Articles') }}
+            </x-responsive-nav-link>
+            @endrole
         </div>
 
         <!-- Responsive Settings Options -->

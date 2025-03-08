@@ -3,8 +3,11 @@
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 {{ __('Notes') }}
+                @if(auth()->user()->hasRole('admin'))
+                    <span class="text-sm text-gray-500 ml-2">(Viewing all notes as admin)</span>
+                @endif
             </h2>
-            <a href="{{ route('notes.create') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            <a href="{{ route('notes.create') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
                 Create Note
             </a>
         </div>
@@ -32,14 +35,16 @@
                                             <p class="text-gray-600 mt-2">{{ $note->content }}</p>
                                             <p class="text-sm text-gray-500 mt-2">Created by: {{ $note->user->name }}</p>
                                         </div>
-                                        <div class="flex space-x-2">
-                                            <a href="{{ route('notes.edit', $note) }}" class="text-blue-500 hover:text-blue-700">Edit</a>
-                                            <form action="{{ route('notes.destroy', $note) }}" method="POST" class="inline">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="text-red-500 hover:text-red-700" onclick="return confirm('Are you sure you want to delete this note?')">Delete</button>
-                                            </form>
-                                        </div>
+                                        @if(auth()->user()->hasRole('admin') || $note->user_id === auth()->id())
+                                            <div class="flex space-x-2">
+                                                <a href="{{ route('notes.edit', $note) }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">Edit</a>
+                                                <form action="{{ route('notes.destroy', $note) }}" method="POST" class="inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700" onclick="return confirm('Are you sure you want to delete this note?')">Delete</button>
+                                                </form>
+                                            </div>
+                                        @endif
                                     </div>
                                 </div>
                             @endforeach
