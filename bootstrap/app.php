@@ -14,14 +14,27 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         //
 
+             $middleware->prepend([
+    \App\Http\Middleware\TenantsMiddleware::class, // تأكد أنك كتبت اسم الميدلوير بشكل صحيح
+]);
+
+
+
             $middleware->alias([
                 'role' => Spatie\Permission\Middleware\RoleMiddleware::class,
                 'permission' => Spatie\Permission\Middleware\PermissionMiddleware::class,
                 'role_or_permission' => Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
+                 'tenants' => \App\Http\Middleware\TenantsMiddleware::class,
             ]);
+
+       
+
         
         
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
     })->create();
+
+
+    
