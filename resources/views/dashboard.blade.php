@@ -8,7 +8,7 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <!-- Notes Card - Visible to both admin and user roles -->
                     @hasanyrole('admin|user')
                     <div class="bg-white overflow-hidden shadow rounded-lg">
@@ -20,6 +20,26 @@
                             <div class="mt-4">
                                 <a href="{{ route('notes.index') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
                                     View Notes
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    @endhasanyrole
+
+                    <!-- Meal Plans Card - Visible to both admin and user roles -->
+                    @hasanyrole('admin|user')
+                    <div class="bg-white overflow-hidden shadow rounded-lg">
+                        <div class="px-4 py-5 sm:p-6">
+                            <h3 class="text-lg font-medium text-gray-900">الجداول الغذائية</h3>
+                            <p class="mt-1 text-sm text-gray-500">
+                                إنشاء وإدارة الوجبات والجداول الغذائية الخاصة بك.
+                            </p>
+                            <div class="mt-4 space-x-2">
+                                <a href="{{ route('meal-plans.index') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700">
+                                    إدارة الوجبات
+                                </a>
+                                <a href="{{ route('meal-plans.public') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                                    تصفح الوجبات
                                 </a>
                             </div>
                         </div>

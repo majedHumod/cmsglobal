@@ -5,6 +5,7 @@ use App\Http\Controllers\NoteController;
 //use App\Models\Role; 
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\SmsController;
+use App\Http\Controllers\MealPlanController;
 
 
 
@@ -32,6 +33,13 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::resource('/articles', ArticleController::class);
 });
 
+// Meal Plans routes - accessible to both admin and user
+Route::middleware(['auth', 'role:user|admin'])->group(function () {
+    Route::resource('/meal-plans', MealPlanController::class);
+});
+
+// Public meal plans route (accessible to all authenticated users)
+Route::get('/meal-plans-public', [MealPlanController::class, 'publicIndex'])->name('meal-plans.public');
 
 });
 
@@ -47,4 +55,3 @@ Route::get('/lang/{locale}', function ($locale) {
 
 
 //Route::resource('/notes', NoteController::class);
-

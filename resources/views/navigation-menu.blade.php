@@ -23,6 +23,13 @@
                     </x-nav-link>
                     @endhasanyrole
 
+                    <!-- Meal Plans Link - Visible to both admin and user roles -->
+                    @hasanyrole('admin|user')
+                    <x-nav-link href="{{ route('meal-plans.index') }}" :active="request()->routeIs('meal-plans.*')">
+                        {{ __('الجداول الغذائية') }}
+                    </x-nav-link>
+                    @endhasanyrole
+
                     <!-- Articles Link - Visible only to admin role -->
                     @role('admin')
                     <x-nav-link href="{{ route('articles.index') }}" :active="request()->routeIs('articles.*')">
@@ -161,6 +168,13 @@
             @hasanyrole('admin|user')
             <x-responsive-nav-link href="{{ route('notes.index') }}" :active="request()->routeIs('notes.*')">
                 {{ __('Notes') }}
+            </x-responsive-nav-link>
+            @endhasanyrole
+
+            <!-- Responsive Meal Plans Link - Visible to both admin and user roles -->
+            @hasanyrole('admin|user')
+            <x-responsive-nav-link href="{{ route('meal-plans.index') }}" :active="request()->routeIs('meal-plans.*')">
+                {{ __('الجداول الغذائية') }}
             </x-responsive-nav-link>
             @endhasanyrole
 
