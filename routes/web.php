@@ -50,10 +50,10 @@ Route::middleware(['auth', 'role:admin|page_manager'])->group(function () {
 // Public pages route (accessible to all authenticated users)
 Route::get('/pages-public', [PageController::class, 'publicIndex'])->name('pages.public');
 
+});
+
 // Public page view route (accessible to everyone)
 Route::get('/page/{slug}', [PageController::class, 'show'])->name('pages.show');
-
-});
 
 Route::get('/send-sms', [SmsController::class, 'sendTestSms']);
 
