@@ -6,6 +6,7 @@ use App\Models\Page;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 
 class PageController extends Controller
 {
@@ -34,6 +35,8 @@ class PageController extends Controller
 
     public function store(Request $request)
     {
+        Log::info('Page store method called', ['request_data' => $request->all()]);
+        
         try {
             $validated = $request->validate([
                 'title' => 'required|max:255',
@@ -42,11 +45,11 @@ class PageController extends Controller
                 'meta_title' => 'nullable|max:255',
                 'meta_description' => 'nullable|max:160',
                 'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-                'is_published' => 'boolean',
-                'show_in_menu' => 'boolean',
                 'menu_order' => 'nullable|integer|min:0',
                 'published_at' => 'nullable|date'
             ]);
+
+            Log::info('Validation passed', ['validated_data' => $validated]);
 
             // إنشاء slug من العنوان
             $validated['slug'] = Str::slug($validated['title']);
@@ -63,26 +66,34 @@ class PageController extends Controller
             if ($request->hasFile('featured_image')) {
                 $imagePath = $request->file('featured_image')->store('pages', 'public');
                 $validated['featured_image'] = $imagePath;
+                Log::info('Image uploaded', ['path' => $imagePath]);
             }
 
             // تعيين المستخدم الحالي
             $validated['user_id'] = auth()->id();
             
+            // معالجة القيم المنطقية
+            $validated['is_published'] = $request->has('is_published') ? 1 : 0;
+            $validated['show_in_menu'] = $request->has('show_in_menu') ? 1 : 0;
+            
             // تعيين تاريخ النشر إذا كانت الصفحة منشورة
-            if ($request->has('is_published') && !$validated['published_at']) {
+            if ($validated['is_published'] && !$validated['published_at']) {
                 $validated['published_at'] = now();
             }
 
-            // تعيين القيم المنطقية
-            $validated['is_published'] = $request->has('is_published');
-            $validated['show_in_menu'] = $request->has('show_in_menu');
+            Log::info('Final data before creation', ['final_data' => $validated]);
 
             $page = Page::create($validated);
 
+            Log::info('Page created successfully', ['page_id' => $page->id]);
+
             return redirect()->route('pages.index')->with('success', 'تم إنشاء الصفحة بنجاح.');
 
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            Log::error('Validation error in page creation', ['errors' => $e->errors()]);
+            return back()->withInput()->withErrors($e->errors());
         } catch (\Exception $e) {
-            \Log::error('Error creating page: ' . $e->getMessage());
+            Log::error('Error creating page', ['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
             return back()->withInput()->withErrors(['error' => 'حدث خطأ أثناء إنشاء الصفحة: ' . $e->getMessage()]);
         }
     }
@@ -121,8 +132,6 @@ class PageController extends Controller
                 'meta_title' => 'nullable|max:255',
                 'meta_description' => 'nullable|max:160',
                 'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-                'is_published' => 'boolean',
-                'show_in_menu' => 'boolean',
                 'menu_order' => 'nullable|integer|min:0',
                 'published_at' => 'nullable|date'
             ]);
@@ -149,21 +158,21 @@ class PageController extends Controller
                 $validated['featured_image'] = $imagePath;
             }
 
+            // معالجة القيم المنطقية
+            $validated['is_published'] = $request->has('is_published') ? 1 : 0;
+            $validated['show_in_menu'] = $request->has('show_in_menu') ? 1 : 0;
+
             // تعيين تاريخ النشر إذا كانت الصفحة منشورة لأول مرة
-            if ($request->has('is_published') && !$page->is_published && !$validated['published_at']) {
+            if ($validated['is_published'] && !$page->is_published && !$validated['published_at']) {
                 $validated['published_at'] = now();
             }
-
-            // تعيين القيم المنطقية
-            $validated['is_published'] = $request->has('is_published');
-            $validated['show_in_menu'] = $request->has('show_in_menu');
 
             $page->update($validated);
 
             return redirect()->route('pages.index')->with('success', 'تم تحديث الصفحة بنجاح.');
 
         } catch (\Exception $e) {
-            \Log::error('Error updating page: ' . $e->getMessage());
+            Log::error('Error updating page', ['error' => $e->getMessage()]);
             return back()->withInput()->withErrors(['error' => 'حدث خطأ أثناء تحديث الصفحة: ' . $e->getMessage()]);
         }
     }
@@ -186,7 +195,7 @@ class PageController extends Controller
             return redirect()->route('pages.index')->with('success', 'تم حذف الصفحة بنجاح.');
 
         } catch (\Exception $e) {
-            \Log::error('Error deleting page: ' . $e->getMessage());
+            Log::error('Error deleting page', ['error' => $e->getMessage()]);
             return back()->withErrors(['error' => 'حدث خطأ أثناء حذف الصفحة: ' . $e->getMessage()]);
         }
     }

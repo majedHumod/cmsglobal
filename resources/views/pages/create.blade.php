@@ -9,6 +9,17 @@
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                 <div class="p-6">
+                    @if ($errors->any())
+                        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+                            <strong class="font-bold">خطأ!</strong>
+                            <ul class="mt-2">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
                     <form action="{{ route('pages.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
                         @csrf
                         
@@ -91,12 +102,14 @@
                         <!-- خيارات النشر -->
                         <div class="space-y-4">
                             <div class="flex items-center">
-                                <input type="checkbox" name="is_published" id="is_published" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" {{ old('is_published', true) ? 'checked' : '' }}>
+                                <input type="hidden" name="is_published" value="0">
+                                <input type="checkbox" name="is_published" id="is_published" value="1" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" {{ old('is_published', true) ? 'checked' : '' }}>
                                 <label for="is_published" class="ml-2 block text-sm text-gray-700">نشر الصفحة</label>
                             </div>
 
                             <div class="flex items-center">
-                                <input type="checkbox" name="show_in_menu" id="show_in_menu" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" {{ old('show_in_menu') ? 'checked' : '' }}>
+                                <input type="hidden" name="show_in_menu" value="0">
+                                <input type="checkbox" name="show_in_menu" id="show_in_menu" value="1" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" {{ old('show_in_menu') ? 'checked' : '' }}>
                                 <label for="show_in_menu" class="ml-2 block text-sm text-gray-700">إظهار في قائمة التنقل</label>
                             </div>
                         </div>
@@ -112,13 +125,4 @@
             </div>
         </div>
     </div>
-
-    @push('scripts')
-    <script>
-        // تحديث slug تلقائياً عند كتابة العنوان
-        document.getElementById('title').addEventListener('input', function() {
-            // يمكن إضافة منطق لتحديث slug تلقائياً هنا
-        });
-    </script>
-    @endpush
 </x-app-layout>
