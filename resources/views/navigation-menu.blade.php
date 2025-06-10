@@ -44,6 +44,13 @@
                     </x-nav-link>
                     @endhasanyrole
 
+                    <!-- Membership Types Link - Visible only to admin role -->
+                    @role('admin')
+                    <x-nav-link href="{{ route('membership-types.index') }}" :active="request()->routeIs('membership-types.*')">
+                        {{ __('إدارة العضويات') }}
+                    </x-nav-link>
+                    @endrole
+
                     <!-- Dynamic Pages from Database -->
                     @php
                         try {
@@ -220,6 +227,13 @@
                 {{ __('إدارة الصفحات') }}
             </x-responsive-nav-link>
             @endhasanyrole
+
+            <!-- Responsive Membership Types Link - Visible only to admin role -->
+            @role('admin')
+            <x-responsive-nav-link href="{{ route('membership-types.index') }}" :active="request()->routeIs('membership-types.*')">
+                {{ __('إدارة العضويات') }}
+            </x-responsive-nav-link>
+            @endrole
 
             <!-- Responsive Dynamic Pages from Database -->
             @php

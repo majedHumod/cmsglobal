@@ -38,8 +38,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('membership_type_id')->constrained()->onDelete('cascade');
-            $table->timestamp('starts_at'); // تاريخ بداية الاشتراك
-            $table->timestamp('expires_at'); // تاريخ انتهاء الاشتراك
+            $table->timestamp('starts_at')->nullable(); // تاريخ بداية الاشتراك
+            $table->timestamp('expires_at')->nullable(); // تاريخ انتهاء الاشتراك
             $table->boolean('is_active')->default(true); // حالة النشاط
             $table->enum('payment_status', ['pending', 'paid', 'failed', 'refunded'])->default('pending');
             $table->decimal('payment_amount', 10, 2)->default(0); // مبلغ الدفع

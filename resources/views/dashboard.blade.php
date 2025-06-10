@@ -83,6 +83,23 @@
                     </div>
                     @endhasanyrole
 
+                    <!-- Membership Types Card - Visible only to admin role -->
+                    @role('admin')
+                    <div class="bg-white overflow-hidden shadow rounded-lg">
+                        <div class="px-4 py-5 sm:p-6">
+                            <h3 class="text-lg font-medium text-gray-900">💎 إدارة العضويات</h3>
+                            <p class="mt-1 text-sm text-gray-500">
+                                إنشاء وإدارة أنواع العضويات والاشتراكات المدفوعة.
+                            </p>
+                            <div class="mt-4">
+                                <a href="{{ route('membership-types.index') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-yellow-600 hover:bg-yellow-700">
+                                    إدارة العضويات
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    @endrole
+
                     <!-- Public Pages Card - Visible to all authenticated users -->
                     @auth
                     @if(!auth()->user()->hasAnyRole(['admin', 'page_manager']))

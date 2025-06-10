@@ -6,6 +6,7 @@ use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\SmsController;
 use App\Http\Controllers\MealPlanController;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\MembershipTypeController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -42,6 +43,12 @@ Route::middleware([
 
     // Public pages route (accessible to all authenticated users)
     Route::get('/pages-public', [PageController::class, 'publicIndex'])->name('pages.public');
+
+    // Membership Types routes - admin only
+    Route::middleware(['auth', 'role:admin'])->group(function () {
+        Route::resource('/membership-types', MembershipTypeController::class);
+        Route::patch('/membership-types/{membershipType}/toggle-status', [MembershipTypeController::class, 'toggleStatus'])->name('membership-types.toggle-status');
+    });
 });
 
 // Public page view route (accessible to everyone)
