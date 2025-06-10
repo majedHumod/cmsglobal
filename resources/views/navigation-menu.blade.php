@@ -37,17 +37,28 @@
                     </x-nav-link>
                     @endrole
 
-                    <!-- Pages Link - Visible to admin and page_manager roles -->
+                    <!-- Pages Management Link - Visible to admin and page_manager roles -->
                     @hasanyrole('admin|page_manager')
-                    <x-nav-link href="{{ route('pages.index') }}" :active="request()->routeIs('pages.*')">
+                    <x-nav-link href="{{ route('pages.index') }}" :active="request()->routeIs('pages.index', 'pages.create', 'pages.edit')">
                         {{ __('إدارة الصفحات') }}
                     </x-nav-link>
                     @endhasanyrole
 
-                    <!-- Public Pages Link - Visible to all authenticated users -->
+                    <!-- Dynamic Pages from Database -->
+                    @php
+                        $menuPages = \App\Models\Page::inMenu()->published()->get();
+                    @endphp
+                    
+                    @foreach($menuPages as $menuPage)
+                        <x-nav-link href="{{ route('pages.show', $menuPage->slug) }}" :active="request()->is('page/' . $menuPage->slug)">
+                            {{ $menuPage->title }}
+                        </x-nav-link>
+                    @endforeach
+
+                    <!-- All Pages Link - Visible to all authenticated users -->
                     @auth
                     <x-nav-link href="{{ route('pages.public') }}" :active="request()->routeIs('pages.public')">
-                        {{ __('الصفحات') }}
+                        {{ __('جميع الصفحات') }}
                     </x-nav-link>
                     @endauth
                 </div>
@@ -199,17 +210,28 @@
             </x-responsive-nav-link>
             @endrole
 
-            <!-- Responsive Pages Link - Visible to admin and page_manager roles -->
+            <!-- Responsive Pages Management Link - Visible to admin and page_manager roles -->
             @hasanyrole('admin|page_manager')
-            <x-responsive-nav-link href="{{ route('pages.index') }}" :active="request()->routeIs('pages.*')">
+            <x-responsive-nav-link href="{{ route('pages.index') }}" :active="request()->routeIs('pages.index', 'pages.create', 'pages.edit')">
                 {{ __('إدارة الصفحات') }}
             </x-responsive-nav-link>
             @endhasanyrole
 
-            <!-- Responsive Public Pages Link - Visible to all authenticated users -->
+            <!-- Responsive Dynamic Pages from Database -->
+            @php
+                $menuPages = \App\Models\Page::inMenu()->published()->get();
+            @endphp
+            
+            @foreach($menuPages as $menuPage)
+                <x-responsive-nav-link href="{{ route('pages.show', $menuPage->slug) }}" :active="request()->is('page/' . $menuPage->slug)">
+                    {{ $menuPage->title }}
+                </x-responsive-nav-link>
+            @endforeach
+
+            <!-- Responsive All Pages Link - Visible to all authenticated users -->
             @auth
             <x-responsive-nav-link href="{{ route('pages.public') }}" :active="request()->routeIs('pages.public')">
-                {{ __('الصفحات') }}
+                {{ __('جميع الصفحات') }}
             </x-responsive-nav-link>
             @endauth
         </div>
