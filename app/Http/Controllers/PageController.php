@@ -34,47 +34,57 @@ class PageController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'title' => 'required|max:255',
-            'content' => 'required',
-            'excerpt' => 'nullable|string',
-            'meta_title' => 'nullable|max:255',
-            'meta_description' => 'nullable|max:160',
-            'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'is_published' => 'boolean',
-            'show_in_menu' => 'boolean',
-            'menu_order' => 'nullable|integer|min:0',
-            'published_at' => 'nullable|date'
-        ]);
+        try {
+            $validated = $request->validate([
+                'title' => 'required|max:255',
+                'content' => 'required',
+                'excerpt' => 'nullable|string',
+                'meta_title' => 'nullable|max:255',
+                'meta_description' => 'nullable|max:160',
+                'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'is_published' => 'boolean',
+                'show_in_menu' => 'boolean',
+                'menu_order' => 'nullable|integer|min:0',
+                'published_at' => 'nullable|date'
+            ]);
 
-        // إنشاء slug من العنوان
-        $validated['slug'] = Str::slug($validated['title']);
-        
-        // التأكد من أن الـ slug فريد
-        $originalSlug = $validated['slug'];
-        $counter = 1;
-        while (Page::where('slug', $validated['slug'])->exists()) {
-            $validated['slug'] = $originalSlug . '-' . $counter;
-            $counter++;
+            // إنشاء slug من العنوان
+            $validated['slug'] = Str::slug($validated['title']);
+            
+            // التأكد من أن الـ slug فريد
+            $originalSlug = $validated['slug'];
+            $counter = 1;
+            while (Page::where('slug', $validated['slug'])->exists()) {
+                $validated['slug'] = $originalSlug . '-' . $counter;
+                $counter++;
+            }
+
+            // رفع الصورة المميزة
+            if ($request->hasFile('featured_image')) {
+                $imagePath = $request->file('featured_image')->store('pages', 'public');
+                $validated['featured_image'] = $imagePath;
+            }
+
+            // تعيين المستخدم الحالي
+            $validated['user_id'] = auth()->id();
+            
+            // تعيين تاريخ النشر إذا كانت الصفحة منشورة
+            if ($request->has('is_published') && !$validated['published_at']) {
+                $validated['published_at'] = now();
+            }
+
+            // تعيين القيم المنطقية
+            $validated['is_published'] = $request->has('is_published');
+            $validated['show_in_menu'] = $request->has('show_in_menu');
+
+            $page = Page::create($validated);
+
+            return redirect()->route('pages.index')->with('success', 'تم إنشاء الصفحة بنجاح.');
+
+        } catch (\Exception $e) {
+            \Log::error('Error creating page: ' . $e->getMessage());
+            return back()->withInput()->withErrors(['error' => 'حدث خطأ أثناء إنشاء الصفحة: ' . $e->getMessage()]);
         }
-
-        // رفع الصورة المميزة
-        if ($request->hasFile('featured_image')) {
-            $imagePath = $request->file('featured_image')->store('pages', 'public');
-            $validated['featured_image'] = $imagePath;
-        }
-
-        // تعيين المستخدم الحالي
-        $validated['user_id'] = auth()->id();
-        
-        // تعيين تاريخ النشر إذا كانت الصفحة منشورة
-        if ($validated['is_published'] && !$validated['published_at']) {
-            $validated['published_at'] = now();
-        }
-
-        Page::create($validated);
-
-        return redirect()->route('pages.index')->with('success', 'تم إنشاء الصفحة بنجاح.');
     }
 
     public function show($slug)
@@ -98,71 +108,87 @@ class PageController extends Controller
 
     public function update(Request $request, Page $page)
     {
-        // التحقق من الصلاحيات
-        if (!auth()->user()->hasRole('admin') && $page->user_id !== auth()->id()) {
-            abort(403);
-        }
-
-        $validated = $request->validate([
-            'title' => 'required|max:255',
-            'content' => 'required',
-            'excerpt' => 'nullable|string',
-            'meta_title' => 'nullable|max:255',
-            'meta_description' => 'nullable|max:160',
-            'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'is_published' => 'boolean',
-            'show_in_menu' => 'boolean',
-            'menu_order' => 'nullable|integer|min:0',
-            'published_at' => 'nullable|date'
-        ]);
-
-        // تحديث الـ slug إذا تغير العنوان
-        if ($validated['title'] !== $page->title) {
-            $newSlug = Str::slug($validated['title']);
-            $originalSlug = $newSlug;
-            $counter = 1;
-            while (Page::where('slug', $newSlug)->where('id', '!=', $page->id)->exists()) {
-                $newSlug = $originalSlug . '-' . $counter;
-                $counter++;
+        try {
+            // التحقق من الصلاحيات
+            if (!auth()->user()->hasRole('admin') && $page->user_id !== auth()->id()) {
+                abort(403);
             }
-            $validated['slug'] = $newSlug;
-        }
 
-        // رفع صورة جديدة
-        if ($request->hasFile('featured_image')) {
-            // حذف الصورة القديمة
-            if ($page->featured_image) {
-                Storage::disk('public')->delete($page->featured_image);
+            $validated = $request->validate([
+                'title' => 'required|max:255',
+                'content' => 'required',
+                'excerpt' => 'nullable|string',
+                'meta_title' => 'nullable|max:255',
+                'meta_description' => 'nullable|max:160',
+                'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'is_published' => 'boolean',
+                'show_in_menu' => 'boolean',
+                'menu_order' => 'nullable|integer|min:0',
+                'published_at' => 'nullable|date'
+            ]);
+
+            // تحديث الـ slug إذا تغير العنوان
+            if ($validated['title'] !== $page->title) {
+                $newSlug = Str::slug($validated['title']);
+                $originalSlug = $newSlug;
+                $counter = 1;
+                while (Page::where('slug', $newSlug)->where('id', '!=', $page->id)->exists()) {
+                    $newSlug = $originalSlug . '-' . $counter;
+                    $counter++;
+                }
+                $validated['slug'] = $newSlug;
             }
-            $imagePath = $request->file('featured_image')->store('pages', 'public');
-            $validated['featured_image'] = $imagePath;
+
+            // رفع صورة جديدة
+            if ($request->hasFile('featured_image')) {
+                // حذف الصورة القديمة
+                if ($page->featured_image) {
+                    Storage::disk('public')->delete($page->featured_image);
+                }
+                $imagePath = $request->file('featured_image')->store('pages', 'public');
+                $validated['featured_image'] = $imagePath;
+            }
+
+            // تعيين تاريخ النشر إذا كانت الصفحة منشورة لأول مرة
+            if ($request->has('is_published') && !$page->is_published && !$validated['published_at']) {
+                $validated['published_at'] = now();
+            }
+
+            // تعيين القيم المنطقية
+            $validated['is_published'] = $request->has('is_published');
+            $validated['show_in_menu'] = $request->has('show_in_menu');
+
+            $page->update($validated);
+
+            return redirect()->route('pages.index')->with('success', 'تم تحديث الصفحة بنجاح.');
+
+        } catch (\Exception $e) {
+            \Log::error('Error updating page: ' . $e->getMessage());
+            return back()->withInput()->withErrors(['error' => 'حدث خطأ أثناء تحديث الصفحة: ' . $e->getMessage()]);
         }
-
-        // تعيين تاريخ النشر إذا كانت الصفحة منشورة لأول مرة
-        if ($validated['is_published'] && !$page->is_published && !$validated['published_at']) {
-            $validated['published_at'] = now();
-        }
-
-        $page->update($validated);
-
-        return redirect()->route('pages.index')->with('success', 'تم تحديث الصفحة بنجاح.');
     }
 
     public function destroy(Page $page)
     {
-        // التحقق من الصلاحيات
-        if (!auth()->user()->hasRole('admin') && $page->user_id !== auth()->id()) {
-            abort(403);
+        try {
+            // التحقق من الصلاحيات
+            if (!auth()->user()->hasRole('admin') && $page->user_id !== auth()->id()) {
+                abort(403);
+            }
+
+            // حذف الصورة المميزة
+            if ($page->featured_image) {
+                Storage::disk('public')->delete($page->featured_image);
+            }
+
+            $page->delete();
+
+            return redirect()->route('pages.index')->with('success', 'تم حذف الصفحة بنجاح.');
+
+        } catch (\Exception $e) {
+            \Log::error('Error deleting page: ' . $e->getMessage());
+            return back()->withErrors(['error' => 'حدث خطأ أثناء حذف الصفحة: ' . $e->getMessage()]);
         }
-
-        // حذف الصورة المميزة
-        if ($page->featured_image) {
-            Storage::disk('public')->delete($page->featured_image);
-        }
-
-        $page->delete();
-
-        return redirect()->route('pages.index')->with('success', 'تم حذف الصفحة بنجاح.');
     }
 
     public function publicIndex()
