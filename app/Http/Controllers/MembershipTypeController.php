@@ -6,6 +6,7 @@ use App\Models\MembershipType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Database\QueryException;
 
 class MembershipTypeController extends Controller
 {
@@ -17,28 +18,60 @@ class MembershipTypeController extends Controller
     public function index()
     {
         try {
-            $membershipTypes = MembershipType::ordered()->get();
+            // التأكد من وجود الجدول أولاً
+            if (!\Schema::hasTable('membership_types')) {
+                Log::warning('membership_types table does not exist');
+                return view('membership-types.index', ['membershipTypes' => collect([])])
+                    ->with('error', 'جدول أنواع العضويات غير موجود. يرجى تشغيل المايجريشن أولاً.');
+            }
+
+            // جلب البيانات مع معالجة الأخطاء
+            $membershipTypes = MembershipType::orderBy('sort_order')->orderBy('name')->get();
             
-            // التأكد من أن النتيجة هي Collection وليس array
+            // التأكد من أن النتيجة هي Collection
             if (!$membershipTypes instanceof \Illuminate\Database\Eloquent\Collection) {
-                Log::error('MembershipTypes is not a Collection', ['type' => gettype($membershipTypes)]);
+                Log::error('MembershipTypes query did not return a Collection', [
+                    'type' => gettype($membershipTypes),
+                    'value' => $membershipTypes
+                ]);
                 $membershipTypes = collect([]);
             }
             
-            return view('membership-types.index', compact('membershipTypes'));
-        } catch (\Exception $e) {
-            Log::error('Error in MembershipTypeController@index', ['error' => $e->getMessage()]);
+            Log::info('MembershipTypes loaded successfully', [
+                'count' => $membershipTypes->count(),
+                'type' => get_class($membershipTypes)
+            ]);
             
-            // في حالة الخطأ، أرسل collection فارغ
-            $membershipTypes = collect([]);
-            return view('membership-types.index', compact('membershipTypes'))
+            return view('membership-types.index', compact('membershipTypes'));
+            
+        } catch (QueryException $e) {
+            Log::error('Database error in MembershipTypeController@index', [
+                'error' => $e->getMessage(),
+                'code' => $e->getCode()
+            ]);
+            
+            return view('membership-types.index', ['membershipTypes' => collect([])])
+                ->with('error', 'خطأ في قاعدة البيانات: ' . $e->getMessage());
+                
+        } catch (\Exception $e) {
+            Log::error('General error in MembershipTypeController@index', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return view('membership-types.index', ['membershipTypes' => collect([])])
                 ->with('error', 'حدث خطأ أثناء تحميل أنواع العضويات: ' . $e->getMessage());
         }
     }
 
     public function create()
     {
-        return view('membership-types.create');
+        try {
+            return view('membership-types.create');
+        } catch (\Exception $e) {
+            Log::error('Error in MembershipTypeController@create', ['error' => $e->getMessage()]);
+            return redirect()->route('membership-types.index')->with('error', 'حدث خطأ أثناء تحميل صفحة الإنشاء.');
+        }
     }
 
     public function store(Request $request)
@@ -55,7 +88,7 @@ class MembershipTypeController extends Controller
             ]);
 
             // معالجة المدة المخصصة
-            if ($request->duration_days === 'custom' && $request->custom_duration_days) {
+            if ($request->has('custom_duration_days') && $request->custom_duration_days) {
                 $validated['duration_days'] = $request->custom_duration_days;
             }
 
@@ -102,11 +135,16 @@ class MembershipTypeController extends Controller
 
     public function edit(MembershipType $membershipType)
     {
-        if ($membershipType->is_protected) {
-            return redirect()->route('membership-types.index')->with('error', 'لا يمكن تعديل هذا النوع من العضوية لأنه محمي من النظام.');
-        }
+        try {
+            if ($membershipType->is_protected) {
+                return redirect()->route('membership-types.index')->with('error', 'لا يمكن تعديل هذا النوع من العضوية لأنه محمي من النظام.');
+            }
 
-        return view('membership-types.edit', compact('membershipType'));
+            return view('membership-types.edit', compact('membershipType'));
+        } catch (\Exception $e) {
+            Log::error('Error in edit method', ['error' => $e->getMessage()]);
+            return redirect()->route('membership-types.index')->with('error', 'حدث خطأ أثناء تحميل صفحة التعديل.');
+        }
     }
 
     public function update(Request $request, MembershipType $membershipType)
@@ -127,7 +165,7 @@ class MembershipTypeController extends Controller
             ]);
 
             // معالجة المدة المخصصة
-            if ($request->duration_days === 'custom' && $request->custom_duration_days) {
+            if ($request->has('custom_duration_days') && $request->custom_duration_days) {
                 $validated['duration_days'] = $request->custom_duration_days;
             }
 
