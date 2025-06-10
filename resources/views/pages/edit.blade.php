@@ -75,6 +75,40 @@
                             @enderror
                         </div>
 
+                        <!-- إعدادات الوصول -->
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h3 class="text-lg font-medium text-gray-900 mb-4">إعدادات الوصول والصلاحيات</h3>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <!-- مستوى الوصول -->
+                                <div>
+                                    <label for="access_level" class="block text-sm font-medium text-gray-700 mb-2">مستوى الوصول *</label>
+                                    <select name="access_level" id="access_level" class="w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
+                                        <option value="public" {{ old('access_level', $page->access_level) == 'public' ? 'selected' : '' }}>🌍 عام للجميع</option>
+                                        <option value="authenticated" {{ old('access_level', $page->access_level) == 'authenticated' ? 'selected' : '' }}>🔐 المستخدمين المسجلين</option>
+                                        <option value="user" {{ old('access_level', $page->access_level) == 'user' ? 'selected' : '' }}>👤 المستخدمين العاديين</option>
+                                        <option value="page_manager" {{ old('access_level', $page->access_level) == 'page_manager' ? 'selected' : '' }}>📝 مديري الصفحات</option>
+                                        <option value="admin" {{ old('access_level', $page->access_level) == 'admin' ? 'selected' : '' }}>👑 المديرين فقط</option>
+                                    </select>
+                                    @error('access_level')
+                                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                    @enderror
+                                    <p class="text-xs text-gray-500 mt-1">حدد من يستطيع الوصول لهذه الصفحة</p>
+                                </div>
+
+                                <!-- محتوى مدفوع -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">نوع المحتوى</label>
+                                    <div class="flex items-center">
+                                        <input type="hidden" name="is_premium" value="0">
+                                        <input type="checkbox" name="is_premium" id="is_premium" value="1" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" {{ old('is_premium', $page->is_premium) ? 'checked' : '' }}>
+                                        <label for="is_premium" class="ml-2 block text-sm text-gray-700">💎 محتوى مدفوع</label>
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-1">سيتم تطبيق هذا لاحقاً مع نظام العضويات</p>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <!-- ترتيب القائمة -->
                             <div>

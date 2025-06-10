@@ -46,12 +46,16 @@
 
                     <!-- Dynamic Pages from Database -->
                     @php
-                        $menuPages = \App\Models\Page::inMenu()->published()->get();
+                        try {
+                            $menuPages = \App\Models\Page::inMenu()->published()->accessibleBy(auth()->user())->get();
+                        } catch (\Exception $e) {
+                            $menuPages = collect();
+                        }
                     @endphp
                     
                     @foreach($menuPages as $menuPage)
                         <x-nav-link href="{{ route('pages.show', $menuPage->slug) }}" :active="request()->is('page/' . $menuPage->slug)">
-                            {{ $menuPage->title }}
+                            {{ $menuPage->access_level_icon }} {{ $menuPage->title }}
                         </x-nav-link>
                     @endforeach
 
@@ -219,12 +223,16 @@
 
             <!-- Responsive Dynamic Pages from Database -->
             @php
-                $menuPages = \App\Models\Page::inMenu()->published()->get();
+                try {
+                    $menuPages = \App\Models\Page::inMenu()->published()->accessibleBy(auth()->user())->get();
+                } catch (\Exception $e) {
+                    $menuPages = collect();
+                }
             @endphp
             
             @foreach($menuPages as $menuPage)
                 <x-responsive-nav-link href="{{ route('pages.show', $menuPage->slug) }}" :active="request()->is('page/' . $menuPage->slug)">
-                    {{ $menuPage->title }}
+                    {{ $menuPage->access_level_icon }} {{ $menuPage->title }}
                 </x-responsive-nav-link>
             @endforeach
 

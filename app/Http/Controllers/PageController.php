@@ -45,6 +45,8 @@ class PageController extends Controller
                 'meta_title' => 'nullable|max:255',
                 'meta_description' => 'nullable|max:160',
                 'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'access_level' => 'required|in:public,authenticated,admin,user,page_manager',
+                'is_premium' => 'boolean',
                 'menu_order' => 'nullable|integer|min:0',
                 'published_at' => 'nullable|date'
             ]);
@@ -75,6 +77,7 @@ class PageController extends Controller
             // معالجة القيم المنطقية
             $validated['is_published'] = $request->has('is_published') ? 1 : 0;
             $validated['show_in_menu'] = $request->has('show_in_menu') ? 1 : 0;
+            $validated['is_premium'] = $request->has('is_premium') ? 1 : 0;
             
             // تعيين تاريخ النشر إذا كانت الصفحة منشورة
             if ($validated['is_published'] && !$validated['published_at']) {
@@ -104,6 +107,15 @@ class PageController extends Controller
             ->where('is_published', true)
             ->firstOrFail();
 
+        // التحقق من صلاحية الوصول
+        if (!$page->canAccess(auth()->user())) {
+            if (!auth()->check()) {
+                return redirect()->route('login')->with('error', 'يجب تسجيل الدخول للوصول لهذه الصفحة.');
+            }
+            
+            abort(403, 'ليس لديك صلاحية للوصول لهذه الصفحة.');
+        }
+
         return view('pages.show', compact('page'));
     }
 
@@ -132,6 +144,8 @@ class PageController extends Controller
                 'meta_title' => 'nullable|max:255',
                 'meta_description' => 'nullable|max:160',
                 'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'access_level' => 'required|in:public,authenticated,admin,user,page_manager',
+                'is_premium' => 'boolean',
                 'menu_order' => 'nullable|integer|min:0',
                 'published_at' => 'nullable|date'
             ]);
@@ -161,6 +175,7 @@ class PageController extends Controller
             // معالجة القيم المنطقية
             $validated['is_published'] = $request->has('is_published') ? 1 : 0;
             $validated['show_in_menu'] = $request->has('show_in_menu') ? 1 : 0;
+            $validated['is_premium'] = $request->has('is_premium') ? 1 : 0;
 
             // تعيين تاريخ النشر إذا كانت الصفحة منشورة لأول مرة
             if ($validated['is_published'] && !$page->is_published && !$validated['published_at']) {
@@ -203,6 +218,7 @@ class PageController extends Controller
     public function publicIndex()
     {
         $pages = Page::published()
+            ->accessibleBy(auth()->user())
             ->with('user')
             ->latest('published_at')
             ->paginate(12);
