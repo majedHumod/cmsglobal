@@ -62,6 +62,45 @@
                         </div>
                     </div>
                     @endrole
+
+                    <!-- Pages Card - Visible to admin and page_manager roles -->
+                    @hasanyrole('admin|page_manager')
+                    <div class="bg-white overflow-hidden shadow rounded-lg">
+                        <div class="px-4 py-5 sm:p-6">
+                            <h3 class="text-lg font-medium text-gray-900">إدارة الصفحات</h3>
+                            <p class="mt-1 text-sm text-gray-500">
+                                إنشاء وإدارة صفحات الموقع والمحتوى العام.
+                            </p>
+                            <div class="mt-4 space-x-2">
+                                <a href="{{ route('pages.index') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700">
+                                    إدارة الصفحات
+                                </a>
+                                <a href="{{ route('pages.public') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                                    عرض الصفحات
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    @endhasanyrole
+
+                    <!-- Public Pages Card - Visible to all authenticated users -->
+                    @auth
+                    @if(!auth()->user()->hasAnyRole(['admin', 'page_manager']))
+                    <div class="bg-white overflow-hidden shadow rounded-lg">
+                        <div class="px-4 py-5 sm:p-6">
+                            <h3 class="text-lg font-medium text-gray-900">صفحات الموقع</h3>
+                            <p class="mt-1 text-sm text-gray-500">
+                                تصفح صفحات الموقع والمحتوى المتاح.
+                            </p>
+                            <div class="mt-4">
+                                <a href="{{ route('pages.public') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+                                    تصفح الصفحات
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    @endif
+                    @endauth
                 </div>
             </div>
         </div>

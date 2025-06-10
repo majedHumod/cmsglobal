@@ -36,6 +36,20 @@
                         {{ __('Articles') }}
                     </x-nav-link>
                     @endrole
+
+                    <!-- Pages Link - Visible to admin and page_manager roles -->
+                    @hasanyrole('admin|page_manager')
+                    <x-nav-link href="{{ route('pages.index') }}" :active="request()->routeIs('pages.*')">
+                        {{ __('إدارة الصفحات') }}
+                    </x-nav-link>
+                    @endhasanyrole
+
+                    <!-- Public Pages Link - Visible to all authenticated users -->
+                    @auth
+                    <x-nav-link href="{{ route('pages.public') }}" :active="request()->routeIs('pages.public')">
+                        {{ __('الصفحات') }}
+                    </x-nav-link>
+                    @endauth
                 </div>
             </div>
 
@@ -184,6 +198,20 @@
                 {{ __('Articles') }}
             </x-responsive-nav-link>
             @endrole
+
+            <!-- Responsive Pages Link - Visible to admin and page_manager roles -->
+            @hasanyrole('admin|page_manager')
+            <x-responsive-nav-link href="{{ route('pages.index') }}" :active="request()->routeIs('pages.*')">
+                {{ __('إدارة الصفحات') }}
+            </x-responsive-nav-link>
+            @endhasanyrole
+
+            <!-- Responsive Public Pages Link - Visible to all authenticated users -->
+            @auth
+            <x-responsive-nav-link href="{{ route('pages.public') }}" :active="request()->routeIs('pages.public')">
+                {{ __('الصفحات') }}
+            </x-responsive-nav-link>
+            @endauth
         </div>
 
         <!-- Responsive Settings Options -->
