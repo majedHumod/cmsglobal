@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Schema;
 
 class MembershipTypeController extends Controller
 {
@@ -18,23 +19,54 @@ class MembershipTypeController extends Controller
     public function index()
     {
         try {
+            Log::info('MembershipTypeController@index called');
+            
             // التأكد من وجود الجدول أولاً
-            if (!\Schema::hasTable('membership_types')) {
+            if (!Schema::hasTable('membership_types')) {
                 Log::warning('membership_types table does not exist');
-                return view('membership-types.index', ['membershipTypes' => collect([])])
+                
+                // إنشاء Collection فارغ بدلاً من array
+                $membershipTypes = collect([]);
+                
+                return view('membership-types.index', compact('membershipTypes'))
                     ->with('error', 'جدول أنواع العضويات غير موجود. يرجى تشغيل المايجريشن أولاً.');
             }
 
-            // جلب البيانات مع معالجة الأخطاء
-            $membershipTypes = MembershipType::orderBy('sort_order')->orderBy('name')->get();
+            // محاولة جلب البيانات مع معالجة شاملة للأخطاء
+            try {
+                $membershipTypes = MembershipType::orderBy('sort_order')->orderBy('name')->get();
+                
+                Log::info('MembershipTypes query executed successfully', [
+                    'count' => $membershipTypes->count(),
+                    'type' => get_class($membershipTypes)
+                ]);
+                
+            } catch (QueryException $e) {
+                Log::error('Database query error in MembershipTypeController@index', [
+                    'error' => $e->getMessage(),
+                    'code' => $e->getCode()
+                ]);
+                
+                // إنشاء Collection فارغ في حالة خطأ الاستعلام
+                $membershipTypes = collect([]);
+                
+                return view('membership-types.index', compact('membershipTypes'))
+                    ->with('error', 'خطأ في قاعدة البيانات: ' . $e->getMessage());
+            }
             
-            // التأكد من أن النتيجة هي Collection
+            // التأكد من أن النتيجة هي Collection وليس array
             if (!$membershipTypes instanceof \Illuminate\Database\Eloquent\Collection) {
                 Log::error('MembershipTypes query did not return a Collection', [
                     'type' => gettype($membershipTypes),
                     'value' => $membershipTypes
                 ]);
-                $membershipTypes = collect([]);
+                
+                // تحويل إلى Collection إذا كان array
+                if (is_array($membershipTypes)) {
+                    $membershipTypes = collect($membershipTypes);
+                } else {
+                    $membershipTypes = collect([]);
+                }
             }
             
             Log::info('MembershipTypes loaded successfully', [
@@ -44,22 +76,16 @@ class MembershipTypeController extends Controller
             
             return view('membership-types.index', compact('membershipTypes'));
             
-        } catch (QueryException $e) {
-            Log::error('Database error in MembershipTypeController@index', [
-                'error' => $e->getMessage(),
-                'code' => $e->getCode()
-            ]);
-            
-            return view('membership-types.index', ['membershipTypes' => collect([])])
-                ->with('error', 'خطأ في قاعدة البيانات: ' . $e->getMessage());
-                
         } catch (\Exception $e) {
             Log::error('General error in MembershipTypeController@index', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
             
-            return view('membership-types.index', ['membershipTypes' => collect([])])
+            // إنشاء Collection فارغ في حالة أي خطأ آخر
+            $membershipTypes = collect([]);
+            
+            return view('membership-types.index', compact('membershipTypes'))
                 ->with('error', 'حدث خطأ أثناء تحميل أنواع العضويات: ' . $e->getMessage());
         }
     }
