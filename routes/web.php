@@ -6,6 +6,7 @@ use App\Http\Controllers\NoteController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\SmsController;
 use App\Http\Controllers\MealPlanController;
+use App\Http\Controllers\PageController;
 
 
 
@@ -40,6 +41,17 @@ Route::middleware(['auth', 'role:user|admin'])->group(function () {
 
 // Public meal plans route (accessible to all authenticated users)
 Route::get('/meal-plans-public', [MealPlanController::class, 'publicIndex'])->name('meal-plans.public');
+
+// Pages routes - accessible to admin and page_manager
+Route::middleware(['auth', 'role:admin|page_manager'])->group(function () {
+    Route::resource('/pages', PageController::class);
+});
+
+// Public pages route (accessible to all authenticated users)
+Route::get('/pages-public', [PageController::class, 'publicIndex'])->name('pages.public');
+
+// Public page view route (accessible to everyone)
+Route::get('/page/{slug}', [PageController::class, 'show'])->name('pages.show');
 
 });
 
