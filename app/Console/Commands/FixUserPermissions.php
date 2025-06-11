@@ -8,6 +8,7 @@ use App\Services\TenantService;
 use Illuminate\Console\Command;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use Illuminate\Support\Facades\Artisan;
 
 class FixUserPermissions extends Command
 {
@@ -59,10 +60,15 @@ class FixUserPermissions extends Command
             
             // تشغيل seeder للصلاحيات
             $this->info("📝 Creating permissions and roles...");
-            Artisan::call('db:seed', [
-                '--class' => 'Database\\Seeders\\Tenants\\PermissionsSeeder',
-                '--force' => true
-            ]);
+            try {
+                Artisan::call('db:seed', [
+                    '--class' => 'Database\\Seeders\\Tenants\\PermissionsSeeder',
+                    '--force' => true
+                ]);
+            } catch (\Exception $e) {
+                $this->warn("⚠️ Could not run seeder: " . $e->getMessage());
+                $this->info("Creating permissions manually...");
+            }
             
             // التأكد من وجود دور الأدمن
             $adminRole = Role::firstOrCreate([
@@ -88,7 +94,23 @@ class FixUserPermissions extends Command
             }
             
             // منح جميع الصلاحيات للأدمن
-            $adminRole->syncPermissions(Permission::all());
+            try {
+                $adminRole->syncPermissions(Permission::all());
+            } catch (\Exception $e) {
+                $this->warn("⚠️ Could not sync all permissions: " . $e->getMessage());
+                
+                // منح الصلاحيات المتقدمة فقط
+                foreach ($advancedPermissions as $permissionName) {
+                    try {
+                        $permission = Permission::where('name', $permissionName)->first();
+                        if ($permission) {
+                            $adminRole->givePermissionTo($permission);
+                        }
+                    } catch (\Exception $ex) {
+                        $this->warn("⚠️ Could not assign permission {$permissionName}: " . $ex->getMessage());
+                    }
+                }
+            }
             
             // منح المستخدم دور الأدمن
             if (!$user->hasRole('admin')) {
@@ -104,14 +126,22 @@ class FixUserPermissions extends Command
                 $this->line("   • {$role->name}");
             }
             
-            $this->info("\n🔑 User permissions count: " . $user->getAllPermissions()->count());
+            try {
+                $this->info("\n🔑 User permissions count: " . $user->getAllPermissions()->count());
+            } catch (\Exception $e) {
+                $this->warn("⚠️ Could not count permissions: " . $e->getMessage());
+            }
             
             // التحقق من الصلاحيات المتقدمة
             $this->info("\n🔍 Advanced permissions check:");
             foreach ($advancedPermissions as $permission) {
-                $hasPermission = $user->hasPermissionTo($permission);
-                $status = $hasPermission ? '✅' : '❌';
-                $this->line("   {$status} {$permission}");
+                try {
+                    $hasPermission = $user->hasPermissionTo($permission);
+                    $status = $hasPermission ? '✅' : '❌';
+                    $this->line("   {$status} {$permission}");
+                } catch (\Exception $e) {
+                    $this->line("   ❓ {$permission} (could not check)");
+                }
             }
             
             $this->newLine();

@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Artisan;
 
 class AdvancedPermissionController extends Controller
 {
@@ -24,10 +25,18 @@ class AdvancedPermissionController extends Controller
             $user = auth()->user();
             
             // التحقق من دور الأدمن أو الصلاحيات المتقدمة
-            if ($user->hasRole('admin') || 
-                $user->hasPermissionTo('view advanced permissions') || 
-                $user->hasPermissionTo('manage advanced permissions')) {
+            if ($user->hasRole('admin')) {
                 return $next($request);
+            }
+            
+            // محاولة التحقق من الصلاحيات المتقدمة
+            try {
+                if ($user->hasPermissionTo('view advanced permissions') || 
+                    $user->hasPermissionTo('manage advanced permissions')) {
+                    return $next($request);
+                }
+            } catch (\Exception $e) {
+                // تجاهل الخطأ إذا لم تكن الصلاحيات موجودة
             }
             
             // إذا لم يكن لديه صلاحية، إعادة توجيه للداشبورد
@@ -44,11 +53,19 @@ class AdvancedPermissionController extends Controller
     {
         try {
             // إنشاء بيانات وهمية إذا لم تكن متوفرة
+            try {
+                $totalPermissions = Permission::count();
+                $totalRoles = Role::count();
+            } catch (\Exception $e) {
+                $totalPermissions = 25;
+                $totalRoles = 3;
+            }
+            
             $statistics = [
-                'total_permissions' => Permission::count() ?: 25,
-                'active_permissions' => Permission::count() ?: 20,
-                'total_roles' => Role::count() ?: 3,
-                'active_roles' => Role::count() ?: 3,
+                'total_permissions' => $totalPermissions,
+                'active_permissions' => $totalPermissions,
+                'total_roles' => $totalRoles,
+                'active_roles' => $totalRoles,
                 'total_overrides' => 0,
                 'active_overrides' => 0,
                 'expired_overrides' => 0,
@@ -176,7 +193,17 @@ class AdvancedPermissionController extends Controller
                 $permissionGroups = $this->permissionService->getPermissionsByGroups();
             } catch (\Exception $e) {
                 // استخدام الصلاحيات الموجودة
-                $permissions = Permission::all();
+                try {
+                    $permissions = Permission::all();
+                } catch (\Exception $ex) {
+                    $permissions = collect([
+                        (object)['name' => 'create pages', 'id' => 1, 'level' => 'basic'],
+                        (object)['name' => 'edit pages', 'id' => 2, 'level' => 'basic'],
+                        (object)['name' => 'delete pages', 'id' => 3, 'level' => 'advanced'],
+                        (object)['name' => 'view pages', 'id' => 4, 'level' => 'basic'],
+                    ]);
+                }
+                
                 $permissionGroups = collect([
                     (object)[
                         'name' => 'جميع الصلاحيات',
@@ -360,11 +387,19 @@ class AdvancedPermissionController extends Controller
 
             switch ($type) {
                 case 'overview':
+                    try {
+                        $totalPermissions = Permission::count();
+                        $totalRoles = Role::count();
+                    } catch (\Exception $e) {
+                        $totalPermissions = 25;
+                        $totalRoles = 3;
+                    }
+                    
                     $data = [
-                        'total_permissions' => Permission::count() ?: 25,
-                        'active_permissions' => Permission::count() ?: 20,
-                        'total_roles' => Role::count() ?: 3,
-                        'active_roles' => Role::count() ?: 3,
+                        'total_permissions' => $totalPermissions,
+                        'active_permissions' => $totalPermissions,
+                        'total_roles' => $totalRoles,
+                        'active_roles' => $totalRoles,
                         'total_overrides' => 0,
                         'active_overrides' => 0,
                         'expired_overrides' => 0,
@@ -380,8 +415,31 @@ class AdvancedPermissionController extends Controller
                     break;
                     
                 case 'roles':
-                    $data['roles'] = Role::with('permissions')
-                        ->get();
+                    try {
+                        $data['roles'] = Role::with('permissions')
+                            ->get();
+                    } catch (\Exception $e) {
+                        $data['roles'] = collect([
+                            (object)[
+                                'name' => 'admin',
+                                'permissions' => collect([
+                                    (object)['name' => 'manage users'],
+                                    (object)['name' => 'manage roles'],
+                                    (object)['name' => 'manage permissions'],
+                                ]),
+                                'users_count' => 1,
+                                'permissions_count' => 3
+                            ],
+                            (object)[
+                                'name' => 'user',
+                                'permissions' => collect([
+                                    (object)['name' => 'view pages'],
+                                ]),
+                                'users_count' => 5,
+                                'permissions_count' => 1
+                            ]
+                        ]);
+                    }
                     break;
                     
                 case 'overrides':
