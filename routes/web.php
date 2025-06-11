@@ -7,6 +7,7 @@ use App\Http\Controllers\SmsController;
 use App\Http\Controllers\MealPlanController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\MembershipTypeController;
+use App\Http\Controllers\AdvancedPermissionController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -48,6 +49,19 @@ Route::middleware([
     Route::middleware(['auth', 'role:admin'])->group(function () {
         Route::resource('/membership-types', MembershipTypeController::class);
         Route::patch('/membership-types/{membershipType}/toggle-status', [MembershipTypeController::class, 'toggleStatus'])->name('membership-types.toggle-status');
+    });
+
+    // Advanced Permissions routes - admin only
+    Route::middleware(['auth', 'role:admin'])->prefix('admin/permissions')->name('admin.permissions.')->group(function () {
+        Route::get('/', [AdvancedPermissionController::class, 'index'])->name('index');
+        Route::get('/users/{user}/manage', [AdvancedPermissionController::class, 'manageUser'])->name('manage-user');
+        Route::post('/users/{user}/grant-override', [AdvancedPermissionController::class, 'grantOverride'])->name('grant-override');
+        Route::delete('/users/{user}/overrides/{override}/revoke', [AdvancedPermissionController::class, 'revokeOverride'])->name('revoke-override');
+        Route::get('/groups', [AdvancedPermissionController::class, 'manageGroups'])->name('groups');
+        Route::post('/groups', [AdvancedPermissionController::class, 'storeGroup'])->name('store-group');
+        Route::get('/report', [AdvancedPermissionController::class, 'report'])->name('report');
+        Route::post('/cleanup-expired', [AdvancedPermissionController::class, 'cleanupExpired'])->name('cleanup-expired');
+        Route::get('/users/{user}/check-dependencies', [AdvancedPermissionController::class, 'checkDependencies'])->name('check-dependencies');
     });
 });
 
