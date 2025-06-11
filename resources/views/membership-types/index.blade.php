@@ -120,7 +120,7 @@
                                         </div>
                                         
                                         <!-- Features -->
-                                        @if($membershipType->features && count($membershipType->features) > 0)
+                                        @if($membershipType->features && is_array($membershipType->features) && count($membershipType->features) > 0)
                                             <div class="mb-4">
                                                 <h4 class="text-sm font-medium text-gray-900 mb-2 flex items-center">
                                                     <svg class="w-4 h-4 mr-1 text-green-500" fill="currentColor" viewBox="0 0 20 20">
@@ -129,7 +129,13 @@
                                                     المميزات:
                                                 </h4>
                                                 <ul class="text-sm text-gray-600 space-y-1">
-                                                    @foreach($membershipType->features->take(3) as $feature)
+                                                    @php
+                                                        $featuresArray = is_array($membershipType->features) ? $membershipType->features : [];
+                                                        $displayFeatures = array_slice($featuresArray, 0, 3);
+                                                        $remainingCount = count($featuresArray) - 3;
+                                                    @endphp
+                                                    
+                                                    @foreach($displayFeatures as $feature)
                                                         <li class="flex items-center">
                                                             <svg class="w-3 h-3 text-green-500 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                                                                 <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
@@ -137,9 +143,10 @@
                                                             <span class="truncate">{{ $feature }}</span>
                                                         </li>
                                                     @endforeach
-                                                    @if(count($membershipType->features) > 3)
+                                                    
+                                                    @if($remainingCount > 0)
                                                         <li class="text-xs text-gray-400">
-                                                            + {{ count($membershipType->features) - 3 }} مميزات أخرى
+                                                            + {{ $remainingCount }} مميزات أخرى
                                                         </li>
                                                     @endif
                                                 </ul>
