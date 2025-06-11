@@ -45,16 +45,17 @@ return new class extends Migration
 
         // تصنيفات الصلاحيات
         Schema::create('permission_categories', function (Blueprint $table) {
-            $table->id();
-            $table->string('name'); // اسم التصنيف
-            $table->string('slug')->unique(); // معرف فريد
-            $table->text('description')->nullable(); // وصف التصنيف
-            $table->foreignId('permission_group_id')->constrained()->onDelete('cascade'); // المجموعة
-            $table->integer('sort_order')->default(0); // ترتيب العرض
-            $table->boolean('is_active')->default(true); // حالة النشاط
-            $table->timestamps();
-            
-            $table->index(['permission_group_id', 'is_active', 'sort_order']);
+        $table->id();
+        $table->string('name'); // اسم التصنيف
+        $table->string('slug')->unique(); // معرف فريد
+        $table->text('description')->nullable(); // وصف التصنيف
+        $table->foreignId('permission_group_id')->constrained()->onDelete('cascade'); // المجموعة
+        $table->integer('sort_order')->default(0); // ترتيب العرض
+        $table->boolean('is_active')->default(true); // حالة النشاط
+        $table->timestamps();
+        
+        // استخدام اسم فهرس مخصص لتفادي تجاوز الطول
+        $table->index(['permission_group_id', 'is_active', 'sort_order'], 'perm_cat_group_idx');
         });
 
         // إضافة حقول جديدة لجدول الصلاحيات الموجود
@@ -110,9 +111,10 @@ return new class extends Migration
             $table->text('description')->nullable(); // وصف التبعية
             $table->timestamps();
             
-            $table->unique(['permission_id', 'depends_on_permission_id']);
+            $table->unique(['permission_id', 'depends_on_permission_id'], 'perm_deps_perm_dep_unique');
             $table->index(['permission_id', 'dependency_type']);
         });
+
 
         // سجل تغييرات الصلاحيات
         Schema::create('permission_audit_logs', function (Blueprint $table) {
