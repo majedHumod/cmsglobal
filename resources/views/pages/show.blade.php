@@ -17,6 +17,88 @@
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    
+    <!-- Styles for rich content -->
+    <style>
+        .prose {
+            max-width: none;
+        }
+        .prose img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        .prose table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+        .prose table th,
+        .prose table td {
+            border: 1px solid #e5e7eb;
+            padding: 0.5rem;
+            text-align: right;
+        }
+        .prose table th {
+            background-color: #f9fafb;
+            font-weight: 600;
+        }
+        .prose blockquote {
+            border-right: 4px solid #6366f1;
+            padding-right: 1rem;
+            margin: 1rem 0;
+            font-style: italic;
+            background-color: #f8fafc;
+            padding: 1rem;
+            border-radius: 4px;
+        }
+        .prose ul, .prose ol {
+            padding-right: 1.5rem;
+        }
+        .prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        .prose h1 { font-size: 2.25rem; }
+        .prose h2 { font-size: 1.875rem; }
+        .prose h3 { font-size: 1.5rem; }
+        .prose h4 { font-size: 1.25rem; }
+        .prose h5 { font-size: 1.125rem; }
+        .prose h6 { font-size: 1rem; }
+        .prose p {
+            margin-bottom: 1rem;
+            line-height: 1.75;
+        }
+        .prose a {
+            color: #6366f1;
+            text-decoration: underline;
+        }
+        .prose a:hover {
+            color: #4f46e5;
+        }
+        .prose code {
+            background-color: #f1f5f9;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+        }
+        .prose pre {
+            background-color: #1e293b;
+            color: #f1f5f9;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        .prose pre code {
+            background-color: transparent;
+            padding: 0;
+            color: inherit;
+        }
+    </style>
 </head>
 <body class="font-sans antialiased">
     <div class="min-h-screen bg-gray-100">
@@ -71,7 +153,7 @@
                         </header>
 
                         <div class="prose prose-lg max-w-none">
-                            {!! nl2br(e($page->content)) !!}
+                            {!! $page->content !!}
                         </div>
 
                         @if($page->updated_at != $page->created_at)

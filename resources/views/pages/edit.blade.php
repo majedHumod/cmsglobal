@@ -22,13 +22,16 @@
                             @enderror
                         </div>
 
-                        <!-- المحتوى -->
+                        <!-- المحتوى مع المحرر -->
                         <div>
                             <label for="content" class="block text-sm font-medium text-gray-700 mb-2">محتوى الصفحة *</label>
-                            <textarea name="content" id="content" rows="15" class="w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>{{ old('content', $page->content) }}</textarea>
+                            <div class="border border-gray-300 rounded-md">
+                                <textarea name="content" id="content" rows="20" class="w-full border-0 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>{{ old('content', $page->content) }}</textarea>
+                            </div>
                             @error('content')
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                             @enderror
+                            <p class="text-xs text-gray-500 mt-1">استخدم المحرر أعلاه لتنسيق المحتوى بسهولة</p>
                         </div>
 
                         <!-- المقتطف -->
@@ -153,4 +156,48 @@
             </div>
         </div>
     </div>
+
+    <!-- TinyMCE Editor -->
+    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <script>
+        tinymce.init({
+            selector: '#content',
+            height: 500,
+            menubar: true,
+            plugins: [
+                'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+                'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                'insertdatetime', 'media', 'table', 'help', 'wordcount', 'directionality'
+            ],
+            toolbar: 'undo redo | blocks | ' +
+                'bold italic backcolor | alignleft aligncenter ' +
+                'alignright alignjustify | bullist numlist outdent indent | ' +
+                'removeformat | help | ltr rtl | link image media | code preview fullscreen',
+            content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif; font-size: 14px; direction: rtl; }',
+            directionality: 'rtl',
+            language: 'ar',
+            branding: false,
+            promotion: false,
+            setup: function (editor) {
+                editor.on('change', function () {
+                    editor.save();
+                });
+            },
+            // إعدادات الصور
+            images_upload_handler: function (blobInfo, success, failure) {
+                // يمكنك إضافة منطق رفع الصور هنا
+                // في الوقت الحالي سنعرض رسالة
+                failure('رفع الصور غير مفعل حالياً. يرجى استخدام روابط الصور الخارجية.');
+            },
+            // إعدادات الروابط
+            link_default_target: '_blank',
+            link_assume_external_targets: true,
+            // إعدادات المحتوى
+            entity_encoding: 'raw',
+            verify_html: false,
+            // إعدادات إضافية للغة العربية
+            font_formats: 'Arial=arial,helvetica,sans-serif; Courier New=courier new,courier,monospace; AkrutiKndPadmini=Akpdmi-n; Tahoma=tahoma,arial,helvetica,sans-serif; Times New Roman=times new roman,times,serif; Verdana=verdana,geneva,sans-serif;',
+            fontsize_formats: '8pt 10pt 12pt 14pt 16pt 18pt 24pt 36pt 48pt',
+        });
+    </script>
 </x-app-layout>
