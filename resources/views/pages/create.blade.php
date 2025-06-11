@@ -32,16 +32,71 @@
                             @enderror
                         </div>
 
-                        <!-- المحتوى مع المحرر -->
+                        <!-- المحتوى مع المحرر المجاني -->
                         <div>
                             <label for="content" class="block text-sm font-medium text-gray-700 mb-2">محتوى الصفحة *</label>
-                            <div class="border border-gray-300 rounded-md">
-                                <textarea name="content" id="content" rows="20" class="w-full border-0 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>{{ old('content') }}</textarea>
+                            
+                            <!-- أدوات التنسيق -->
+                            <div class="border border-gray-300 rounded-t-md bg-gray-50 p-2 flex flex-wrap gap-1" id="editor-toolbar">
+                                <button type="button" onclick="formatText('bold')" class="px-3 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100" title="غامق">
+                                    <strong>B</strong>
+                                </button>
+                                <button type="button" onclick="formatText('italic')" class="px-3 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100" title="مائل">
+                                    <em>I</em>
+                                </button>
+                                <button type="button" onclick="formatText('underline')" class="px-3 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100" title="تسطير">
+                                    <u>U</u>
+                                </button>
+                                <div class="border-l border-gray-300 mx-1"></div>
+                                <button type="button" onclick="formatText('insertUnorderedList')" class="px-3 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100" title="قائمة نقطية">
+                                    • قائمة
+                                </button>
+                                <button type="button" onclick="formatText('insertOrderedList')" class="px-3 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100" title="قائمة مرقمة">
+                                    1. قائمة
+                                </button>
+                                <div class="border-l border-gray-300 mx-1"></div>
+                                <button type="button" onclick="formatText('justifyLeft')" class="px-3 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100" title="محاذاة يسار">
+                                    ←
+                                </button>
+                                <button type="button" onclick="formatText('justifyCenter')" class="px-3 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100" title="محاذاة وسط">
+                                    ↔
+                                </button>
+                                <button type="button" onclick="formatText('justifyRight')" class="px-3 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100" title="محاذاة يمين">
+                                    →
+                                </button>
+                                <div class="border-l border-gray-300 mx-1"></div>
+                                <button type="button" onclick="insertLink()" class="px-3 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100" title="إدراج رابط">
+                                    🔗 رابط
+                                </button>
+                                <button type="button" onclick="insertImage()" class="px-3 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100" title="إدراج صورة">
+                                    🖼️ صورة
+                                </button>
+                                <div class="border-l border-gray-300 mx-1"></div>
+                                <select onchange="formatHeading(this.value)" class="px-2 py-1 bg-white border border-gray-300 rounded text-sm">
+                                    <option value="">العناوين</option>
+                                    <option value="h1">عنوان رئيسي</option>
+                                    <option value="h2">عنوان فرعي</option>
+                                    <option value="h3">عنوان صغير</option>
+                                    <option value="p">نص عادي</option>
+                                </select>
+                                <div class="border-l border-gray-300 mx-1"></div>
+                                <button type="button" onclick="toggleSourceCode()" class="px-3 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100" title="عرض الكود">
+                                    &lt;/&gt; كود
+                                </button>
                             </div>
+
+                            <!-- منطقة المحرر -->
+                            <div id="editor-container" class="border-l border-r border-b border-gray-300 rounded-b-md">
+                                <div id="editor" contenteditable="true" class="min-h-96 p-4 focus:outline-none focus:ring-2 focus:ring-indigo-500" style="direction: rtl;">
+                                    {{ old('content') }}
+                                </div>
+                                <textarea name="content" id="content-textarea" class="hidden w-full min-h-96 p-4 border-0 focus:outline-none focus:ring-2 focus:ring-indigo-500" style="direction: rtl;">{{ old('content') }}</textarea>
+                            </div>
+                            
                             @error('content')
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                             @enderror
-                            <p class="text-xs text-gray-500 mt-1">استخدم المحرر أعلاه لتنسيق المحتوى بسهولة</p>
+                            <p class="text-xs text-gray-500 mt-1">استخدم أدوات التنسيق أعلاه لتنسيق المحتوى</p>
                         </div>
 
                         <!-- المقتطف -->
@@ -163,47 +218,114 @@
         </div>
     </div>
 
-    <!-- TinyMCE Editor -->
-    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <!-- محرر مجاني بالكامل -->
     <script>
-        tinymce.init({
-            selector: '#content',
-            height: 500,
-            menubar: true,
-            plugins: [
-                'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-                'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                'insertdatetime', 'media', 'table', 'help', 'wordcount', 'directionality'
-            ],
-            toolbar: 'undo redo | blocks | ' +
-                'bold italic backcolor | alignleft aligncenter ' +
-                'alignright alignjustify | bullist numlist outdent indent | ' +
-                'removeformat | help | ltr rtl | link image media | code preview fullscreen',
-            content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif; font-size: 14px; direction: rtl; }',
-            directionality: 'rtl',
-            language: 'ar',
-            branding: false,
-            promotion: false,
-            setup: function (editor) {
-                editor.on('change', function () {
-                    editor.save();
-                });
-            },
-            // إعدادات الصور
-            images_upload_handler: function (blobInfo, success, failure) {
-                // يمكنك إضافة منطق رفع الصور هنا
-                // في الوقت الحالي سنعرض رسالة
-                failure('رفع الصور غير مفعل حالياً. يرجى استخدام روابط الصور الخارجية.');
-            },
-            // إعدادات الروابط
-            link_default_target: '_blank',
-            link_assume_external_targets: true,
-            // إعدادات المحتوى
-            entity_encoding: 'raw',
-            verify_html: false,
-            // إعدادات إضافية للغة العربية
-            font_formats: 'Arial=arial,helvetica,sans-serif; Courier New=courier new,courier,monospace; AkrutiKndPadmini=Akpdmi-n; Tahoma=tahoma,arial,helvetica,sans-serif; Times New Roman=times new roman,times,serif; Verdana=verdana,geneva,sans-serif;',
-            fontsize_formats: '8pt 10pt 12pt 14pt 16pt 18pt 24pt 36pt 48pt',
+        let isSourceMode = false;
+        const editor = document.getElementById('editor');
+        const textarea = document.getElementById('content-textarea');
+
+        // تحديث المحتوى في الـ textarea عند التغيير
+        editor.addEventListener('input', function() {
+            if (!isSourceMode) {
+                textarea.value = editor.innerHTML;
+            }
         });
+
+        // دالة تنسيق النص
+        function formatText(command, value = null) {
+            if (isSourceMode) return;
+            
+            document.execCommand(command, false, value);
+            editor.focus();
+            textarea.value = editor.innerHTML;
+        }
+
+        // دالة تنسيق العناوين
+        function formatHeading(tag) {
+            if (isSourceMode || !tag) return;
+            
+            formatText('formatBlock', tag);
+        }
+
+        // دالة إدراج رابط
+        function insertLink() {
+            if (isSourceMode) return;
+            
+            const url = prompt('أدخل رابط URL:');
+            if (url) {
+                formatText('createLink', url);
+            }
+        }
+
+        // دالة إدراج صورة
+        function insertImage() {
+            if (isSourceMode) return;
+            
+            const url = prompt('أدخل رابط الصورة:');
+            if (url) {
+                formatText('insertImage', url);
+            }
+        }
+
+        // تبديل وضع عرض الكود
+        function toggleSourceCode() {
+            isSourceMode = !isSourceMode;
+            
+            if (isSourceMode) {
+                // التبديل إلى وضع الكود
+                textarea.value = editor.innerHTML;
+                editor.style.display = 'none';
+                textarea.style.display = 'block';
+                textarea.classList.remove('hidden');
+            } else {
+                // التبديل إلى وضع المحرر
+                editor.innerHTML = textarea.value;
+                editor.style.display = 'block';
+                textarea.style.display = 'none';
+                textarea.classList.add('hidden');
+            }
+        }
+
+        // تحديث المحتوى قبل إرسال النموذج
+        document.querySelector('form').addEventListener('submit', function() {
+            if (isSourceMode) {
+                editor.innerHTML = textarea.value;
+            } else {
+                textarea.value = editor.innerHTML;
+            }
+        });
+
+        // تحسين تجربة المستخدم
+        editor.addEventListener('paste', function(e) {
+            e.preventDefault();
+            const text = e.clipboardData.getData('text/plain');
+            document.execCommand('insertText', false, text);
+        });
+
+        // إضافة أنماط CSS للمحرر
+        const style = document.createElement('style');
+        style.textContent = `
+            #editor {
+                line-height: 1.6;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+            #editor h1 { font-size: 2em; font-weight: bold; margin: 0.5em 0; }
+            #editor h2 { font-size: 1.5em; font-weight: bold; margin: 0.5em 0; }
+            #editor h3 { font-size: 1.2em; font-weight: bold; margin: 0.5em 0; }
+            #editor p { margin: 0.5em 0; }
+            #editor ul, #editor ol { margin: 0.5em 0; padding-right: 2em; }
+            #editor li { margin: 0.2em 0; }
+            #editor a { color: #3b82f6; text-decoration: underline; }
+            #editor img { max-width: 100%; height: auto; margin: 0.5em 0; }
+            #editor blockquote { 
+                border-right: 4px solid #e5e7eb; 
+                padding-right: 1em; 
+                margin: 1em 0; 
+                font-style: italic; 
+                background: #f9fafb; 
+                padding: 1em; 
+            }
+        `;
+        document.head.appendChild(style);
     </script>
 </x-app-layout>
