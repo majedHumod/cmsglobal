@@ -266,46 +266,69 @@
                         </thead>
                         <tbody class="bg-white">
                             @php
-                                $pages = \App\Models\Page::latest()->take(3)->get();
-                                $notes = \App\Models\Note::latest()->take(2)->get();
-                                $mealPlans = \App\Models\MealPlan::latest()->take(2)->get();
+                                try {
+                                    $pages = \App\Models\Page::latest()->take(3)->get();
+                                } catch (\Exception $e) {
+                                    $pages = collect([]);
+                                }
                                 
-                                $combinedContent = collect()
-                                    ->merge($pages->map(function($item) {
-                                        return [
-                                            'title' => $item->title,
-                                            'type' => 'صفحة',
-                                            'author' => $item->user->name ?? 'غير معروف',
-                                            'date' => $item->created_at,
-                                            'status' => $item->is_published ? 'منشور' : 'مسودة',
-                                            'status_color' => $item->is_published ? 'green' : 'yellow',
-                                            'url' => route('pages.edit', $item)
-                                        ];
-                                    }))
-                                    ->merge($notes->map(function($item) {
-                                        return [
-                                            'title' => $item->title,
-                                            'type' => 'ملاحظة',
-                                            'author' => $item->user->name ?? 'غير معروف',
-                                            'date' => $item->created_at,
-                                            'status' => 'نشط',
-                                            'status_color' => 'blue',
-                                            'url' => route('notes.edit', $item)
-                                        ];
-                                    }))
-                                    ->merge($mealPlans->map(function($item) {
-                                        return [
-                                            'title' => $item->name,
-                                            'type' => 'وجبة',
-                                            'author' => $item->user->name ?? 'غير معروف',
-                                            'date' => $item->created_at,
-                                            'status' => $item->is_active ? 'نشط' : 'غير نشط',
-                                            'status_color' => $item->is_active ? 'green' : 'red',
-                                            'url' => route('meal-plans.edit', $item)
-                                        ];
-                                    }))
-                                    ->sortByDesc('date')
-                                    ->take(5);
+                                try {
+                                    $notes = \App\Models\Note::latest()->take(2)->get();
+                                } catch (\Exception $e) {
+                                    $notes = collect([]);
+                                }
+                                
+                                try {
+                                    $mealPlans = \App\Models\MealPlan::latest()->take(2)->get();
+                                } catch (\Exception $e) {
+                                    $mealPlans = collect([]);
+                                }
+                                
+                                $combinedContent = collect();
+                                
+                                // Add pages with error handling
+                                foreach ($pages as $item) {
+                                    $combinedContent->push([
+                                        'title' => $item->title,
+                                        'type' => 'صفحة',
+                                        'author' => $item->user->name ?? 'غير معروف',
+                                        'date' => $item->created_at,
+                                        'status' => $item->is_published ? 'منشور' : 'مسودة',
+                                        'status_color' => $item->is_published ? 'green' : 'yellow',
+                                        'url' => route('pages.edit', $item)
+                                    ]);
+                                }
+                                
+                                // Add notes with error handling
+                                foreach ($notes as $item) {
+                                    $combinedContent->push([
+                                        'title' => $item->title,
+                                        'type' => 'ملاحظة',
+                                        'author' => $item->user->name ?? 'غير معروف',
+                                        'date' => $item->created_at,
+                                        'status' => 'نشط',
+                                        'status_color' => 'blue',
+                                        'url' => route('notes.edit', $item)
+                                    ]);
+                                }
+                                
+                                // Add meal plans with error handling
+                                foreach ($mealPlans as $item) {
+                                    $combinedContent->push([
+                                        'title' => $item->name,
+                                        'type' => 'وجبة',
+                                        'author' => $item->user->name ?? 'غير معروف',
+                                        'date' => $item->created_at,
+                                        'status' => $item->is_active ? 'نشط' : 'غير نشط',
+                                        'status_color' => $item->is_active ? 'green' : 'red',
+                                        'url' => route('meal-plans.edit', $item)
+                                    ]);
+                                }
+                                
+                                // Sort by date if available
+                                $combinedContent = $combinedContent->sortByDesc(function ($item) {
+                                    return $item['date'] ?? now();
+                                })->take(5);
                             @endphp
                             
                             @forelse($combinedContent as $item)
@@ -320,7 +343,7 @@
                                         {{ $item['author'] }}
                                     </td>
                                     <td class="p-4 whitespace-nowrap text-sm text-gray-500">
-                                        {{ $item['date']->diffForHumans() }}
+                                        {{ isset($item['date']) && $item['date'] ? $item['date']->diffForHumans() : 'غير معروف' }}
                                     </td>
                                     <td class="p-4 whitespace-nowrap">
                                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-{{ $item['status_color'] }}-100 text-{{ $item['status_color'] }}-800">
