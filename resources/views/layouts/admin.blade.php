@@ -5,7 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }} - @yield('title', 'لوحة التحكم')</title>
+    <title>{{ isset($siteSettings['general']['site_name']) ? $siteSettings['general']['site_name'] : config('app.name', 'Laravel') }} - @yield('title', 'لوحة التحكم')</title>
+
+    <!-- Favicon -->
+    @if(isset($siteSettings['general']['site_favicon']) && $siteSettings['general']['site_favicon'])
+        <link rel="icon" href="{{ Storage::url($siteSettings['general']['site_favicon']) }}" type="image/x-icon">
+    @endif
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -16,6 +21,40 @@
 
     <!-- Styles -->
     @livewireStyles
+    
+    <!-- Custom Colors -->
+    @if(isset($siteSettings['general']['primary_color']) || isset($siteSettings['general']['secondary_color']))
+    <style>
+        :root {
+            --primary-color: {{ $siteSettings['general']['primary_color'] ?? '#6366f1' }};
+            --secondary-color: {{ $siteSettings['general']['secondary_color'] ?? '#10b981' }};
+        }
+        
+        .bg-primary {
+            background-color: var(--primary-color);
+        }
+        
+        .text-primary {
+            color: var(--primary-color);
+        }
+        
+        .border-primary {
+            border-color: var(--primary-color);
+        }
+        
+        .bg-secondary {
+            background-color: var(--secondary-color);
+        }
+        
+        .text-secondary {
+            color: var(--secondary-color);
+        }
+        
+        .border-secondary {
+            border-color: var(--secondary-color);
+        }
+    </style>
+    @endif
     
     <style>
         /* RTL Support */
@@ -92,7 +131,10 @@
                         
                         <!-- Logo -->
                         <a href="{{ route('dashboard') }}" class="text-xl font-bold flex items-center lg:ml-2.5">
-                            <span class="self-center whitespace-nowrap text-indigo-600">{{ config('app.name', 'CMS Global') }}</span>
+                            @if(isset($siteSettings['general']['site_logo']) && $siteSettings['general']['site_logo'])
+                                <img src="{{ Storage::url($siteSettings['general']['site_logo']) }}" class="h-8 mr-2" alt="{{ $siteSettings['general']['site_name'] ?? config('app.name') }}">
+                            @endif
+                            <span class="self-center whitespace-nowrap text-indigo-600">{{ $siteSettings['general']['site_name'] ?? config('app.name') }}</span>
                         </a>
                         
                         <!-- Breadcrumb -->
@@ -148,7 +190,7 @@
                                     </div>
                                     <hr>
                                     <a href="{{ route('profile.show') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">الملف الشخصي</a>
-                                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">الإعدادات</a>
+                                    <a href="{{ route('admin.settings.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">الإعدادات</a>
                                     <hr>
                                     <form method="POST" action="{{ route('logout') }}">
                                         @csrf
@@ -245,6 +287,15 @@
                                 </li>
                                 
                                 <li>
+                                    <a href="{{ route('admin.settings.index') }}" class="sidebar-item text-base font-normal rounded-lg flex items-center p-2 hover:text-indigo-600 group {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">
+                                        <svg class="w-6 h-6 sidebar-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        <span class="ml-3">إعدادات الموقع</span>
+                                    </a>
+                                </li>
+                                
+                                <li>
                                     <button type="button" class="sidebar-item text-base font-normal rounded-lg flex items-center p-2 w-full hover:text-indigo-600 group" aria-controls="dropdown-system" data-collapse-toggle="dropdown-system">
                                         <svg class="w-6 h-6 sidebar-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                             <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"></path>
@@ -256,7 +307,7 @@
                                     </button>
                                     <ul id="dropdown-system" class="hidden py-2 space-y-2">
                                         <li>
-                                            <a href="#" class="flex items-center p-2 pl-11 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100">الإعدادات العامة</a>
+                                            <a href="{{ route('admin.settings.index') }}" class="flex items-center p-2 pl-11 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100">الإعدادات العامة</a>
                                         </li>
                                         <li>
                                             <a href="#" class="flex items-center p-2 pl-11 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100">النسخ الاحتياطي</a>
@@ -280,7 +331,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="#" class="sidebar-item text-base font-normal rounded-lg flex items-center p-2 hover:text-indigo-600 group">
+                                    <a href="{{ route('admin.settings.index') }}" class="sidebar-item text-base font-normal rounded-lg flex items-center p-2 hover:text-indigo-600 group {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">
                                         <svg class="w-6 h-6 sidebar-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                             <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"></path>
                                         </svg>
@@ -296,7 +347,7 @@
                         <div class="flex items-center">
                             <div class="flex-shrink-0">
                                 <div class="relative">
-                                    <img class="w-8 h-8 rounded-full" src="https://ui-avatars.com/api/?name={{ urlencode(config('app.name')) }}&background=6366F1&color=ffffff" alt="Tenant Logo">
+                                    <img class="w-8 h-8 rounded-full" src="https://ui-avatars.com/api/?name={{ urlencode($siteSettings['general']['site_name'] ?? config('app.name')) }}&background=6366F1&color=ffffff" alt="Tenant Logo">
                                     <span class="absolute bottom-0 right-0 w-2 h-2 bg-green-400 rounded-full"></span>
                                 </div>
                             </div>
@@ -351,7 +402,7 @@
                 
                 <!-- Footer -->
                 <footer class="bg-white p-4 shadow md:flex md:items-center md:justify-between md:p-6 border-t">
-                    <span class="text-sm text-gray-500 sm:text-center">© {{ date('Y') }} <a href="#" class="hover:underline">{{ config('app.name', 'CMS Global') }}</a>. جميع الحقوق محفوظة.
+                    <span class="text-sm text-gray-500 sm:text-center">{{ $siteSettings['general']['footer_text'] ?? '© ' . date('Y') . ' ' . ($siteSettings['general']['site_name'] ?? config('app.name')) . '. جميع الحقوق محفوظة.' }}
                     </span>
                     <ul class="flex flex-wrap items-center mt-3 text-sm text-gray-500 sm:mt-0">
                         <li>

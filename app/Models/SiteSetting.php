@@ -1,0 +1,169 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
+
+class SiteSetting extends Model
+{
+    use HasFactory;
+
+    protected $fillable = [
+        'key',
+        'value',
+        'group',
+        'type',
+        'description',
+        'is_public',
+        'is_tenant_specific'
+    ];
+
+    protected $casts = [
+        'is_public' => 'boolean',
+        'is_tenant_specific' => 'boolean',
+    ];
+
+    /**
+     * Get a setting value by key
+     *
+     * @param string $key
+     * @param mixed $default
+     * @return mixed
+     */
+    public static function get($key, $default = null)
+    {
+        $cacheKey = 'setting_' . $key;
+        
+        return Cache::remember($cacheKey, 3600, function () use ($key, $default) {
+            $setting = self::where('key', $key)->first();
+            
+            if (!$setting) {
+                return $default;
+            }
+            
+            // Handle different types of settings
+            switch ($setting->type) {
+                case 'boolean':
+                    return (bool) $setting->value;
+                case 'integer':
+                    return (int) $setting->value;
+                case 'float':
+                    return (float) $setting->value;
+                case 'array':
+                case 'json':
+                    return json_decode($setting->value, true);
+                default:
+                    return $setting->value;
+            }
+        });
+    }
+
+    /**
+     * Set a setting value
+     *
+     * @param string $key
+     * @param mixed $value
+     * @param string $group
+     * @param string $type
+     * @param string $description
+     * @param bool $isPublic
+     * @param bool $isTenantSpecific
+     * @return SiteSetting
+     */
+    public static function set($key, $value, $group = 'general', $type = 'string', $description = '', $isPublic = true, $isTenantSpecific = true)
+    {
+        // Format the value based on type
+        if ($type === 'array' || $type === 'json') {
+            $value = is_array($value) ? json_encode($value) : $value;
+        }
+        
+        $setting = self::updateOrCreate(
+            ['key' => $key],
+            [
+                'value' => $value,
+                'group' => $group,
+                'type' => $type,
+                'description' => $description,
+                'is_public' => $isPublic,
+                'is_tenant_specific' => $isTenantSpecific
+            ]
+        );
+        
+        // Clear the cache for this setting
+        Cache::forget('setting_' . $key);
+        
+        return $setting;
+    }
+
+    /**
+     * Get all settings by group
+     *
+     * @param string $group
+     * @return \Illuminate\Support\Collection
+     */
+    public static function getGroup($group)
+    {
+        $cacheKey = 'settings_group_' . $group;
+        
+        return Cache::remember($cacheKey, 3600, function () use ($group) {
+            return self::where('group', $group)->get()->mapWithKeys(function ($setting) {
+                // Handle different types of settings
+                $value = $setting->value;
+                switch ($setting->type) {
+                    case 'boolean':
+                        $value = (bool) $value;
+                        break;
+                    case 'integer':
+                        $value = (int) $value;
+                        break;
+                    case 'float':
+                        $value = (float) $value;
+                        break;
+                    case 'array':
+                    case 'json':
+                        $value = json_decode($value, true);
+                        break;
+                }
+                
+                return [$setting->key => $value];
+            });
+        });
+    }
+
+    /**
+     * Clear the cache for a specific group
+     *
+     * @param string $group
+     * @return void
+     */
+    public static function clearGroupCache($group)
+    {
+        Cache::forget('settings_group_' . $group);
+        
+        // Also clear individual setting caches in this group
+        $settings = self::where('group', $group)->get();
+        foreach ($settings as $setting) {
+            Cache::forget('setting_' . $setting->key);
+        }
+    }
+
+    /**
+     * Clear all settings cache
+     *
+     * @return void
+     */
+    public static function clearAllCache()
+    {
+        $settings = self::all();
+        foreach ($settings as $setting) {
+            Cache::forget('setting_' . $setting->key);
+        }
+        
+        $groups = self::distinct('group')->pluck('group');
+        foreach ($groups as $group) {
+            Cache::forget('settings_group_' . $group);
+        }
+    }
+}

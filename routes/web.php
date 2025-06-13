@@ -8,6 +8,7 @@ use App\Http\Controllers\MealPlanController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\MembershipTypeController;
 use App\Http\Controllers\AdvancedPermissionController;
+use App\Http\Controllers\SiteSettingController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -62,6 +63,15 @@ Route::middleware([
         Route::get('/report', [AdvancedPermissionController::class, 'report'])->name('report');
         Route::post('/cleanup-expired', [AdvancedPermissionController::class, 'cleanupExpired'])->name('cleanup-expired');
         Route::get('/users/{user}/check-dependencies', [AdvancedPermissionController::class, 'checkDependencies'])->name('check-dependencies');
+    });
+    
+    // Site Settings routes - admin only
+    Route::middleware(['auth', 'role:admin'])->prefix('admin/settings')->name('admin.settings.')->group(function () {
+        Route::get('/', [SiteSettingController::class, 'index'])->name('index');
+        Route::post('/update-general', [SiteSettingController::class, 'updateGeneral'])->name('update-general');
+        Route::post('/update-contact', [SiteSettingController::class, 'updateContact'])->name('update-contact');
+        Route::post('/update-social', [SiteSettingController::class, 'updateSocial'])->name('update-social');
+        Route::post('/update-app', [SiteSettingController::class, 'updateApp'])->name('update-app');
     });
 });
 
