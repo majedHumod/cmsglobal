@@ -9,10 +9,10 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\MembershipTypeController;
 use App\Http\Controllers\AdvancedPermissionController;
 use App\Http\Controllers\SiteSettingController;
+use App\Http\Controllers\LandingPageController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Landing Page Route
+Route::get('/', [LandingPageController::class, 'show'])->name('home');
 
 Route::middleware([
     'auth:sanctum',config('jetstream.auth_session'),'verified','tenants'])->group(function () {
@@ -72,6 +72,17 @@ Route::middleware([
         Route::post('/update-contact', [SiteSettingController::class, 'updateContact'])->name('update-contact');
         Route::post('/update-social', [SiteSettingController::class, 'updateSocial'])->name('update-social');
         Route::post('/update-app', [SiteSettingController::class, 'updateApp'])->name('update-app');
+    });
+    
+    // Landing Page routes - admin only
+    Route::middleware(['auth', 'role:admin'])->prefix('admin/landing-pages')->name('admin.landing-pages.')->group(function () {
+        Route::get('/', [LandingPageController::class, 'index'])->name('index');
+        Route::get('/create', [LandingPageController::class, 'create'])->name('create');
+        Route::post('/', [LandingPageController::class, 'store'])->name('store');
+        Route::get('/{landingPage}/edit', [LandingPageController::class, 'edit'])->name('edit');
+        Route::put('/{landingPage}', [LandingPageController::class, 'update'])->name('update');
+        Route::delete('/{landingPage}', [LandingPageController::class, 'destroy'])->name('destroy');
+        Route::patch('/{landingPage}/set-active', [LandingPageController::class, 'setActive'])->name('set-active');
     });
 });
 
