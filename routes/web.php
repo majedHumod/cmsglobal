@@ -16,7 +16,7 @@ Route::get('/', function () {
 Route::middleware([
     'auth:sanctum',config('jetstream.auth_session'),'verified','tenants'])->group(function () {
     Route::get('/dashboard', function () {
-        return view('dashboard');
+        return view('admin.dashboard');
     })->name('dashboard');
 
     // Notes routes with admin role middleware
