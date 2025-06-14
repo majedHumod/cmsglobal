@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ isset($siteSettings['general']['site_name']) ? $siteSettings['general']['site_name'] : config('app.name', 'Laravel') }}</title>
+        <title>{{ isset($siteSettings['general']['site_name']) ? $siteSettings['general']['site_name'] : config('app.name', 'Laravel') }} - @yield('title', '')</title>
 
         <!-- Favicon -->
         @if(isset($siteSettings['general']['site_favicon']) && $siteSettings['general']['site_favicon'])
@@ -77,7 +77,7 @@
 
             <!-- Page Content -->
             <main>
-                {{ $slot }}
+                @yield('content', $slot ?? '')
             </main>
             
             <!-- Site Footer with Contact Info and Social Media -->
