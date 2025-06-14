@@ -13,7 +13,13 @@ use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\FaqController;
 
 // Landing Page Route
-Route::get('/', [LandingPageController::class, 'show'])->name('home');
+Route::get('/', function() {
+    try {
+        return app()->make(LandingPageController::class)->show();
+    } catch (\Exception $e) {
+        return view('welcome');
+    }
+})->name('home');
 
 // Public FAQs Route
 Route::get('/faqs', [FaqController::class, 'index'])->name('faqs.index');
