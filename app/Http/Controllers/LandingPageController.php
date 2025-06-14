@@ -117,14 +117,12 @@ class LandingPageController extends Controller
             'subtitle' => 'nullable|string|max:255',
             'header_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'header_text_color' => 'required|string|max:7',
-            'show_join_button' => 'boolean',
             'join_button_text' => 'nullable|string|max:50',
             'join_button_url' => 'nullable|string|max:255',
             'join_button_color' => 'nullable|string|max:7',
             'content' => 'required|string',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:255',
-            'is_active' => 'boolean',
         ]);
 
         try {
@@ -139,14 +137,14 @@ class LandingPageController extends Controller
             }
 
             // Set boolean values
-            $validated['show_join_button'] = $request->has('show_join_button');
-            $validated['is_active'] = $request->has('is_active');
+            $validated['show_join_button'] = $request->has('show_join_button') ? 1 : 0;
+            $validated['is_active'] = $request->has('is_active') ? 1 : 0;
 
             // Update landing page
             $landingPage->update($validated);
 
             // If this landing page is active, deactivate others
-            if ($landingPage->is_active) {
+            if ($validated['is_active']) {
                 LandingPage::where('id', '!=', $landingPage->id)
                     ->where('is_active', true)
                     ->update(['is_active' => false]);
