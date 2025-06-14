@@ -77,7 +77,10 @@
 
             <!-- Page Content -->
             <main>
-                @yield('content', $slot ?? '')
+                @yield('content')
+                @isset($slot)
+                    {{ $slot }}
+                @endisset
             </main>
             
             <!-- Site Footer with Contact Info and Social Media -->
