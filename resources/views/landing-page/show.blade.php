@@ -132,6 +132,60 @@
             border-radius: 0.5rem;
         }
         
+        /* Membership Card Styles */
+        .membership-card {
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .membership-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary-color);
+        }
+        
+        .membership-card.popular {
+            border-color: var(--primary-color);
+            position: relative;
+        }
+        
+        .membership-card.popular::before {
+            content: "الأكثر شيوعاً";
+            position: absolute;
+            top: -12px;
+            right: 50%;
+            transform: translateX(50%);
+            background-color: var(--primary-color);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .membership-price {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .membership-duration {
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+        
+        .membership-feature {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .membership-feature svg {
+            color: var(--primary-color);
+            margin-left: 0.5rem;
+            flex-shrink: 0;
+        }
+        
         @media (max-width: 768px) {
             .hero-title {
                 font-size: 2.25rem;
@@ -172,6 +226,70 @@
     <section class="content-section">
         <div class="prose prose-lg max-w-none">
             {!! $landingPage->content !!}
+        </div>
+    </section>
+    
+    <!-- Membership Types Section -->
+    <section class="bg-gray-50 py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">خطط العضوية</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">اختر الخطة المناسبة لك واستمتع بمزايا حصرية</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                @php
+                    try {
+                        $membershipTypes = \App\Models\MembershipType::where('is_active', true)
+                            ->orderBy('sort_order')
+                            ->orderBy('price')
+                            ->get();
+                    } catch (\Exception $e) {
+                        $membershipTypes = collect([]);
+                    }
+                @endphp
+                
+                @forelse($membershipTypes as $index => $membershipType)
+                    <div class="membership-card bg-white rounded-xl shadow-lg overflow-hidden {{ $index === 1 ? 'popular' : '' }}">
+                        <div class="p-8">
+                            <h3 class="text-2xl font-bold text-gray-900 mb-2">{{ $membershipType->name }}</h3>
+                            
+                            @if($membershipType->description)
+                                <p class="text-gray-600 mb-6">{{ $membershipType->description }}</p>
+                            @endif
+                            
+                            <div class="flex items-end mb-6">
+                                <span class="membership-price">{{ $membershipType->formatted_price }}</span>
+                                <span class="membership-duration mr-2">/ {{ $membershipType->duration_text }}</span>
+                            </div>
+                            
+                            @if($membershipType->features && is_array($membershipType->features) && count($membershipType->features) > 0)
+                                <div class="mb-8">
+                                    <h4 class="text-lg font-semibold text-gray-900 mb-4">المميزات:</h4>
+                                    <ul class="space-y-2">
+                                        @foreach($membershipType->features as $feature)
+                                            <li class="membership-feature">
+                                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                                </svg>
+                                                <span>{{ $feature }}</span>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            @endif
+                            
+                            <a href="{{ route('register') }}" class="block w-full text-center py-3 px-4 rounded-lg font-semibold {{ $index === 1 ? 'bg-indigo-600 hover:bg-indigo-700 text-white' : 'bg-gray-100 hover:bg-gray-200 text-gray-800' }} transition-colors">
+                                اشترك الآن
+                            </a>
+                        </div>
+                    </div>
+                @empty
+                    <div class="col-span-full text-center py-8">
+                        <p class="text-gray-500">لا توجد خطط عضوية متاحة حالياً</p>
+                    </div>
+                @endforelse
+            </div>
         </div>
     </section>
     
