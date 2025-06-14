@@ -51,6 +51,9 @@ class LandingPageController extends Controller
      */
     public function store(Request $request)
     {
+        // Log the incoming request for debugging
+        Log::info('LandingPageController@store - Request data:', $request->all());
+        
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'subtitle' => 'nullable|string|max:255',
@@ -71,15 +74,17 @@ class LandingPageController extends Controller
             if ($request->hasFile('header_image')) {
                 $imagePath = $request->file('header_image')->store('landing-pages', 'public');
                 $validated['header_image'] = $imagePath;
+                Log::info('Image uploaded to: ' . $imagePath);
             }
 
             // Set default values
             $validated['user_id'] = auth()->id();
-            $validated['show_join_button'] = $request->has('show_join_button');
-            $validated['is_active'] = $request->has('is_active');
+            $validated['show_join_button'] = $request->has('show_join_button') ? 1 : 0;
+            $validated['is_active'] = $request->has('is_active') ? 1 : 0;
 
             // Create landing page
             $landingPage = LandingPage::create($validated);
+            Log::info('Landing page created with ID: ' . $landingPage->id);
 
             // If this landing page is active, deactivate others
             if ($landingPage->is_active) {
@@ -94,7 +99,12 @@ class LandingPageController extends Controller
             return redirect()->route('admin.landing-pages.index')
                 ->with('success', 'تم إنشاء الصفحة الرئيسية بنجاح.');
         } catch (\Exception $e) {
-            Log::error('Error creating landing page: ' . $e->getMessage());
+            Log::error('Error creating landing page: ' . $e->getMessage(), [
+                'exception' => $e,
+                'trace' => $e->getTraceAsString(),
+                'request_data' => $request->all()
+            ]);
+            
             return back()->withInput()->with('error', 'حدث خطأ أثناء إنشاء الصفحة الرئيسية: ' . $e->getMessage());
         }
     }
@@ -139,8 +149,8 @@ class LandingPageController extends Controller
             }
 
             // Set boolean values
-            $validated['show_join_button'] = $request->has('show_join_button');
-            $validated['is_active'] = $request->has('is_active');
+            $validated['show_join_button'] = $request->has('show_join_button') ? 1 : 0;
+            $validated['is_active'] = $request->has('is_active') ? 1 : 0;
 
             // Update landing page
             $landingPage->update($validated);
