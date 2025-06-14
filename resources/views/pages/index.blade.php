@@ -89,6 +89,9 @@
                                                 <div class="flex items-center">
                                                     <span class="text-lg mr-1">{{ $page->access_level_icon }}</span>
                                                     <span class="text-sm text-gray-900">{{ $page->access_level_text }}</span>
+                                                    @if($page->access_level === 'membership')
+                                                        <span class="ml-1 text-xs text-gray-500">({{ count($page->required_membership_types ?? []) }} عضوية)</span>
+                                                    @endif
                                                 </div>
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
