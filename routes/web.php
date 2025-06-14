@@ -10,10 +10,13 @@ use App\Http\Controllers\MembershipTypeController;
 use App\Http\Controllers\AdvancedPermissionController;
 use App\Http\Controllers\SiteSettingController;
 use App\Http\Controllers\LandingPageController;
+use App\Http\Controllers\FaqController;
 
 // Landing Page Route
 Route::get('/', [LandingPageController::class, 'show'])->name('home');
 
+// Public FAQs Route
+Route::get('/faqs', [FaqController::class, 'index'])->name('faqs.index');
 Route::middleware([
     'auth:sanctum',config('jetstream.auth_session'),'verified','tenants'])->group(function () {
     Route::get('/dashboard', function () {
@@ -83,6 +86,17 @@ Route::middleware([
         Route::put('/{landingPage}', [LandingPageController::class, 'update'])->name('update');
         Route::delete('/{landingPage}', [LandingPageController::class, 'destroy'])->name('destroy');
         Route::patch('/{landingPage}/set-active', [LandingPageController::class, 'setActive'])->name('set-active');
+    });
+    
+    // FAQs routes - admin only
+    Route::middleware(['auth', 'role:admin'])->prefix('admin/faqs')->name('admin.faqs.')->group(function () {
+        Route::get('/', [FaqController::class, 'adminIndex'])->name('index');
+        Route::get('/create', [FaqController::class, 'create'])->name('create');
+        Route::post('/', [FaqController::class, 'store'])->name('store');
+        Route::get('/{faq}/edit', [FaqController::class, 'edit'])->name('edit');
+        Route::put('/{faq}', [FaqController::class, 'update'])->name('update');
+        Route::delete('/{faq}', [FaqController::class, 'destroy'])->name('destroy');
+        Route::patch('/{faq}/toggle-status', [FaqController::class, 'toggleStatus'])->name('toggle-status');
     });
 });
 
