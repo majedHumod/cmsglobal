@@ -137,8 +137,8 @@ class LandingPageController extends Controller
             }
 
             // Set boolean values
-            $validated['show_join_button'] = $request->has('show_join_button') ? 1 : 0;
-            $validated['is_active'] = $request->has('is_active') ? 1 : 0;
+            $validated['show_join_button'] = $request->has('show_join_button');
+            $validated['is_active'] = $request->has('is_active');
 
             // Update landing page
             $landingPage->update($validated);

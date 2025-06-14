@@ -375,6 +375,141 @@
         </div>
     </section>
     
+    <!-- FAQ Section -->
+    <section class="bg-gray-50 py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-900">الأسئلة الشائعة</h2>
+                <p class="mt-4 text-xl text-gray-600">إجابات على الأسئلة الأكثر شيوعاً</p>
+            </div>
+            
+            <div class="max-w-3xl mx-auto">
+                <div class="space-y-6" x-data="{
+                    activeAccordion: null,
+                    setActiveAccordion(id) {
+                        this.activeAccordion = this.activeAccordion === id ? null : id
+                    }
+                }">
+                    <!-- FAQ Item 1 -->
+                    <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+                        <button 
+                            @click="setActiveAccordion(1)" 
+                            class="flex justify-between items-center w-full px-6 py-4 text-lg font-medium text-right text-gray-900 focus:outline-none"
+                            :aria-expanded="activeAccordion === 1"
+                        >
+                            <span>ما هي مميزات العضوية المدفوعة؟</span>
+                            <svg class="w-5 h-5 text-gray-500 transition-transform duration-300" :class="{'rotate-180': activeAccordion === 1}" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                            </svg>
+                        </button>
+                        <div 
+                            x-show="activeAccordion === 1" 
+                            x-collapse
+                            class="px-6 pb-4 text-gray-600"
+                        >
+                            <p>العضوية المدفوعة توفر لك مجموعة من المميزات الحصرية مثل الوصول إلى محتوى متميز، وجداول غذائية مخصصة، ودعم فني أولوي، بالإضافة إلى تحديثات منتظمة للمحتوى. يمكنك الاطلاع على تفاصيل كل خطة عضوية لمعرفة المميزات المحددة التي تقدمها.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- FAQ Item 2 -->
+                    <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+                        <button 
+                            @click="setActiveAccordion(2)" 
+                            class="flex justify-between items-center w-full px-6 py-4 text-lg font-medium text-right text-gray-900 focus:outline-none"
+                            :aria-expanded="activeAccordion === 2"
+                        >
+                            <span>كيف يمكنني إلغاء اشتراكي؟</span>
+                            <svg class="w-5 h-5 text-gray-500 transition-transform duration-300" :class="{'rotate-180': activeAccordion === 2}" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                            </svg>
+                        </button>
+                        <div 
+                            x-show="activeAccordion === 2" 
+                            x-collapse
+                            class="px-6 pb-4 text-gray-600"
+                        >
+                            <p>يمكنك إلغاء اشتراكك في أي وقت من خلال الذهاب إلى صفحة "إعدادات الحساب" في لوحة التحكم الخاصة بك، ثم النقر على "إدارة الاشتراك" واختيار "إلغاء الاشتراك". سيظل بإمكانك الاستفادة من مميزات العضوية حتى نهاية فترة الاشتراك الحالية.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- FAQ Item 3 -->
+                    <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+                        <button 
+                            @click="setActiveAccordion(3)" 
+                            class="flex justify-between items-center w-full px-6 py-4 text-lg font-medium text-right text-gray-900 focus:outline-none"
+                            :aria-expanded="activeAccordion === 3"
+                        >
+                            <span>هل يمكنني تغيير خطة العضوية الخاصة بي؟</span>
+                            <svg class="w-5 h-5 text-gray-500 transition-transform duration-300" :class="{'rotate-180': activeAccordion === 3}" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                            </svg>
+                        </button>
+                        <div 
+                            x-show="activeAccordion === 3" 
+                            x-collapse
+                            class="px-6 pb-4 text-gray-600"
+                        >
+                            <p>نعم، يمكنك ترقية أو تغيير خطة العضوية الخاصة بك في أي وقت. عند الترقية، سيتم احتساب المبلغ المتبقي من اشتراكك الحالي وخصمه من سعر الخطة الجديدة. للتغيير، توجه إلى "إعدادات الحساب" ثم "إدارة الاشتراك" واختر "تغيير الخطة".</p>
+                        </div>
+                    </div>
+                    
+                    <!-- FAQ Item 4 -->
+                    <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+                        <button 
+                            @click="setActiveAccordion(4)" 
+                            class="flex justify-between items-center w-full px-6 py-4 text-lg font-medium text-right text-gray-900 focus:outline-none"
+                            :aria-expanded="activeAccordion === 4"
+                        >
+                            <span>ما هي طرق الدفع المتاحة؟</span>
+                            <svg class="w-5 h-5 text-gray-500 transition-transform duration-300" :class="{'rotate-180': activeAccordion === 4}" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                            </svg>
+                        </button>
+                        <div 
+                            x-show="activeAccordion === 4" 
+                            x-collapse
+                            class="px-6 pb-4 text-gray-600"
+                        >
+                            <p>نحن نقبل مجموعة متنوعة من طرق الدفع بما في ذلك بطاقات الائتمان (فيزا، ماستركارد)، مدى، آبل باي، وسداد. جميع المعاملات مؤمنة بتشفير SSL لضمان حماية بياناتك المالية.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- FAQ Item 5 -->
+                    <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+                        <button 
+                            @click="setActiveAccordion(5)" 
+                            class="flex justify-between items-center w-full px-6 py-4 text-lg font-medium text-right text-gray-900 focus:outline-none"
+                            :aria-expanded="activeAccordion === 5"
+                        >
+                            <span>كيف يمكنني الحصول على المساعدة؟</span>
+                            <svg class="w-5 h-5 text-gray-500 transition-transform duration-300" :class="{'rotate-180': activeAccordion === 5}" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                            </svg>
+                        </button>
+                        <div 
+                            x-show="activeAccordion === 5" 
+                            x-collapse
+                            class="px-6 pb-4 text-gray-600"
+                        >
+                            <p>يمكنك الحصول على المساعدة من خلال عدة طرق: الاتصال بفريق الدعم عبر البريد الإلكتروني، استخدام نظام التذاكر في لوحة التحكم، أو التواصل معنا عبر وسائل التواصل الاجتماعي. نحن نسعى للرد على جميع الاستفسارات خلال 24 ساعة عمل.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Contact CTA -->
+                <div class="mt-10 text-center">
+                    <p class="text-gray-600 mb-4">لم تجد إجابة لسؤالك؟</p>
+                    <a href="#" class="inline-flex items-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                        </svg>
+                        تواصل معنا
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
     <!-- Site Footer -->
     <x-site-footer />
     
