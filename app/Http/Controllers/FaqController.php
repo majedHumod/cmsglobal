@@ -50,16 +50,15 @@ class FaqController extends Controller
     {
         $validated = $request->validate([
             'question' => 'required|string|max:255',
-            'answer' => 'required|string',
+            'answer' => 'required',
             'category' => 'required|string|max:50',
-            'sort_order' => 'nullable|integer|min:0',
-            'is_active' => 'boolean'
+            'sort_order' => 'nullable|integer|min:0'
         ]);
 
         try {
             // Set default values
             $validated['user_id'] = auth()->id();
-            $validated['is_active'] = $request->has('is_active');
+            $validated['is_active'] = $request->has('is_active') ? true : false;
             $validated['sort_order'] = $validated['sort_order'] ?? 0;
 
             // Create FAQ
@@ -91,15 +90,14 @@ class FaqController extends Controller
     {
         $validated = $request->validate([
             'question' => 'required|string|max:255',
-            'answer' => 'required|string',
+            'answer' => 'required',
             'category' => 'required|string|max:50',
-            'sort_order' => 'nullable|integer|min:0',
-            'is_active' => 'boolean'
+            'sort_order' => 'nullable|integer|min:0'
         ]);
 
         try {
             // Set boolean values
-            $validated['is_active'] = $request->has('is_active');
+            $validated['is_active'] = $request->has('is_active') ? true : false;
             $validated['sort_order'] = $validated['sort_order'] ?? 0;
 
             // Update FAQ

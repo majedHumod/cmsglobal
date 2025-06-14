@@ -101,7 +101,7 @@
                     <div id="editor" contenteditable="true" class="min-h-32 p-4 focus:outline-none focus:ring-2 focus:ring-indigo-500" style="direction: rtl;">
                         {!! old('answer', $faq->answer) !!}
                     </div>
-                    <textarea name="answer" id="answer-textarea" class="hidden w-full min-h-32 p-4 border-0 focus:outline-none focus:ring-2 focus:ring-indigo-500" style="direction: rtl;">{!! old('answer', $faq->answer) !!}</textarea>
+                    <textarea name="answer" id="answer-textarea" class="w-full min-h-32 p-4 border-0 focus:outline-none focus:ring-2 focus:ring-indigo-500" style="direction: rtl; display: none;" required>{!! old('answer', $faq->answer) !!}</textarea>
                 </div>
                 
                 @error('answer')
@@ -159,6 +159,8 @@
     // تحديث المحتوى قبل إرسال النموذج
     document.querySelector('form').addEventListener('submit', function() {
         textarea.value = editor.innerHTML;
+        // Make sure the textarea is not hidden when submitting
+        textarea.classList.remove('hidden');
     });
 
     // تحسين تجربة المستخدم
