@@ -33,6 +33,7 @@ class Page extends Model
         'is_premium' => 'boolean',
         'published_at' => 'datetime',
         'access_roles' => 'array',
+       'required_membership_types' => 'array',
     ];
 
     public function user()
@@ -104,6 +105,32 @@ class Page extends Model
             return true;
         }
 
+       // التحقق من العضويات المطلوبة
+       if ($this->access_level === 'membership' && $user) {
+           if ($user->hasRole('admin')) {
+               return true; // المدراء يمكنهم الوصول لجميع الصفحات
+           }
+
+           // التحقق من وجود عضويات مطلوبة
+           if (!$this->required_membership_types || empty($this->required_membership_types)) {
+               return false;
+           }
+
+           // التحقق من امتلاك المستخدم لأي من العضويات المطلوبة
+           try {
+               $userMemberships = \App\Models\UserMembership::where('user_id', $user->id)
+                   ->where('is_active', true)
+                   ->where('expires_at', '>', now())
+                   ->whereIn('membership_type_id', $this->required_membership_types)
+                   ->exists();
+               
+               return $userMemberships;
+           } catch (\Exception $e) {
+               \Log::error('Error checking user memberships: ' . $e->getMessage());
+               return false;
+           }
+       }
+
         // التحقق من الأدوار المحددة
         if ($this->access_level === 'admin' && $user->hasRole('admin')) {
             return true;
@@ -156,6 +183,7 @@ class Page extends Model
             'admin' => 'المديرين فقط',
             'user' => 'المستخدمين العاديين',
             'page_manager' => 'مديري الصفحات',
+           'membership' => 'أعضاء العضويات المدفوعة',
         ];
 
         return $levels[$this->access_level] ?? $this->access_level;
@@ -170,6 +198,7 @@ class Page extends Model
             'admin' => '👑',
             'user' => '👤',
             'page_manager' => '📝',
+           'membership' => '💎',
         ];
 
         return $icons[$this->access_level] ?? '🔒';

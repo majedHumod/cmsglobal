@@ -45,8 +45,10 @@ class PageController extends Controller
                 'meta_title' => 'nullable|max:255',
                 'meta_description' => 'nullable|max:160',
                 'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-                'access_level' => 'required|in:public,authenticated,admin,user,page_manager',
+                'access_level' => 'required|in:public,authenticated,admin,user,page_manager,membership',
                 'is_premium' => 'boolean',
+                'required_membership_types' => 'nullable|array',
+                'required_membership_types.*' => 'exists:membership_types,id',
                 'menu_order' => 'nullable|integer|min:0',
                 'published_at' => 'nullable|date'
             ]);
@@ -78,6 +80,13 @@ class PageController extends Controller
             $validated['is_published'] = $request->has('is_published') ? 1 : 0;
             $validated['show_in_menu'] = $request->has('show_in_menu') ? 1 : 0;
             $validated['is_premium'] = $request->has('is_premium') ? 1 : 0;
+            
+            // معالجة العضويات المطلوبة
+            if ($validated['access_level'] === 'membership' && isset($validated['required_membership_types'])) {
+                $validated['required_membership_types'] = $validated['required_membership_types'];
+            } else {
+                $validated['required_membership_types'] = null;
+            }
             
             // تعيين تاريخ النشر إذا كانت الصفحة منشورة
             if ($validated['is_published'] && !$validated['published_at']) {
@@ -147,8 +156,10 @@ class PageController extends Controller
                 'meta_title' => 'nullable|max:255',
                 'meta_description' => 'nullable|max:160',
                 'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-                'access_level' => 'required|in:public,authenticated,admin,user,page_manager',
+                'access_level' => 'required|in:public,authenticated,admin,user,page_manager,membership',
                 'is_premium' => 'boolean',
+                'required_membership_types' => 'nullable|array',
+                'required_membership_types.*' => 'exists:membership_types,id',
                 'menu_order' => 'nullable|integer|min:0',
                 'published_at' => 'nullable|date'
             ]);
@@ -180,6 +191,13 @@ class PageController extends Controller
             $validated['show_in_menu'] = $request->has('show_in_menu') ? 1 : 0;
             $validated['is_premium'] = $request->has('is_premium') ? 1 : 0;
 
+            // معالجة العضويات المطلوبة
+            if ($validated['access_level'] === 'membership' && isset($validated['required_membership_types'])) {
+                $validated['required_membership_types'] = $validated['required_membership_types'];
+            } else {
+                $validated['required_membership_types'] = null;
+            }
+            
             // تعيين تاريخ النشر إذا كانت الصفحة منشورة لأول مرة
             if ($validated['is_published'] && !$page->is_published && !$validated['published_at']) {
                 $validated['published_at'] = now();

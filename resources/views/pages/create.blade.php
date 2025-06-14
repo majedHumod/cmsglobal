@@ -151,6 +151,7 @@
                                         <option value="user" {{ old('access_level') == 'user' ? 'selected' : '' }}>👤 المستخدمين العاديين</option>
                                         <option value="page_manager" {{ old('access_level') == 'page_manager' ? 'selected' : '' }}>📝 مديري الصفحات</option>
                                         <option value="admin" {{ old('access_level') == 'admin' ? 'selected' : '' }}>👑 المديرين فقط</option>
+                                       <option value="membership" {{ old('access_level') == 'membership' ? 'selected' : '' }}>💎 أعضاء العضويات المدفوعة</option>
                                     </select>
                                     @error('access_level')
                                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
@@ -169,6 +170,41 @@
                                     <p class="text-xs text-gray-500 mt-1">سيتم تطبيق هذا لاحقاً مع نظام العضويات</p>
                                 </div>
                             </div>
+                           
+                           <!-- العضويات المطلوبة -->
+                           <div id="membership-types-container" class="mt-4" style="display: {{ old('access_level') == 'membership' ? 'block' : 'none' }}">
+                               <label class="block text-sm font-medium text-gray-700 mb-2">العضويات المطلوبة للوصول</label>
+                               <div class="bg-white p-4 rounded-lg border border-gray-200 max-h-60 overflow-y-auto">
+                                   @php
+                                       try {
+                                           $membershipTypes = \App\Models\MembershipType::where('is_active', true)
+                                               ->orderBy('sort_order')
+                                               ->orderBy('name')
+                                               ->get();
+                                       } catch (\Exception $e) {
+                                           $membershipTypes = collect([]);
+                                       }
+                                   @endphp
+                                   
+                                   @if($membershipTypes->isEmpty())
+                                       <p class="text-gray-500 text-sm">لا توجد أنواع عضويات متاحة. <a href="{{ route('membership-types.create') }}" class="text-indigo-600 hover:text-indigo-900">إضافة نوع عضوية</a></p>
+                                   @else
+                                       <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                           @foreach($membershipTypes as $type)
+                                               <div class="flex items-center">
+                                                   <input type="checkbox" name="required_membership_types[]" id="membership_type_{{ $type->id }}" value="{{ $type->id }}" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" 
+                                                       {{ is_array(old('required_membership_types')) && in_array($type->id, old('required_membership_types')) ? 'checked' : '' }}>
+                                                   <label for="membership_type_{{ $type->id }}" class="ml-2 block text-sm text-gray-700">
+                                                       {{ $type->name }} 
+                                                       <span class="text-xs text-gray-500">({{ $type->formatted_price }})</span>
+                                                   </label>
+                                               </div>
+                                           @endforeach
+                                       </div>
+                                   @endif
+                               </div>
+                               <p class="text-xs text-gray-500 mt-1">حدد أنواع العضويات التي يمكنها الوصول لهذه الصفحة</p>
+                           </div>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -327,5 +363,23 @@
             }
         `;
         document.head.appendChild(style);
+    </script>
+
+    <script>
+        // إظهار/إخفاء قسم العضويات المطلوبة بناءً على مستوى الوصول
+        document.addEventListener('DOMContentLoaded', function() {
+            const accessLevelSelect = document.getElementById('access_level');
+            const membershipTypesContainer = document.getElementById('membership-types-container');
+            
+            if (accessLevelSelect && membershipTypesContainer) {
+                accessLevelSelect.addEventListener('change', function() {
+                    if (this.value === 'membership') {
+                        membershipTypesContainer.style.display = 'block';
+                    } else {
+                        membershipTypesContainer.style.display = 'none';
+                    }
+                });
+            }
+        });
     </script>
 </x-app-layout>
