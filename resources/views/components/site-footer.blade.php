@@ -35,8 +35,8 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('notes.index') }}" class="text-base text-gray-500 hover:text-indigo-600">
-                            الملاحظات
+                        <a href="{{ route('faqs.index') }}" class="text-base text-gray-500 hover:text-indigo-600">
+                            الأسئلة الشائعة
                         </a>
                     </li>
                 </ul>
