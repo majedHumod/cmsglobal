@@ -51,20 +51,19 @@ class LandingPageController extends Controller
      */
     public function store(Request $request)
     {
-        // Log the incoming request for debugging
-        Log::info('LandingPageController@store - Request data:', $request->all());
-        
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'subtitle' => 'nullable|string|max:255',
             'header_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'header_text_color' => 'required|string|max:7',
+            'show_join_button' => 'boolean',
             'join_button_text' => 'nullable|string|max:50',
             'join_button_url' => 'nullable|string|max:255',
             'join_button_color' => 'nullable|string|max:7',
             'content' => 'required|string',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:255',
+            'is_active' => 'boolean',
         ]);
 
         try {
@@ -72,7 +71,6 @@ class LandingPageController extends Controller
             if ($request->hasFile('header_image')) {
                 $imagePath = $request->file('header_image')->store('landing-pages', 'public');
                 $validated['header_image'] = $imagePath;
-                Log::info('Image uploaded successfully', ['path' => $imagePath]);
             }
 
             // Set default values
@@ -82,14 +80,12 @@ class LandingPageController extends Controller
 
             // Create landing page
             $landingPage = LandingPage::create($validated);
-            Log::info('Landing page created successfully', ['id' => $landingPage->id]);
 
             // If this landing page is active, deactivate others
             if ($landingPage->is_active) {
                 LandingPage::where('id', '!=', $landingPage->id)
                     ->where('is_active', true)
                     ->update(['is_active' => false]);
-                Log::info('Deactivated other landing pages');
             }
 
             // Clear cache
@@ -98,11 +94,7 @@ class LandingPageController extends Controller
             return redirect()->route('admin.landing-pages.index')
                 ->with('success', 'تم إنشاء الصفحة الرئيسية بنجاح.');
         } catch (\Exception $e) {
-            Log::error('Error creating landing page: ' . $e->getMessage(), [
-                'exception' => $e,
-                'trace' => $e->getTraceAsString(),
-                'request_data' => $request->all()
-            ]);
+            Log::error('Error creating landing page: ' . $e->getMessage());
             return back()->withInput()->with('error', 'حدث خطأ أثناء إنشاء الصفحة الرئيسية: ' . $e->getMessage());
         }
     }
@@ -125,12 +117,14 @@ class LandingPageController extends Controller
             'subtitle' => 'nullable|string|max:255',
             'header_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'header_text_color' => 'required|string|max:7',
+            'show_join_button' => 'boolean',
             'join_button_text' => 'nullable|string|max:50',
             'join_button_url' => 'nullable|string|max:255',
             'join_button_color' => 'nullable|string|max:7',
             'content' => 'required|string',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:255',
+            'is_active' => 'boolean',
         ]);
 
         try {

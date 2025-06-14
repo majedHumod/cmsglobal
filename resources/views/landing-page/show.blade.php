@@ -132,58 +132,14 @@
             border-radius: 0.5rem;
         }
         
-        /* Membership Card Styles */
         .membership-card {
             transition: all 0.3s ease;
-            border: 2px solid transparent;
+            border: 1px solid #e5e7eb;
         }
         
         .membership-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-            border-color: var(--primary-color);
-        }
-        
-        .membership-card.popular {
-            border-color: var(--primary-color);
-            position: relative;
-        }
-        
-        .membership-card.popular::before {
-            content: "الأكثر شيوعاً";
-            position: absolute;
-            top: -12px;
-            right: 50%;
-            transform: translateX(50%);
-            background-color: var(--primary-color);
-            color: white;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-        
-        .membership-price {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--primary-color);
-        }
-        
-        .membership-duration {
-            color: #6b7280;
-            font-size: 0.875rem;
-        }
-        
-        .membership-feature {
-            display: flex;
-            align-items: center;
-            margin-bottom: 0.5rem;
-        }
-        
-        .membership-feature svg {
-            color: var(--primary-color);
-            margin-left: 0.5rem;
-            flex-shrink: 0;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         }
         
         @media (max-width: 768px) {
@@ -202,8 +158,91 @@
     </style>
 </head>
 <body class="font-sans antialiased">
-    <!-- Site Header -->
-    <x-site-header />
+    <!-- Header Navigation -->
+    <header class="bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <!-- Logo and Site Name -->
+                <div class="flex items-center">
+                    @if(isset($siteSettings['general']['site_logo']) && $siteSettings['general']['site_logo'])
+                        <a href="{{ route('home') }}" class="flex-shrink-0 flex items-center">
+                            <img class="h-8 w-auto" src="{{ Storage::url($siteSettings['general']['site_logo']) }}" alt="{{ $siteSettings['general']['site_name'] ?? config('app.name') }}">
+                        </a>
+                    @else
+                        <a href="{{ route('home') }}" class="flex-shrink-0 flex items-center">
+                            <span class="text-xl font-bold text-indigo-600">{{ $siteSettings['general']['site_name'] ?? config('app.name') }}</span>
+                        </a>
+                    @endif
+                </div>
+                
+                <!-- Navigation Links -->
+                <div class="hidden md:flex md:items-center md:space-x-4">
+                    <a href="{{ route('pages.public') }}" class="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">الصفحات</a>
+                    <a href="{{ route('meal-plans.public') }}" class="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">الوجبات</a>
+                    
+                    @auth
+                        <div class="relative ml-3">
+                            <div>
+                                <button type="button" id="user-menu-button" class="flex text-sm bg-gray-800 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" aria-expanded="false" aria-haspopup="true">
+                                    <span class="sr-only">Open user menu</span>
+                                    <img class="h-8 w-8 rounded-full" src="{{ Auth::user()->profile_photo_url }}" alt="{{ Auth::user()->name }}">
+                                </button>
+                            </div>
+                            
+                            <!-- Dropdown menu -->
+                            <div id="user-dropdown" class="hidden origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
+                                <div class="px-4 py-2 text-xs text-gray-500">
+                                    <div>{{ Auth::user()->name }}</div>
+                                    <div class="font-medium truncate">{{ Auth::user()->email }}</div>
+                                </div>
+                                <a href="{{ route('dashboard') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">لوحة التحكم</a>
+                                <a href="{{ route('profile.show') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">الملف الشخصي</a>
+                                <a href="{{ route('admin.settings.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">الإعدادات</a>
+                                <div class="border-t border-gray-100"></div>
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">تسجيل الخروج</button>
+                                </form>
+                            </div>
+                        </div>
+                    @else
+                        <a href="{{ route('login') }}" class="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">تسجيل الدخول</a>
+                        <a href="{{ route('register') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-md text-sm font-medium">إنشاء حساب</a>
+                    @endauth
+                </div>
+                
+                <!-- Mobile menu button -->
+                <div class="flex items-center md:hidden">
+                    <button type="button" id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500" aria-expanded="false">
+                        <span class="sr-only">Open main menu</span>
+                        <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile menu, show/hide based on menu state -->
+        <div class="hidden md:hidden" id="mobile-menu">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="{{ route('pages.public') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">الصفحات</a>
+                <a href="{{ route('meal-plans.public') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">الوجبات</a>
+                
+                @auth
+                    <a href="{{ route('dashboard') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">لوحة التحكم</a>
+                    <a href="{{ route('profile.show') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">الملف الشخصي</a>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">تسجيل الخروج</button>
+                    </form>
+                @else
+                    <a href="{{ route('login') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">تسجيل الدخول</a>
+                    <a href="{{ route('register') }}" class="block px-3 py-2 rounded-md text-base font-medium text-indigo-600 hover:text-indigo-800 hover:bg-gray-50">إنشاء حساب</a>
+                @endauth
+            </div>
+        </div>
+    </header>
     
     <!-- Hero Section -->
     <section class="hero-section" style="background-image: url('{{ Storage::url($landingPage->header_image) }}');">
@@ -233,14 +272,15 @@
     <section class="bg-gray-50 py-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold text-gray-900 mb-4">خطط العضوية</h2>
-                <p class="text-xl text-gray-600 max-w-3xl mx-auto">اختر الخطة المناسبة لك واستمتع بمزايا حصرية</p>
+                <h2 class="text-3xl font-bold text-gray-900">خطط العضوية</h2>
+                <p class="mt-4 text-xl text-gray-600">اختر الخطة المناسبة لاحتياجاتك</p>
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 @php
                     try {
                         $membershipTypes = \App\Models\MembershipType::where('is_active', true)
+                            ->where('is_protected', false)
                             ->orderBy('sort_order')
                             ->orderBy('price')
                             ->get();
@@ -249,37 +289,34 @@
                     }
                 @endphp
                 
-                @forelse($membershipTypes as $index => $membershipType)
-                    <div class="membership-card bg-white rounded-xl shadow-lg overflow-hidden {{ $index === 1 ? 'popular' : '' }}">
-                        <div class="p-8">
+                @forelse($membershipTypes as $membershipType)
+                    <div class="bg-white rounded-lg overflow-hidden shadow-sm membership-card">
+                        <div class="p-6">
                             <h3 class="text-2xl font-bold text-gray-900 mb-2">{{ $membershipType->name }}</h3>
                             
                             @if($membershipType->description)
-                                <p class="text-gray-600 mb-6">{{ $membershipType->description }}</p>
+                                <p class="text-gray-600 mb-4">{{ $membershipType->description }}</p>
                             @endif
                             
-                            <div class="flex items-end mb-6">
-                                <span class="membership-price">{{ $membershipType->formatted_price }}</span>
-                                <span class="membership-duration mr-2">/ {{ $membershipType->duration_text }}</span>
+                            <div class="flex items-baseline mb-6">
+                                <span class="text-4xl font-bold text-indigo-600">{{ $membershipType->formatted_price }}</span>
+                                <span class="text-gray-500 mr-2">/ {{ $membershipType->duration_text }}</span>
                             </div>
                             
                             @if($membershipType->features && is_array($membershipType->features) && count($membershipType->features) > 0)
-                                <div class="mb-8">
-                                    <h4 class="text-lg font-semibold text-gray-900 mb-4">المميزات:</h4>
-                                    <ul class="space-y-2">
-                                        @foreach($membershipType->features as $feature)
-                                            <li class="membership-feature">
-                                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                                                </svg>
-                                                <span>{{ $feature }}</span>
-                                            </li>
-                                        @endforeach
-                                    </ul>
-                                </div>
+                                <ul class="space-y-3 mb-6">
+                                    @foreach($membershipType->features as $feature)
+                                        <li class="flex items-center">
+                                            <svg class="w-5 h-5 text-green-500 ml-2" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            <span>{{ $feature }}</span>
+                                        </li>
+                                    @endforeach
+                                </ul>
                             @endif
                             
-                            <a href="{{ route('register') }}" class="block w-full text-center py-3 px-4 rounded-lg font-semibold {{ $index === 1 ? 'bg-indigo-600 hover:bg-indigo-700 text-white' : 'bg-gray-100 hover:bg-gray-200 text-gray-800' }} transition-colors">
+                            <a href="{{ route('register') }}" class="block w-full text-center bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-md transition-colors">
                                 اشترك الآن
                             </a>
                         </div>
@@ -294,7 +331,7 @@
     </section>
     
     <!-- Navigation Links -->
-    <section class="bg-gray-50 py-12">
+    <section class="bg-white py-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center">
                 <h2 class="text-2xl font-bold text-gray-900 mb-8">استكشف المزيد</h2>
@@ -310,7 +347,7 @@
                     
                     <a href="{{ route('meal-plans.public') }}" class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
                         <svg class="h-12 w-12 text-indigo-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
                         </svg>
                         <h3 class="text-lg font-medium text-gray-900 mb-2">الجداول الغذائية</h3>
                         <p class="text-gray-600">تصفح الوجبات والجداول الغذائية</p>
@@ -340,5 +377,36 @@
     
     <!-- Site Footer -->
     <x-site-footer />
+    
+    <script>
+        // Toggle user dropdown
+        document.addEventListener('DOMContentLoaded', function() {
+            const userMenuButton = document.getElementById('user-menu-button');
+            const userDropdown = document.getElementById('user-dropdown');
+            
+            if (userMenuButton && userDropdown) {
+                userMenuButton.addEventListener('click', function() {
+                    userDropdown.classList.toggle('hidden');
+                });
+                
+                // Close dropdown when clicking outside
+                document.addEventListener('click', function(event) {
+                    if (!userMenuButton.contains(event.target) && !userDropdown.contains(event.target)) {
+                        userDropdown.classList.add('hidden');
+                    }
+                });
+            }
+            
+            // Mobile menu toggle
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            if (mobileMenuButton && mobileMenu) {
+                mobileMenuButton.addEventListener('click', function() {
+                    mobileMenu.classList.toggle('hidden');
+                });
+            }
+        });
+    </script>
 </body>
 </html>
