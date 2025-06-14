@@ -120,7 +120,7 @@
 
                                         @foreach (Auth::user()->allTeams() as $team)
                                             <x-switchable-team :team="$team" />
-                                    <div class="font-medium text-base text-gray-800">{{ Auth::user() ? Auth::user()->name : 'Guest' }}</div>
+                                        @endforeach
                                     <div class="font-medium text-sm text-gray-500">{{ Auth::user() ? Auth::user()->email : '' }}</div>
                                 </div>
                             </x-slot>
