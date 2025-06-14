@@ -13,13 +13,13 @@ class SiteSettingsSeeder extends Seeder
     public function run(): void
     {
         // General Settings
-        SiteSetting::set('site_name', 'CMS Global', 'general', 'string', 'Site name');
+        SiteSetting::set('site_name', config('app.name', 'CMS Global'), 'general', 'string', 'Site name');
         SiteSetting::set('site_description', 'نظام إدارة محتوى متكامل', 'general', 'string', 'Site description');
         SiteSetting::set('site_logo', null, 'general', 'string', 'Site logo path');
         SiteSetting::set('site_favicon', null, 'general', 'string', 'Site favicon path');
         SiteSetting::set('primary_color', '#6366f1', 'general', 'string', 'Primary color');
         SiteSetting::set('secondary_color', '#10b981', 'general', 'string', 'Secondary color');
-        SiteSetting::set('footer_text', '© ' . date('Y') . ' CMS Global. جميع الحقوق محفوظة.', 'general', 'string', 'Footer text');
+        SiteSetting::set('footer_text', '© ' . date('Y') . ' ' . config('app.name', 'CMS Global') . '. جميع الحقوق محفوظة.', 'general', 'string', 'Footer text');
 
         // Contact Settings
         SiteSetting::set('contact_email', 'info@example.com', 'contact', 'string', 'Contact email');

@@ -106,30 +106,35 @@ class SiteSetting extends Model
     public static function getGroup($group)
     {
         $cacheKey = 'settings_group_' . $group;
-        
-        return Cache::remember($cacheKey, 3600, function () use ($group) {
-            return self::where('group', $group)->get()->mapWithKeys(function ($setting) {
-                // Handle different types of settings
-                $value = $setting->value;
-                switch ($setting->type) {
-                    case 'boolean':
-                        $value = (bool) $value;
-                        break;
-                    case 'integer':
-                        $value = (int) $value;
-                        break;
-                    case 'float':
-                        $value = (float) $value;
-                        break;
-                    case 'array':
-                    case 'json':
-                        $value = json_decode($value, true);
-                        break;
-                }
-                
-                return [$setting->key => $value];
+
+        try {
+            return Cache::remember($cacheKey, 3600, function () use ($group) {
+                return self::where('group', $group)->get()->mapWithKeys(function ($setting) {
+                    // Handle different types of settings
+                    $value = $setting->value;
+                    switch ($setting->type) {
+                        case 'boolean':
+                            $value = (bool) $value;
+                            break;
+                        case 'integer':
+                            $value = (int) $value;
+                            break;
+                        case 'float':
+                            $value = (float) $value;
+                            break;
+                        case 'array':
+                        case 'json':
+                            $value = json_decode($value, true);
+                            break;
+                    }
+                    
+                    return [$setting->key => $value];
+                });
             });
-        });
+        } catch (\Exception $e) {
+            \Log::error('Error getting settings group: ' . $e->getMessage());
+            return collect();
+        }
     }
 
     /**
