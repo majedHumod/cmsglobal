@@ -33,7 +33,7 @@ class Page extends Model
         'is_premium' => 'boolean',
         'published_at' => 'datetime',
         'access_roles' => 'array',
-       'required_membership_types' => 'array',
+        'required_membership_types' => 'array',
     ];
 
     public function user()
@@ -102,6 +102,11 @@ class Page extends Model
 
         // الصفحات للمستخدمين المسجلين
         if ($this->access_level === 'authenticated') {
+            // التحقق من العضويات المطلوبة
+            if ($this->required_membership_types && is_array($this->required_membership_types) && count($this->required_membership_types) > 0) {
+                // هنا يمكن إضافة التحقق من عضوية المستخدم
+                // لكن سنتجاهل هذا الآن حتى يتم تنفيذ نظام العضويات بالكامل
+            }
             return true;
         }
 
@@ -157,6 +162,12 @@ class Page extends Model
                     return true;
                 }
             }
+        }
+        
+        // التحقق من العضويات المطلوبة
+        if ($this->required_membership_types && is_array($this->required_membership_types) && count($this->required_membership_types) > 0) {
+            // هنا يمكن إضافة التحقق من عضوية المستخدم
+            // لكن سنتجاهل هذا الآن حتى يتم تنفيذ نظام العضويات بالكامل
         }
 
         return false;

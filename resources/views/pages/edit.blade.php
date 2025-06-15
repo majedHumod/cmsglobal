@@ -147,7 +147,6 @@
                                         <option value="user" {{ old('access_level', $page->access_level) == 'user' ? 'selected' : '' }}>👤 المستخدمين العاديين</option>
                                         <option value="page_manager" {{ old('access_level', $page->access_level) == 'page_manager' ? 'selected' : '' }}>📝 مديري الصفحات</option>
                                         <option value="admin" {{ old('access_level', $page->access_level) == 'admin' ? 'selected' : '' }}>👑 المديرين فقط</option>
-                                       <option value="membership" {{ old('access_level', $page->access_level) == 'membership' ? 'selected' : '' }}>💎 أعضاء العضويات المدفوعة</option>
                                     </select>
                                     @error('access_level')
                                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
@@ -167,45 +166,45 @@
                                 </div>
                             </div>
                            
-                           <!-- العضويات المطلوبة -->
-                           <div id="membership-types-container" class="mt-4" style="display: {{ old('access_level', $page->access_level) == 'membership' ? 'block' : 'none' }}">
-                               <label class="block text-sm font-medium text-gray-700 mb-2">العضويات المطلوبة للوصول</label>
-                               <div class="bg-white p-4 rounded-lg border border-gray-200 max-h-60 overflow-y-auto">
+                           <!-- أنواع العضويات المطلوبة -->
+                           <div class="mt-6">
+                               <label class="block text-sm font-medium text-gray-700 mb-2">أنواع العضويات المطلوبة</label>
+                               <p class="text-xs text-gray-500 mb-3">حدد أنواع العضويات التي يمكنها الوصول لهذه الصفحة</p>
+                               
+                               <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                    @php
                                        try {
-                                           $membershipTypes = \App\Models\MembershipType::where('is_active', true)
-                                               ->orderBy('sort_order')
-                                               ->orderBy('name')
-                                               ->get();
-                                           
-                                           $selectedMembershipTypes = old('required_membership_types', $page->required_membership_types ?? []);
-                                           if (!is_array($selectedMembershipTypes)) {
-                                               $selectedMembershipTypes = is_string($selectedMembershipTypes) ? json_decode($selectedMembershipTypes, true) : [];
+                                           $membershipTypes = \App\Models\MembershipType::where('is_active', true)->orderBy('sort_order')->get();
+                                           $pageRequiredMembershipTypes = old('required_membership_types', $page->required_membership_types ?? []);
+                                           if (is_string($pageRequiredMembershipTypes)) {
+                                               $pageRequiredMembershipTypes = json_decode($pageRequiredMembershipTypes, true) ?? [];
                                            }
                                        } catch (\Exception $e) {
                                            $membershipTypes = collect([]);
-                                           $selectedMembershipTypes = [];
+                                           $pageRequiredMembershipTypes = [];
                                        }
                                    @endphp
                                    
-                                   @if($membershipTypes->isEmpty())
-                                       <p class="text-gray-500 text-sm">لا توجد أنواع عضويات متاحة. <a href="{{ route('membership-types.create') }}" class="text-indigo-600 hover:text-indigo-900">إضافة نوع عضوية</a></p>
-                                   @else
-                                       <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
-                                           @foreach($membershipTypes as $type)
-                                               <div class="flex items-center">
-                                                   <input type="checkbox" name="required_membership_types[]" id="membership_type_{{ $type->id }}" value="{{ $type->id }}" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" 
-                                                       {{ in_array((string)$type->id, $selectedMembershipTypes) || in_array((int)$type->id, $selectedMembershipTypes) ? 'checked' : '' }}>
-                                                   <label for="membership_type_{{ $type->id }}" class="ml-2 block text-sm text-gray-700">
-                                                       {{ $type->name }} 
-                                                       <span class="text-xs text-gray-500">({{ $type->formatted_price }})</span>
-                                                   </label>
-                                               </div>
-                                           @endforeach
+                                   @forelse($membershipTypes as $membershipType)
+                                       <div class="flex items-center">
+                                           <input type="checkbox" name="required_membership_types[]" id="membership_{{ $membershipType->id }}" value="{{ $membershipType->id }}" 
+                                               class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                               {{ in_array($membershipType->id, $pageRequiredMembershipTypes) ? 'checked' : '' }}>
+                                           <label for="membership_{{ $membershipType->id }}" class="ml-2 block text-sm text-gray-700">
+                                               {{ $membershipType->name }}
+                                               @if($membershipType->price > 0)
+                                                   <span class="text-xs text-gray-500">({{ $membershipType->formatted_price }})</span>
+                                               @else
+                                                   <span class="text-xs text-green-500">(مجاني)</span>
+                                               @endif
+                                           </label>
                                        </div>
-                                   @endif
+                                   @empty
+                                       <div class="col-span-3">
+                                           <p class="text-sm text-gray-500">لا توجد أنواع عضويات متاحة</p>
+                                       </div>
+                                   @endforelse
                                </div>
-                               <p class="text-xs text-gray-500 mt-1">حدد أنواع العضويات التي يمكنها الوصول لهذه الصفحة</p>
                            </div>
                         </div>
 

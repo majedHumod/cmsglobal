@@ -81,6 +81,9 @@ class PageController extends Controller
             $validated['show_in_menu'] = $request->has('show_in_menu') ? 1 : 0;
             $validated['is_premium'] = $request->has('is_premium') ? 1 : 0;
             
+           // معالجة أنواع العضويات المطلوبة
+           $validated['required_membership_types'] = $request->has('required_membership_types') ? $request->required_membership_types : null;
+           
             // معالجة العضويات المطلوبة
             if ($validated['access_level'] === 'membership' && isset($validated['required_membership_types'])) {
                 // لا تغيير مطلوب، الصفيف موجود بالفعل
@@ -192,6 +195,9 @@ class PageController extends Controller
             $validated['show_in_menu'] = $request->has('show_in_menu') ? 1 : 0;
             $validated['is_premium'] = $request->has('is_premium') ? 1 : 0;
 
+           // معالجة أنواع العضويات المطلوبة
+           $validated['required_membership_types'] = $request->has('required_membership_types') ? $request->required_membership_types : null;
+           
             // معالجة العضويات المطلوبة
             if ($validated['access_level'] === 'membership' && isset($validated['required_membership_types'])) {
                 // لا تغيير مطلوب، الصفيف موجود بالفعل
