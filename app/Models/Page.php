@@ -112,16 +112,22 @@ class Page extends Model
            }
 
            // التحقق من وجود عضويات مطلوبة
-           if (!$this->required_membership_types || empty($this->required_membership_types)) {
+           if (!$this->required_membership_types || (is_array($this->required_membership_types) && empty($this->required_membership_types))) {
                return false;
            }
 
            // التحقق من امتلاك المستخدم لأي من العضويات المطلوبة
            try {
+               $membershipTypeIds = is_array($this->required_membership_types) ? $this->required_membership_types : json_decode($this->required_membership_types, true);
+               
+               if (empty($membershipTypeIds)) {
+                   return false;
+               }
+               
                $userMemberships = \App\Models\UserMembership::where('user_id', $user->id)
                    ->where('is_active', true)
                    ->where('expires_at', '>', now())
-                   ->whereIn('membership_type_id', $this->required_membership_types)
+                    ->whereIn('membership_type_id', $membershipTypeIds)
                    ->exists();
                
                return $userMemberships;

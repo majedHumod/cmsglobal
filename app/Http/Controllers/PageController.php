@@ -83,9 +83,10 @@ class PageController extends Controller
             
             // معالجة العضويات المطلوبة
             if ($validated['access_level'] === 'membership' && isset($validated['required_membership_types'])) {
-                $validated['required_membership_types'] = $validated['required_membership_types'];
+                // لا تغيير مطلوب، الصفيف موجود بالفعل
             } else {
-                $validated['required_membership_types'] = null;
+                // إذا لم يكن مستوى الوصول هو 'membership'، نضع قيمة فارغة
+                $validated['required_membership_types'] = [];
             }
             
             // تعيين تاريخ النشر إذا كانت الصفحة منشورة
@@ -193,9 +194,10 @@ class PageController extends Controller
 
             // معالجة العضويات المطلوبة
             if ($validated['access_level'] === 'membership' && isset($validated['required_membership_types'])) {
-                $validated['required_membership_types'] = $validated['required_membership_types'];
+                // لا تغيير مطلوب، الصفيف موجود بالفعل
             } else {
-                $validated['required_membership_types'] = null;
+                // إذا لم يكن مستوى الوصول هو 'membership'، نضع قيمة فارغة
+                $validated['required_membership_types'] = [];
             }
             
             // تعيين تاريخ النشر إذا كانت الصفحة منشورة لأول مرة

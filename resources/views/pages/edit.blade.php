@@ -180,7 +180,7 @@
                                            
                                            $selectedMembershipTypes = old('required_membership_types', $page->required_membership_types ?? []);
                                            if (!is_array($selectedMembershipTypes)) {
-                                               $selectedMembershipTypes = [];
+                                               $selectedMembershipTypes = is_string($selectedMembershipTypes) ? json_decode($selectedMembershipTypes, true) : [];
                                            }
                                        } catch (\Exception $e) {
                                            $membershipTypes = collect([]);
@@ -195,7 +195,7 @@
                                            @foreach($membershipTypes as $type)
                                                <div class="flex items-center">
                                                    <input type="checkbox" name="required_membership_types[]" id="membership_type_{{ $type->id }}" value="{{ $type->id }}" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" 
-                                                       {{ in_array($type->id, $selectedMembershipTypes) ? 'checked' : '' }}>
+                                                       {{ in_array((string)$type->id, $selectedMembershipTypes) || in_array((int)$type->id, $selectedMembershipTypes) ? 'checked' : '' }}>
                                                    <label for="membership_type_{{ $type->id }}" class="ml-2 block text-sm text-gray-700">
                                                        {{ $type->name }} 
                                                        <span class="text-xs text-gray-500">({{ $type->formatted_price }})</span>

@@ -90,7 +90,18 @@
                                                     <span class="text-lg mr-1">{{ $page->access_level_icon }}</span>
                                                     <span class="text-sm text-gray-900">{{ $page->access_level_text }}</span>
                                                     @if($page->access_level === 'membership')
-                                                        <span class="ml-1 text-xs text-gray-500">({{ count($page->required_membership_types ?? []) }} عضوية)</span>
+                                                        <span class="ml-1 text-xs text-gray-500">
+                                                            @php
+                                                                $membershipCount = 0;
+                                                                if ($page->required_membership_types) {
+                                                                    $membershipTypes = is_array($page->required_membership_types) ? 
+                                                                        $page->required_membership_types : 
+                                                                        json_decode($page->required_membership_types, true);
+                                                                    $membershipCount = is_array($membershipTypes) ? count($membershipTypes) : 0;
+                                                                }
+                                                            @endphp
+                                                            ({{ $membershipCount }} عضوية)
+                                                        </span>
                                                     @endif
                                                 </div>
                                             </td>
