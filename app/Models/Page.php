@@ -33,7 +33,7 @@ class Page extends Model
         'is_premium' => 'boolean',
         'published_at' => 'datetime',
         'access_roles' => 'array',
-        'required_membership_types' => 'array',
+        'required_membership_types' => 'json',
     ];
 
     public function user()
@@ -140,6 +140,7 @@ class Page extends Model
                \Log::error('Error checking user memberships: ' . $e->getMessage());
                return false;
            }
+            \Log::debug('Required membership types: ', ['types' => $this->required_membership_types]);
        }
 
         // التحقق من الأدوار المحددة

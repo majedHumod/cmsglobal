@@ -81,17 +81,18 @@ class PageController extends Controller
             $validated['show_in_menu'] = $request->has('show_in_menu') ? 1 : 0;
             $validated['is_premium'] = $request->has('is_premium') ? 1 : 0;
             
-           // معالجة أنواع العضويات المطلوبة
-           $validated['required_membership_types'] = $request->has('required_membership_types') ? $request->required_membership_types : null;
-           
-            // معالجة العضويات المطلوبة
-            if ($validated['access_level'] === 'membership' && isset($validated['required_membership_types'])) {
-                // لا تغيير مطلوب، الصفيف موجود بالفعل
+            // معالجة أنواع العضويات المطلوبة
+            if ($request->has('required_membership_types')) {
+                $validated['required_membership_types'] = $request->required_membership_types;
             } else {
-                // إذا لم يكن مستوى الوصول هو 'membership'، نضع قيمة فارغة
                 $validated['required_membership_types'] = [];
             }
             
+            // تأكد من أن البيانات تُحفظ كـ JSON
+            if (isset($validated['required_membership_types']) && is_array($validated['required_membership_types'])) {
+                $validated['required_membership_types'] = array_map('intval', $validated['required_membership_types']);
+            }
+           
             // تعيين تاريخ النشر إذا كانت الصفحة منشورة
             if ($validated['is_published'] && !$validated['published_at']) {
                 $validated['published_at'] = now();
@@ -195,17 +196,18 @@ class PageController extends Controller
             $validated['show_in_menu'] = $request->has('show_in_menu') ? 1 : 0;
             $validated['is_premium'] = $request->has('is_premium') ? 1 : 0;
 
-           // معالجة أنواع العضويات المطلوبة
-           $validated['required_membership_types'] = $request->has('required_membership_types') ? $request->required_membership_types : null;
-           
-            // معالجة العضويات المطلوبة
-            if ($validated['access_level'] === 'membership' && isset($validated['required_membership_types'])) {
-                // لا تغيير مطلوب، الصفيف موجود بالفعل
+            // معالجة أنواع العضويات المطلوبة
+            if ($request->has('required_membership_types')) {
+                $validated['required_membership_types'] = $request->required_membership_types;
             } else {
-                // إذا لم يكن مستوى الوصول هو 'membership'، نضع قيمة فارغة
                 $validated['required_membership_types'] = [];
             }
             
+            // تأكد من أن البيانات تُحفظ كـ JSON
+            if (isset($validated['required_membership_types']) && is_array($validated['required_membership_types'])) {
+                $validated['required_membership_types'] = array_map('intval', $validated['required_membership_types']);
+            }
+           
             // تعيين تاريخ النشر إذا كانت الصفحة منشورة لأول مرة
             if ($validated['is_published'] && !$page->is_published && !$validated['published_at']) {
                 $validated['published_at'] = now();

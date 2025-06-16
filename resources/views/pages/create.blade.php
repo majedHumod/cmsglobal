@@ -151,6 +151,7 @@
                                         <option value="user" {{ old('access_level') == 'user' ? 'selected' : '' }}>👤 المستخدمين العاديين</option>
                                         <option value="page_manager" {{ old('access_level') == 'page_manager' ? 'selected' : '' }}>📝 مديري الصفحات</option>
                                         <option value="admin" {{ old('access_level') == 'admin' ? 'selected' : '' }}>👑 المديرين فقط</option>
+                                       <option value="membership" {{ old('access_level') == 'membership' ? 'selected' : '' }}>💎 أعضاء العضويات المدفوعة</option>
                                     </select>
                                     @error('access_level')
                                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
@@ -171,7 +172,7 @@
                             </div>
                            
                            <!-- أنواع العضويات المطلوبة -->
-                           <div class="mt-6">
+                           <div class="mt-6" id="membership-types-section">
                                <label class="block text-sm font-medium text-gray-700 mb-2">أنواع العضويات المطلوبة</label>
                                <p class="text-xs text-gray-500 mb-3">حدد أنواع العضويات التي يمكنها الوصول لهذه الصفحة</p>
                                
@@ -369,16 +370,23 @@
         // إظهار/إخفاء قسم العضويات المطلوبة بناءً على مستوى الوصول
         document.addEventListener('DOMContentLoaded', function() {
             const accessLevelSelect = document.getElementById('access_level');
-            const membershipTypesContainer = document.getElementById('membership-types-container');
+            const membershipTypesSection = document.getElementById('membership-types-section');
             
-            if (accessLevelSelect && membershipTypesContainer) {
+            function updateMembershipSection() {
+                if (accessLevelSelect.value === 'membership') {
+                    membershipTypesSection.style.display = 'block';
+                } else {
+                    membershipTypesSection.style.display = 'none';
+                }
+            }
+            
+            if (accessLevelSelect && membershipTypesSection) {
                 accessLevelSelect.addEventListener('change', function() {
-                    if (this.value === 'membership') {
-                        membershipTypesContainer.style.display = 'block';
-                    } else {
-                        membershipTypesContainer.style.display = 'none';
-                    }
+                    updateMembershipSection();
                 });
+                
+                // Run once on page load
+                updateMembershipSection();
             }
         });
     </script>
