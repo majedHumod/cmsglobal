@@ -9,6 +9,9 @@ class Page extends Model
 {
     use HasFactory;
 
+    /**
+     * الحقول التي يمكن تعبئتها بشكل جماعي.
+     */
     protected $fillable = [
         'title',
         'slug',
@@ -17,208 +20,114 @@ class Page extends Model
         'meta_title',
         'meta_description',
         'featured_image',
-        'is_published',
-        'show_in_menu',
         'access_level',
+        'is_published',
         'is_premium',
-        'access_roles',
+        'show_in_menu',
         'menu_order',
+        'published_at',
         'user_id',
-        'published_at'
+        'required_membership_types',
     ];
 
+    /**
+     * تحويل الحقول إلى أنواع معينة تلقائيًا.
+     */
     protected $casts = [
         'is_published' => 'boolean',
-        'show_in_menu' => 'boolean',
         'is_premium' => 'boolean',
+        'show_in_menu' => 'boolean',
         'published_at' => 'datetime',
-        'access_roles' => 'array',
-        'required_membership_types' => 'json',
     ];
 
+    /**
+     * فك ترميز حقل required_membership_types تلقائيًا عند القراءة.
+     */
+    public function getRequiredMembershipTypesAttribute($value)
+    {
+        return json_decode($value, true) ?: [];
+    }
+
+    /**
+     * ترميز حقل required_membership_types إلى JSON عند الحفظ.
+     */
+    public function setRequiredMembershipTypesAttribute($value)
+    {
+        $this->attributes['required_membership_types'] = json_encode($value ?: []);
+    }
+
+    /**
+     * العلاقة مع المستخدم (مالك الصفحة).
+     */
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    // Scope للصفحات المنشورة
+    /**
+     * Scope لاسترجاع الصفحات المنشورة فقط.
+     */
     public function scopePublished($query)
     {
-        return $query->where('is_published', true);
+        return $query->where('is_published', true)
+                     ->where('published_at', '<=', now());
     }
 
-    // Scope للصفحات التي تظهر في القائمة
-    public function scopeInMenu($query)
-    {
-        return $query->where('show_in_menu', true)->orderBy('menu_order');
-    }
-
-    // Scope للصفحات التي يمكن للمستخدم الوصول إليها
+    /**
+     * Scope للتحقق من إمكانية الوصول حسب المستخدم.
+     */
     public function scopeAccessibleBy($query, $user = null)
     {
         if (!$user) {
+            // المستخدم غير مسجل الدخول يمكنه رؤية الصفحات العامة فقط
             return $query->where('access_level', 'public');
         }
 
+        if ($user->hasRole('admin')) {
+            return $query; // كل الصفحات
+        }
+
+        // أمثلة على التحقق من الصلاحيات
         return $query->where(function ($q) use ($user) {
             $q->where('access_level', 'public')
-              ->orWhere(function ($subQ) use ($user) {
-                  $subQ->where('access_level', 'authenticated');
+              ->orWhere(function ($q2) use ($user) {
+                  $q2->where('access_level', 'authenticated')
+                     ->whereNotNull($user->id);
               })
-              ->orWhere(function ($subQ) use ($user) {
-                  // التحقق من الأدوار المحددة
-                  if ($user->hasRole('admin')) {
-                      $subQ->where('access_level', 'admin');
-                  }
-                  if ($user->hasRole('user')) {
-                      $subQ->orWhere('access_level', 'user');
-                  }
-                  if ($user->hasRole('page_manager')) {
-                      $subQ->orWhere('access_level', 'page_manager');
-                  }
-              })
-              ->orWhere(function ($subQ) use ($user) {
-                  // التحقق من الأدوار المخصصة في access_roles
-                  $subQ->whereNotNull('access_roles');
-                  foreach ($user->roles as $role) {
-                      $subQ->orWhereJsonContains('access_roles', $role->name);
-                  }
+              ->orWhere(function ($q3) use ($user) {
+                  $q3->where('access_level', 'membership')
+                     ->whereJsonContains('required_membership_types', $user->membership_type_id);
               });
         });
     }
 
-    // التحقق من إمكانية وصول المستخدم للصفحة
+    /**
+     * تحقق ما إذا كان المستخدم يمكنه الوصول إلى الصفحة.
+     */
     public function canAccess($user = null)
     {
-        // الصفحات العامة متاحة للجميع
         if ($this->access_level === 'public') {
             return true;
         }
 
-        // إذا لم يكن هناك مستخدم مسجل دخول
         if (!$user) {
             return false;
         }
 
-        // الصفحات للمستخدمين المسجلين
-        if ($this->access_level === 'authenticated') {
-            // التحقق من العضويات المطلوبة
-            if ($this->required_membership_types && is_array($this->required_membership_types) && count($this->required_membership_types) > 0) {
-                // هنا يمكن إضافة التحقق من عضوية المستخدم
-                // لكن سنتجاهل هذا الآن حتى يتم تنفيذ نظام العضويات بالكامل
-            }
+        if ($user->hasRole('admin')) {
             return true;
         }
 
-       // التحقق من العضويات المطلوبة
-       if ($this->access_level === 'membership' && $user) {
-           if ($user->hasRole('admin')) {
-               return true; // المدراء يمكنهم الوصول لجميع الصفحات
-           }
-
-           // التحقق من وجود عضويات مطلوبة
-           if (!$this->required_membership_types || (is_array($this->required_membership_types) && empty($this->required_membership_types))) {
-               return false;
-           }
-
-           // التحقق من امتلاك المستخدم لأي من العضويات المطلوبة
-           try {
-               $membershipTypeIds = is_array($this->required_membership_types) ? $this->required_membership_types : json_decode($this->required_membership_types, true);
-               
-               if (empty($membershipTypeIds)) {
-                   return false;
-               }
-               
-               $userMemberships = \App\Models\UserMembership::where('user_id', $user->id)
-                   ->where('is_active', true)
-                   ->where('expires_at', '>', now())
-                    ->whereIn('membership_type_id', $membershipTypeIds)
-                   ->exists();
-               
-               return $userMemberships;
-           } catch (\Exception $e) {
-               \Log::error('Error checking user memberships: ' . $e->getMessage());
-               return false;
-           }
-            \Log::debug('Required membership types: ', ['types' => $this->required_membership_types]);
-       }
-
-        // التحقق من الأدوار المحددة
-        if ($this->access_level === 'admin' && $user->hasRole('admin')) {
+        if ($this->access_level === 'authenticated' && $user) {
             return true;
         }
 
-        if ($this->access_level === 'user' && $user->hasRole('user')) {
-            return true;
+        if ($this->access_level === 'membership') {
+            return in_array($user->membership_type_id, $this->required_membership_types);
         }
 
-        if ($this->access_level === 'page_manager' && $user->hasRole('page_manager')) {
-            return true;
-        }
-
-        // التحقق من الأدوار المخصصة
-        if ($this->access_roles && is_array($this->access_roles)) {
-            foreach ($this->access_roles as $role) {
-                if ($user->hasRole($role)) {
-                    return true;
-                }
-            }
-        }
-        
-        // التحقق من العضويات المطلوبة
-        if ($this->required_membership_types && is_array($this->required_membership_types) && count($this->required_membership_types) > 0) {
-            // هنا يمكن إضافة التحقق من عضوية المستخدم
-            // لكن سنتجاهل هذا الآن حتى يتم تنفيذ نظام العضويات بالكامل
-        }
+        // أضف تحقق إضافي حسب احتياجاتك
 
         return false;
-    }
-
-    // Accessor للحصول على URL الصفحة
-    public function getUrlAttribute()
-    {
-        return route('pages.show', $this->slug);
-    }
-
-    // Accessor للحصول على عنوان SEO
-    public function getSeoTitleAttribute()
-    {
-        return $this->meta_title ?: $this->title;
-    }
-
-    // Accessor للحصول على وصف SEO
-    public function getSeoDescriptionAttribute()
-    {
-        return $this->meta_description ?: $this->excerpt;
-    }
-
-    // Accessor للحصول على نص مستوى الوصول
-    public function getAccessLevelTextAttribute()
-    {
-        $levels = [
-            'public' => 'عام للجميع',
-            'authenticated' => 'المستخدمين المسجلين',
-            'admin' => 'المديرين فقط',
-            'user' => 'المستخدمين العاديين',
-            'page_manager' => 'مديري الصفحات',
-           'membership' => 'أعضاء العضويات المدفوعة',
-        ];
-
-        return $levels[$this->access_level] ?? $this->access_level;
-    }
-
-    // Accessor للحصول على أيقونة مستوى الوصول
-    public function getAccessLevelIconAttribute()
-    {
-        $icons = [
-            'public' => '🌍',
-            'authenticated' => '🔐',
-            'admin' => '👑',
-            'user' => '👤',
-            'page_manager' => '📝',
-           'membership' => '💎',
-        ];
-
-        return $icons[$this->access_level] ?? '🔒';
     }
 }

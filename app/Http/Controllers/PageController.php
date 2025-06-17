@@ -36,7 +36,7 @@ class PageController extends Controller
     public function store(Request $request)
     {
         Log::info('Page store method called', ['request_data' => $request->all()]);
-        
+
         try {
             $validated = $request->validate([
                 'title' => 'required|max:255',
@@ -81,16 +81,11 @@ class PageController extends Controller
             $validated['show_in_menu'] = $request->has('show_in_menu') ? 1 : 0;
             $validated['is_premium'] = $request->has('is_premium') ? 1 : 0;
             
-            // معالجة أنواع العضويات المطلوبة
+            // تخزين required_membership_types كنص JSON
             if ($request->has('required_membership_types')) {
-                $validated['required_membership_types'] = $request->required_membership_types;
+                $validated['required_membership_types'] = json_encode(array_map('intval', $request->required_membership_types));
             } else {
-                $validated['required_membership_types'] = [];
-            }
-            
-            // تأكد من أن البيانات تُحفظ كـ JSON
-            if (isset($validated['required_membership_types']) && is_array($validated['required_membership_types'])) {
-                $validated['required_membership_types'] = array_map('intval', $validated['required_membership_types']);
+                $validated['required_membership_types'] = json_encode([]);
             }
            
             // تعيين تاريخ النشر إذا كانت الصفحة منشورة
@@ -196,16 +191,11 @@ class PageController extends Controller
             $validated['show_in_menu'] = $request->has('show_in_menu') ? 1 : 0;
             $validated['is_premium'] = $request->has('is_premium') ? 1 : 0;
 
-            // معالجة أنواع العضويات المطلوبة
+            // تخزين required_membership_types كنص JSON
             if ($request->has('required_membership_types')) {
-                $validated['required_membership_types'] = $request->required_membership_types;
+                $validated['required_membership_types'] = json_encode(array_map('intval', $request->required_membership_types));
             } else {
-                $validated['required_membership_types'] = [];
-            }
-            
-            // تأكد من أن البيانات تُحفظ كـ JSON
-            if (isset($validated['required_membership_types']) && is_array($validated['required_membership_types'])) {
-                $validated['required_membership_types'] = array_map('intval', $validated['required_membership_types']);
+                $validated['required_membership_types'] = json_encode([]);
             }
            
             // تعيين تاريخ النشر إذا كانت الصفحة منشورة لأول مرة
