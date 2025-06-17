@@ -134,12 +134,25 @@
         
         .membership-card {
             transition: all 0.3s ease;
-            border: 1px solid #e5e7eb;
+            border: 1px solid #e5e7eb;            
+            display: flex;
+            flex-direction: column;
+            height: 100%;
         }
         
         .membership-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .membership-card .p-6 {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .membership-card ul {
+            margin-bottom: auto;
         }
         
         @media (max-width: 768px) {
@@ -271,12 +284,12 @@
     <!-- Membership Types Section -->
     <section class="bg-gray-50 py-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-12">
+            <div class="text-center mb-10">
                 <h2 class="text-3xl font-bold text-gray-900">خطط العضوية</h2>
                 <p class="mt-4 text-xl text-gray-600">اختر الخطة المناسبة لاحتياجاتك</p>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
                 @php
                     try {
                         $membershipTypes = \App\Models\MembershipType::where('is_active', true)
@@ -290,8 +303,8 @@
                 @endphp
                 
                 @forelse($membershipTypes as $membershipType)
-                    <div class="bg-white rounded-lg overflow-hidden shadow-sm membership-card">
-                        <div class="p-6">
+                    <div class="bg-white rounded-lg overflow-hidden shadow-sm membership-card flex flex-col h-full">
+                        <div class="p-6 flex flex-col h-full">
                             <h3 class="text-2xl font-bold text-gray-900 mb-2">{{ $membershipType->name }}</h3>
                             
                             @if($membershipType->description)
@@ -302,7 +315,7 @@
                                 <span class="text-4xl font-bold text-indigo-600">{{ $membershipType->formatted_price }}</span>
                                 <span class="text-gray-500 mr-2">/ {{ $membershipType->duration_text }}</span>
                             </div>
-                            
+
                             @if($membershipType->features && is_array($membershipType->features) && count($membershipType->features) > 0)
                                 <ul class="space-y-3 mb-6">
                                     @foreach($membershipType->features as $feature)
@@ -315,8 +328,8 @@
                                     @endforeach
                                 </ul>
                             @endif
-                            
-                            <a href="{{ route('register') }}" class="block w-full text-center bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-md transition-colors">
+
+                            <a href="{{ route('register') }}" class="block w-full text-center bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-md transition-colors mt-auto">
                                 اشترك الآن
                             </a>
                         </div>
