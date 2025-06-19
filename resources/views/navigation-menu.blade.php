@@ -90,7 +90,7 @@
                                         }
                                     }
                                 })
-                                ->orderBy('menu_order')
+                                ->orderBy('menu_order');
                             $menuPages = \App\Models\Page::where('show_in_menu', true)
                                 ->where('is_published', true)
                                 ->where(function($query) {
