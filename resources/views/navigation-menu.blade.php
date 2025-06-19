@@ -54,7 +54,81 @@
                     <!-- Dynamic Pages from Database -->
                     @php
                         try {
-                            $menuPages = \App\Models\Page::inMenu()->published()->accessibleBy(auth()->user())->get();
+                            $menuPages = \App\Models\Page::where('show_in_menu', true)
+                                ->where('is_published', true)
+                                ->where(function($query) {
+                                    $user = auth()->user();
+                                    
+                                    // الصفحات العامة
+                                    $query->where('access_level', 'public');
+                                    
+                                    if ($user) {
+                                        // المستخدمين المسجلين
+                                        $query->orWhere('access_level', 'authenticated');
+                                        
+                                        // المستخدمين العاديين
+                                        if ($user->hasRole('user')) {
+                                            $query->orWhere('access_level', 'user');
+                                        }
+                                        
+                                        // مديري الصفحات
+                                        if ($user->hasRole('page_manager')) {
+                                            $query->orWhere('access_level', 'page_manager');
+                                        }
+                                        
+                                        // المديرين
+                                        if ($user->hasRole('admin')) {
+                                            $query->orWhere('access_level', 'admin');
+                                        }
+                                        
+                                        // العضويات المدفوعة
+                                        if ($user->membership_type_id) {
+                                            $query->orWhere(function($q) use ($user) {
+                                                $q->where('access_level', 'membership')
+                                                  ->whereRaw('JSON_CONTAINS(required_membership_types, ?)', [json_encode($user->membership_type_id)]);
+                                            });
+                                        }
+                                    }
+                                })
+                                ->orderBy('menu_order')
+                            $menuPages = \App\Models\Page::where('show_in_menu', true)
+                                ->where('is_published', true)
+                                ->where(function($query) {
+                                    $user = auth()->user();
+                                    
+                                    // الصفحات العامة
+                                    $query->where('access_level', 'public');
+                                    
+                                    if ($user) {
+                                        // المستخدمين المسجلين
+                                        $query->orWhere('access_level', 'authenticated');
+                                        
+                                        // المستخدمين العاديين
+                                        if ($user->hasRole('user')) {
+                                            $query->orWhere('access_level', 'user');
+                                        }
+                                        
+                                        // مديري الصفحات
+                                        if ($user->hasRole('page_manager')) {
+                                            $query->orWhere('access_level', 'page_manager');
+                                        }
+                                        
+                                        // المديرين
+                                        if ($user->hasRole('admin')) {
+                                            $query->orWhere('access_level', 'admin');
+                                        }
+                                        
+                                        // العضويات المدفوعة
+                                        if ($user->membership_type_id) {
+                                            $query->orWhere(function($q) use ($user) {
+                                                $q->where('access_level', 'membership')
+                                                  ->whereRaw('JSON_CONTAINS(required_membership_types, ?)', [json_encode($user->membership_type_id)]);
+                                            });
+                                        }
+                                    }
+                                })
+                                ->orderBy('menu_order')
+                                ->get();
                         } catch (\Exception $e) {
                             $menuPages = collect();
                         }

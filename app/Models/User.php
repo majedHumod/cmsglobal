@@ -60,11 +60,45 @@ class User extends Authenticatable
      *
      * @return array<string, string>
      */
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
     protected function casts(): array
     {
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'membership_type_id' => 'integer',
         ];
+    }
+
+    /**
+     * العلاقة مع نوع العضوية
+     */
+    public function membershipType()
+    {
+        return $this->belongsTo(MembershipType::class);
+    }
+
+    /**
+     * العلاقة مع اشتراكات المستخدم
+     */
+    public function memberships()
+    {
+        return $this->hasMany(UserMembership::class);
+    }
+
+    /**
+     * الحصول على الاشتراك النشط للمستخدم
+     */
+    public function activeMembership()
+    {
+        return $this->memberships()
+            ->where('is_active', true)
+            ->where('expires_at', '>', now())
+            ->latest()
+            ->first();
     }
 }

@@ -74,6 +74,14 @@ class Page extends Model
     }
 
     /**
+     * Scope لاسترجاع الصفحات التي تظهر في القائمة.
+     */
+    public function scopeInMenu($query)
+    {
+        return $query->where('show_in_menu', true);
+    }
+
+    /**
      * Scope للتحقق من إمكانية الوصول حسب المستخدم.
      */
     public function scopeAccessibleBy($query, $user = null)
@@ -129,5 +137,37 @@ class Page extends Model
         // أضف تحقق إضافي حسب احتياجاتك
 
         return false;
+    }
+
+    /**
+     * الحصول على أيقونة مستوى الوصول للعرض في القائمة
+     */
+    public function getAccessLevelIconAttribute()
+    {
+        return match($this->access_level) {
+            'public' => '🌍',
+            'authenticated' => '🔐',
+            'user' => '👤',
+            'page_manager' => '📝',
+            'admin' => '👑',
+            'membership' => '💎',
+            default => '📄'
+        };
+    }
+
+    /**
+     * الحصول على نص مستوى الوصول للعرض
+     */
+    public function getAccessLevelTextAttribute()
+    {
+        return match($this->access_level) {
+            'public' => 'عام للجميع',
+            'authenticated' => 'المستخدمين المسجلين',
+            'user' => 'المستخدمين العاديين',
+            'page_manager' => 'مديري الصفحات',
+            'admin' => 'المديرين فقط',
+            'membership' => 'أعضاء العضويات المدفوعة',
+            default => 'غير محدد'
+        };
     }
 }
