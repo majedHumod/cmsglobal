@@ -53,7 +53,7 @@
 
                     <!-- Dynamic Pages from Database -->
                     @php
-                            // جلب جميع الصفحات التي تظهر في القائمة والمنشورة
+                         try{   // جلب جميع الصفحات التي تظهر في القائمة والمنشورة
                             $allMenuPages = \App\Models\Page::where('show_in_menu', true)
                                            ->where('is_published', true)
                                            ->orderBy('menu_order')
