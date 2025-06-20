@@ -5,15 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ $landingPage->meta_title ?? $landingPage->title }} - {{ isset($siteSettings['general']['site_name']) ? $siteSettings['general']['site_name'] : config('app.name', 'Laravel') }}</title>
+    <title>{{ $landingPage->meta_title ?? $landingPage->title }} - {{ \App\Models\SiteSetting::get('site_name', config('app.name', 'Laravel')) }}</title>
     
     @if($landingPage->meta_description)
         <meta name="description" content="{{ $landingPage->meta_description }}">
     @endif
 
     <!-- Favicon -->
-    @if(isset($siteSettings['general']['site_favicon']) && $siteSettings['general']['site_favicon'])
-        <link rel="icon" href="{{ Storage::url($siteSettings['general']['site_favicon']) }}" type="image/x-icon">
+    @php
+        $siteFavicon = \App\Models\SiteSetting::get('site_favicon');
+    @endphp
+    @if($siteFavicon)
+        <link rel="icon" href="{{ Storage::url($siteFavicon) }}" type="image/x-icon">
     @endif
 
     <!-- Fonts -->
@@ -24,11 +27,14 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <!-- Custom Colors -->
-    @if(isset($siteSettings['general']['primary_color']) || isset($siteSettings['general']['secondary_color']))
+    @php
+        $primaryColor = \App\Models\SiteSetting::get('primary_color', '#6366f1');
+        $secondaryColor = \App\Models\SiteSetting::get('secondary_color', '#10b981');
+    @endphp
     <style>
         :root {
-            --primary-color: {{ $siteSettings['general']['primary_color'] ?? '#6366f1' }};
-            --secondary-color: {{ $siteSettings['general']['secondary_color'] ?? '#10b981' }};
+            --primary-color: {{ $primaryColor }};
+            --secondary-color: {{ $secondaryColor }};
         }
         
         .bg-primary {
@@ -55,7 +61,6 @@
             border-color: var(--secondary-color);
         }
     </style>
-    @endif
     
     <!-- Custom Styles for Landing Page -->
     <style>
@@ -177,13 +182,17 @@
             <div class="flex justify-between h-16">
                 <!-- Logo and Site Name -->
                 <div class="flex items-center">
-                    @if(isset($siteSettings['general']['site_logo']) && $siteSettings['general']['site_logo'])
+                    @php
+                        $siteLogo = \App\Models\SiteSetting::get('site_logo');
+                        $siteName = \App\Models\SiteSetting::get('site_name', config('app.name', 'Laravel'));
+                    @endphp
+                    @if($siteLogo)
                         <a href="{{ route('home') }}" class="flex-shrink-0 flex items-center">
-                            <img class="h-8 w-auto" src="{{ Storage::url($siteSettings['general']['site_logo']) }}" alt="{{ $siteSettings['general']['site_name'] ?? config('app.name') }}">
+                            <img class="h-8 w-auto" src="{{ Storage::url($siteLogo) }}" alt="{{ $siteName }}">
                         </a>
                     @else
                         <a href="{{ route('home') }}" class="flex-shrink-0 flex items-center">
-                            <span class="text-xl font-bold text-indigo-600">{{ $siteSettings['general']['site_name'] ?? config('app.name') }}</span>
+                            <span class="text-xl font-bold text-indigo-600">{{ $siteName }}</span>
                         </a>
                     @endif
                 </div>
@@ -303,6 +312,12 @@
         <!-- Mobile menu, show/hide based on menu state -->
         <div class="hidden md:hidden" id="mobile-menu">
             <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                @foreach($menuPages as $menuPage)
+                    <a href="{{ route('pages.show', $menuPage->slug) }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
+                        {{ $menuPage->access_level_icon }} {{ $menuPage->title }}
+                    </a>
+                @endforeach
+                
                 <a href="{{ route('pages.public') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">الصفحات</a>
                 <a href="{{ route('meal-plans.public') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">الوجبات</a>
                 
@@ -514,14 +529,8 @@
                                 class="px-6 pb-4 text-gray-600"
                             >
                                 <p>العضوية المدفوعة توفر لك مجموعة من المميزات الحصرية مثل الوصول إلى محتوى متميز، وجداول غذائية مخصصة، ودعم فني أولوي، بالإضافة إلى تحديثات منتظمة للمحتوى. يمكنك الاطلاع على تفاصيل كل خطة عضوية لمعرفة المميزات المحددة التي تقدمها.</p>
-                        @foreach($menuPages as $menuPage)
-                            <a href="{{ route('pages.show', $menuPage->slug) }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
-                                {{ $menuPage->access_level_icon }} {{ $menuPage->title }}
-                            </a>
-                        @endforeach
-                        
-                        <a href="{{ route('pages.public') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">الصفحات</a>
-                        <a href="{{ route('meal-plans.public') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">الوجبات</a>
+                            </div>
+                        </div>
                         
                         <div class="bg-white rounded-lg shadow-sm overflow-hidden">
                             <button 
