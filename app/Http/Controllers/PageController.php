@@ -84,6 +84,8 @@ class PageController extends Controller
             // تخزين required_membership_types كنص JSON
             if ($request->has('required_membership_types')) {
                 $validated['required_membership_types'] = json_encode(array_map('intval', $request->required_membership_types));
+            } else if ($validated['access_level'] === 'membership') {
+                return back()->withInput()->withErrors(['required_membership_types' => 'يجب اختيار نوع عضوية واحد على الأقل عند اختيار مستوى الوصول "أعضاء العضويات المدفوعة"']);
             } else {
                 $validated['required_membership_types'] = json_encode([]);
             }
@@ -194,6 +196,8 @@ class PageController extends Controller
             // تخزين required_membership_types كنص JSON
             if ($request->has('required_membership_types')) {
                 $validated['required_membership_types'] = json_encode(array_map('intval', $request->required_membership_types));
+            } else if ($validated['access_level'] === 'membership') {
+                return back()->withInput()->withErrors(['required_membership_types' => 'يجب اختيار نوع عضوية واحد على الأقل عند اختيار مستوى الوصول "أعضاء العضويات المدفوعة"']);
             } else {
                 $validated['required_membership_types'] = json_encode([]);
             }

@@ -371,12 +371,21 @@
         document.addEventListener('DOMContentLoaded', function() {
             const accessLevelSelect = document.getElementById('access_level');
             const membershipTypesSection = document.getElementById('membership-types-section');
+            const membershipCheckboxes = document.querySelectorAll('input[name="required_membership_types[]"]');
             
             function updateMembershipSection() {
                 if (accessLevelSelect.value === 'membership') {
                     membershipTypesSection.style.display = 'block';
+                    // Make at least one checkbox required when membership is selected
+                    membershipCheckboxes.forEach(checkbox => {
+                        checkbox.setAttribute('required', 'required');
+                    });
                 } else {
                     membershipTypesSection.style.display = 'none';
+                    // Remove required attribute when membership is not selected
+                    membershipCheckboxes.forEach(checkbox => {
+                        checkbox.removeAttribute('required');
+                    });
                 }
             }
             
@@ -387,6 +396,20 @@
                 
                 // Run once on page load
                 updateMembershipSection();
+            }
+            
+            // Make checkboxes behave as a group for the required attribute
+            if (membershipCheckboxes.length > 0) {
+                membershipCheckboxes.forEach(checkbox => {
+                    checkbox.addEventListener('change', function() {
+                        const anyChecked = Array.from(membershipCheckboxes).some(cb => cb.checked);
+                        if (anyChecked) {
+                            membershipCheckboxes.forEach(cb => cb.removeAttribute('required'));
+                        } else if (accessLevelSelect.value === 'membership') {
+                            membershipCheckboxes.forEach(cb => cb.setAttribute('required', 'required'));
+                        }
+                    });
+                });
             }
         });
     </script>
