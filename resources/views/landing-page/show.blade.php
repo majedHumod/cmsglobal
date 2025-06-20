@@ -190,6 +190,70 @@
                 
                 <!-- Navigation Links -->
                 <div class="hidden md:flex md:items-center md:space-x-4">
+                    @php
+                        try {
+                            // جلب جميع الصفحات التي تظهر في القائمة والمنشورة
+                            $allMenuPages = \App\Models\Page::where('show_in_menu', true)
+                                           ->where('is_published', true)
+                                           ->orderBy('menu_order')
+                                           ->get();
+                            
+                            // تصفية الصفحات بناءً على صلاحيات المستخدم
+                            $user = auth()->user();
+                            $menuPages = $allMenuPages->filter(function($page) use ($user) {
+                                // الصفحات العامة متاحة للجميع
+                                if ($page->access_level === 'public') {
+                                    return true;
+                                }
+                                
+                                // إذا لم يكن المستخدم مسجل الدخول
+                                if (!$user) {
+                                    return false;
+                                }
+                                
+                                // المستخدمين المسجلين
+                                if ($page->access_level === 'authenticated') {
+                                    return true;
+                                }
+                                
+                                // المستخدمين العاديين
+                                if ($page->access_level === 'user' && $user->hasRole('user')) {
+                                    return true;
+                                }
+                                
+                                // مديري الصفحات
+                                if ($page->access_level === 'page_manager' && $user->hasRole('page_manager')) {
+                                    return true;
+                                }
+                                
+                                // المديرين
+                                if ($page->access_level === 'admin' && $user->hasRole('admin')) {
+                                    return true;
+                                }
+                                
+                                // العضويات المدفوعة
+                                if ($page->access_level === 'membership' && $user->membership_type_id) {
+                                    $requiredTypes = $page->required_membership_types;
+                                    if (is_string($requiredTypes)) {
+                                        $requiredTypes = json_decode($requiredTypes, true) ?: [];
+                                    }
+                                    
+                                    return in_array($user->membership_type_id, $requiredTypes);
+                                }
+                                
+                                return false;
+                            });
+                        } catch (\Exception $e) {
+                            $menuPages = collect();
+                        }
+                    @endphp
+                    
+                    @foreach($menuPages as $menuPage)
+                        <a href="{{ route('pages.show', $menuPage->slug) }}" class="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">
+                            {{ $menuPage->access_level_icon }} {{ $menuPage->title }}
+                        </a>
+                    @endforeach
+                    
                     <a href="{{ route('pages.public') }}" class="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">الصفحات</a>
                     <a href="{{ route('meal-plans.public') }}" class="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">الوجبات</a>
                     
@@ -329,7 +393,7 @@
                                 </ul>
                             @endif
 
-                            <a href="{{ route('register') }}" class="block w-full text-center bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-md transition-colors mt-auto">
+                            <a href="{{ route('register') }}" class="block w-full text-center bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-md transition-colors">
                                 اشترك الآن
                             </a>
                         </div>
@@ -405,7 +469,7 @@
                 }">
                     @php
                         try {
-                            $faqs = \App\Models\Faq::active()->ordered()->take(8)->get();
+                            $faqs = \App\Models\Faq::active()->ordered()->take(6)->get();
                         } catch (\Exception $e) {
                             $faqs = collect([]);
                         }
@@ -450,8 +514,14 @@
                                 class="px-6 pb-4 text-gray-600"
                             >
                                 <p>العضوية المدفوعة توفر لك مجموعة من المميزات الحصرية مثل الوصول إلى محتوى متميز، وجداول غذائية مخصصة، ودعم فني أولوي، بالإضافة إلى تحديثات منتظمة للمحتوى. يمكنك الاطلاع على تفاصيل كل خطة عضوية لمعرفة المميزات المحددة التي تقدمها.</p>
-                            </div>
-                        </div>
+                        @foreach($menuPages as $menuPage)
+                            <a href="{{ route('pages.show', $menuPage->slug) }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
+                                {{ $menuPage->access_level_icon }} {{ $menuPage->title }}
+                            </a>
+                        @endforeach
+                        
+                        <a href="{{ route('pages.public') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">الصفحات</a>
+                        <a href="{{ route('meal-plans.public') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">الوجبات</a>
                         
                         <div class="bg-white rounded-lg shadow-sm overflow-hidden">
                             <button 
