@@ -53,82 +53,57 @@
 
                     <!-- Dynamic Pages from Database -->
                     @php
-                        try {
-                            $menuPages = \App\Models\Page::where('show_in_menu', true)
-                                ->where('is_published', true)
-                                ->where(function($query) {
-                                    $user = auth()->user();
-                                    
-                                    // الصفحات العامة
-                                    $query->where('access_level', 'public');
-                                    
-                                    if ($user) {
-                                        // المستخدمين المسجلين
-                                        $query->orWhere('access_level', 'authenticated');
-                                        
-                                        // المستخدمين العاديين
-                                        if ($user->hasRole('user')) {
-                                            $query->orWhere('access_level', 'user');
-                                        }
-                                        
-                                        // مديري الصفحات
-                                        if ($user->hasRole('page_manager')) {
-                                            $query->orWhere('access_level', 'page_manager');
-                                        }
-                                        
-                                        // المديرين
-                                        if ($user->hasRole('admin')) {
-                                            $query->orWhere('access_level', 'admin');
-                                        }
-                                        
-                                        // العضويات المدفوعة
-                                        if ($user->membership_type_id) {
-                                            $query->orWhere(function($q) use ($user) {
-                                                $q->where('access_level', 'membership')
-                                                  ->whereRaw('JSON_CONTAINS(required_membership_types, ?)', [json_encode($user->membership_type_id)]);
-                                            });
-                                        }
+                            // جلب جميع الصفحات التي تظهر في القائمة والمنشورة
+                            $allMenuPages = \App\Models\Page::where('show_in_menu', true)
+                                           ->where('is_published', true)
+                                           ->orderBy('menu_order')
+                                           ->get();
+                            
+                            // تصفية الصفحات بناءً على صلاحيات المستخدم
+                            $user = auth()->user();
+                            $menuPages = $allMenuPages->filter(function($page) use ($user) {
+                                // الصفحات العامة متاحة للجميع
+                                if ($page->access_level === 'public') {
+                                    return true;
+                                }
+                                
+                                // إذا لم يكن المستخدم مسجل الدخول
+                                if (!$user) {
+                                    return false;
+                                }
+                                
+                                // المستخدمين المسجلين
+                                if ($page->access_level === 'authenticated') {
+                                    return true;
+                                }
+                                
+                                // المستخدمين العاديين
+                                if ($page->access_level === 'user' && $user->hasRole('user')) {
+                                    return true;
+                                }
+                                
+                                // مديري الصفحات
+                                if ($page->access_level === 'page_manager' && $user->hasRole('page_manager')) {
+                                    return true;
+                                }
+                                
+                                // المديرين
+                                if ($page->access_level === 'admin' && $user->hasRole('admin')) {
+                                    return true;
+                                }
+                                
+                                // العضويات المدفوعة
+                                if ($page->access_level === 'membership' && $user->membership_type_id) {
+                                    $requiredTypes = $page->required_membership_types;
+                                    if (is_string($requiredTypes)) {
+                                        $requiredTypes = json_decode($requiredTypes, true) ?: [];
                                     }
-                                })
-                                ->orderBy('menu_order');
-                            $menuPages = \App\Models\Page::where('show_in_menu', true)
-                                ->where('is_published', true)
-                                ->where(function($query) {
-                                    $user = auth()->user();
                                     
-                                    // الصفحات العامة
-                                    $query->where('access_level', 'public');
-                                    
-                                    if ($user) {
-                                        // المستخدمين المسجلين
-                                        $query->orWhere('access_level', 'authenticated');
-                                        
-                                        // المستخدمين العاديين
-                                        if ($user->hasRole('user')) {
-                                            $query->orWhere('access_level', 'user');
-                                        }
-                                        
-                                        // مديري الصفحات
-                                        if ($user->hasRole('page_manager')) {
-                                            $query->orWhere('access_level', 'page_manager');
-                                        }
-                                        
-                                        // المديرين
-                                        if ($user->hasRole('admin')) {
-                                            $query->orWhere('access_level', 'admin');
-                                        }
-                                        
-                                        // العضويات المدفوعة
-                                        if ($user->membership_type_id) {
-                                            $query->orWhere(function($q) use ($user) {
-                                                $q->where('access_level', 'membership')
-                                                  ->whereRaw('JSON_CONTAINS(required_membership_types, ?)', [json_encode($user->membership_type_id)]);
-                                            });
-                                        }
-                                    }
-                                })
-                                ->orderBy('menu_order')
-                                ->get();
+                                    return in_array($user->membership_type_id, $requiredTypes);
+                                }
+                                
+                                return false;
+                            });
                         } catch (\Exception $e) {
                             $menuPages = collect();
                         }
@@ -312,7 +287,60 @@
             <!-- Responsive Dynamic Pages from Database -->
             @php
                 try {
-                    $menuPages = \App\Models\Page::inMenu()->published()->accessibleBy(auth()->user())->get();
+                    // استخدم نفس المنطق المستخدم في القائمة الرئيسية
+                    if (!isset($menuPages)) {
+                        // جلب جميع الصفحات التي تظهر في القائمة والمنشورة
+                        $allMenuPages = \App\Models\Page::where('show_in_menu', true)
+                                       ->where('is_published', true)
+                                       ->orderBy('menu_order')
+                                       ->get();
+                        
+                        // تصفية الصفحات بناءً على صلاحيات المستخدم
+                        $user = auth()->user();
+                        $menuPages = $allMenuPages->filter(function($page) use ($user) {
+                            // الصفحات العامة متاحة للجميع
+                            if ($page->access_level === 'public') {
+                                return true;
+                            }
+                            
+                            // إذا لم يكن المستخدم مسجل الدخول
+                            if (!$user) {
+                                return false;
+                            }
+                            
+                            // المستخدمين المسجلين
+                            if ($page->access_level === 'authenticated') {
+                                return true;
+                            }
+                            
+                            // المستخدمين العاديين
+                            if ($page->access_level === 'user' && $user->hasRole('user')) {
+                                return true;
+                            }
+                            
+                            // مديري الصفحات
+                            if ($page->access_level === 'page_manager' && $user->hasRole('page_manager')) {
+                                return true;
+                            }
+                            
+                            // المديرين
+                            if ($page->access_level === 'admin' && $user->hasRole('admin')) {
+                                return true;
+                            }
+                            
+                            // العضويات المدفوعة
+                            if ($page->access_level === 'membership' && $user->membership_type_id) {
+                                $requiredTypes = $page->required_membership_types;
+                                if (is_string($requiredTypes)) {
+                                    $requiredTypes = json_decode($requiredTypes, true) ?: [];
+                                }
+                                
+                                return in_array($user->membership_type_id, $requiredTypes);
+                            }
+                            
+                            return false;
+                        });
+                    }
                 } catch (\Exception $e) {
                     $menuPages = collect();
                 }

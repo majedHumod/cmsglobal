@@ -53,7 +53,18 @@ class Page extends Model
      */
     public function setRequiredMembershipTypesAttribute($value)
     {
-        $this->attributes['required_membership_types'] = json_encode($value ?: []);
+        // تحويل القيم إلى أرقام صحيحة وتأكد من أنها مصفوفة
+        if (is_array($value)) {
+            $value = array_map('intval', $value);
+        } else if (is_string($value) && !empty($value)) {
+            // إذا كانت سلسلة نصية، حاول تحويلها إلى مصفوفة
+            $decoded = json_decode($value, true);
+            $value = is_array($decoded) ? array_map('intval', $decoded) : [];
+        } else {
+            $value = [];
+        }
+        
+        $this->attributes['required_membership_types'] = json_encode($value);
     }
 
     /**
@@ -129,9 +140,28 @@ class Page extends Model
         if ($this->access_level === 'authenticated' && $user) {
             return true;
         }
+        
+        if ($this->access_level === 'user' && $user->hasRole('user')) {
+            return true;
+        }
+        
+        if ($this->access_level === 'page_manager' && $user->hasRole('page_manager')) {
+            return true;
+        }
 
         if ($this->access_level === 'membership') {
-            return in_array($user->membership_type_id, $this->required_membership_types);
+            // تحقق من وجود نوع العضوية للمستخدم
+            if (!$user->membership_type_id) {
+                return false;
+            }
+            
+            // تحويل required_membership_types إلى مصفوفة إذا كان نصًا
+            $requiredTypes = $this->required_membership_types;
+            if (is_string($requiredTypes)) {
+                $requiredTypes = json_decode($requiredTypes, true) ?: [];
+            }
+            
+            return in_array($user->membership_type_id, $requiredTypes);
         }
 
         // أضف تحقق إضافي حسب احتياجاتك
