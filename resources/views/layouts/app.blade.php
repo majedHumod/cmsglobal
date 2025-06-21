@@ -5,11 +5,14 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ isset($siteSettings['general']['site_name']) ? $siteSettings['general']['site_name'] : config('app.name', 'Laravel') }} - @yield('title', '')</title>
+        <title>{{ \App\Models\SiteSetting::get('site_name', config('app.name', 'Laravel')) }} - @yield('title', '')</title>
 
         <!-- Favicon -->
-        @if(isset($siteSettings['general']['site_favicon']) && $siteSettings['general']['site_favicon'])
-            <link rel="icon" href="{{ Storage::url($siteSettings['general']['site_favicon']) }}" type="image/x-icon">
+        @php
+            $siteFavicon = \App\Models\SiteSetting::get('site_favicon');
+        @endphp
+        @if($siteFavicon)
+            <link rel="icon" href="{{ Storage::url($siteFavicon) }}" type="image/x-icon">
         @endif
 
         <!-- Fonts -->
@@ -23,11 +26,14 @@
         @livewireStyles
         
         <!-- Custom Colors -->
-        @if(isset($siteSettings['general']['primary_color']) || isset($siteSettings['general']['secondary_color']))
+        @php
+            $primaryColor = \App\Models\SiteSetting::get('primary_color', '#6366f1');
+            $secondaryColor = \App\Models\SiteSetting::get('secondary_color', '#10b981');
+        @endphp
         <style>
             :root {
-                --primary-color: {{ $siteSettings['general']['primary_color'] ?? '#6366f1' }};
-                --secondary-color: {{ $siteSettings['general']['secondary_color'] ?? '#10b981' }};
+                --primary-color: {{ $primaryColor }};
+                --secondary-color: {{ $secondaryColor }};
             }
             
             .bg-primary {
@@ -54,17 +60,16 @@
                 border-color: var(--secondary-color);
             }
         </style>
-        @endif
     </head>
     <body class="font-sans antialiased">
         <x-banner />
 
         <div class="min-h-screen bg-gray-100">
             <!-- Site Header with Contact Info and Social Media -->
-            <x-site-header />
+            @include('layouts.header')
             
             <!-- Navigation Menu -->
-            @livewire('navigation-menu')
+            @include('layouts.navigation')
 
             <!-- Page Heading -->
             @if (isset($header))
@@ -84,7 +89,7 @@
             </main>
             
             <!-- Site Footer with Contact Info and Social Media -->
-            <x-site-footer />
+            @include('layouts.footer')
         </div>
 
         @stack('modals')

@@ -5,11 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ isset($siteSettings['general']['site_name']) ? $siteSettings['general']['site_name'] : config('app.name', 'Laravel') }} - @yield('title', 'لوحة التحكم')</title>
+    <title>{{ \App\Models\SiteSetting::get('site_name', config('app.name', 'Laravel')) }} - @yield('title', 'لوحة التحكم')</title>
 
     <!-- Favicon -->
-    @if(isset($siteSettings['general']['site_favicon']) && $siteSettings['general']['site_favicon'])
-        <link rel="icon" href="{{ Storage::url($siteSettings['general']['site_favicon']) }}" type="image/x-icon">
+    @php
+        $siteFavicon = \App\Models\SiteSetting::get('site_favicon');
+    @endphp
+    @if($siteFavicon)
+        <link rel="icon" href="{{ Storage::url($siteFavicon) }}" type="image/x-icon">
     @endif
 
     <!-- Fonts -->
@@ -23,11 +26,14 @@
     @livewireStyles
     
     <!-- Custom Colors -->
-    @if(isset($siteSettings['general']['primary_color']) || isset($siteSettings['general']['secondary_color']))
+    @php
+        $primaryColor = \App\Models\SiteSetting::get('primary_color', '#6366f1');
+        $secondaryColor = \App\Models\SiteSetting::get('secondary_color', '#10b981');
+    @endphp
     <style>
         :root {
-            --primary-color: {{ $siteSettings['general']['primary_color'] ?? '#6366f1' }};
-            --secondary-color: {{ $siteSettings['general']['secondary_color'] ?? '#10b981' }};
+            --primary-color: {{ $primaryColor }};
+            --secondary-color: {{ $secondaryColor }};
         }
         
         .bg-primary {
@@ -54,7 +60,6 @@
             border-color: var(--secondary-color);
         }
     </style>
-    @endif
     
     <style>
         /* RTL Support */
@@ -68,14 +73,9 @@
         
         /* Custom Styles */
         .sidebar-item.active {
-            background-color: rgba(99, 102, 241, 0.1);
-            border-right: 3px solid #6366f1;
-            color: #6366f1;
-        }
-        
-        [dir="rtl"] .sidebar-item.active {
-            border-right: none;
-            border-left: 3px solid #6366f1;
+            background-color: rgba(99, 102, 241, 0.1) !important;
+            border-left: 3px solid #6366f1 !important;
+            color: #6366f1 !important;
         }
         
         .sidebar-item:hover {
@@ -87,10 +87,6 @@
         }
         
         .sidebar-item:hover .sidebar-icon {
-            transform: translateX(4px);
-        }
-        
-        [dir="rtl"] .sidebar-item:hover .sidebar-icon {
             transform: translateX(-4px);
         }
         
@@ -123,7 +119,7 @@
                 <div class="flex items-center justify-between">
                     <div class="flex items-center justify-start">
                         <!-- Mobile Sidebar Toggle -->
-                        <button id="toggleSidebarMobile" aria-expanded="true" aria-controls="sidebar" class="lg:hidden mr-2 text-gray-600 hover:text-gray-900 cursor-pointer p-2 hover:bg-gray-100 focus:bg-gray-100 focus:ring-2 focus:ring-gray-100 rounded">
+                        <button id="toggleSidebarMobile" aria-expanded="true" aria-controls="sidebar" class="lg:hidden ml-2 text-gray-600 hover:text-gray-900 cursor-pointer p-2 hover:bg-gray-100 focus:bg-gray-100 focus:ring-2 focus:ring-gray-100 rounded">
                             <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                 <path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path>
                             </svg>
@@ -131,14 +127,18 @@
                         
                         <!-- Logo -->
                         <a href="{{ route('dashboard') }}" class="text-xl font-bold flex items-center lg:ml-2.5">
-                            @if(isset($siteSettings['general']['site_logo']) && $siteSettings['general']['site_logo'])
-                                <img src="{{ Storage::url($siteSettings['general']['site_logo']) }}" class="h-8 mr-2" alt="{{ $siteSettings['general']['site_name'] ?? config('app.name') }}">
+                            @php
+                                $siteLogo = \App\Models\SiteSetting::get('site_logo');
+                                $siteName = \App\Models\SiteSetting::get('site_name', config('app.name', 'Laravel'));
+                            @endphp
+                            @if($siteLogo)
+                                <img src="{{ Storage::url($siteLogo) }}" class="h-8 ml-2" alt="{{ $siteName }}">
                             @endif
-                            <span class="self-center whitespace-nowrap text-indigo-600">{{ $siteSettings['general']['site_name'] ?? config('app.name') }}</span>
+                            <span class="self-center whitespace-nowrap text-indigo-600">{{ $siteName }}</span>
                         </a>
                         
                         <!-- Breadcrumb -->
-                        <nav class="flex mb-0 ml-6" aria-label="Breadcrumb">
+                        <nav class="flex mb-0 mr-6" aria-label="Breadcrumb">
                             <ol class="inline-flex items-center space-x-1 md:space-x-3">
                                 <li class="inline-flex items-center">
                                     <a href="{{ route('dashboard') }}" class="text-gray-700 hover:text-indigo-600 text-sm font-medium">
@@ -152,18 +152,6 @@
                     
                     <!-- Right Side -->
                     <div class="flex items-center">
-                        <!-- Search -->
-                        <div class="hidden lg:flex lg:items-center lg:ml-6">
-                            <div class="flex items-center relative w-64">
-                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <svg class="w-5 h-5 text-gray-500" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                        <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path>
-                                    </svg>
-                                </div>
-                                <input type="text" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 p-2.5" placeholder="بحث...">
-                            </div>
-                        </div>
-                        
                         <!-- Notifications -->
                         <div class="flex items-center">
                             <button type="button" class="p-2 relative text-gray-500 hover:text-gray-900 focus:outline-none">
@@ -175,7 +163,7 @@
                         </div>
                         
                         <!-- User Menu -->
-                        <div class="flex items-center ml-3">
+                        <div class="flex items-center mr-3">
                             <div class="relative">
                                 <button type="button" class="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300" id="user-menu-button" aria-expanded="false" data-dropdown-toggle="dropdown">
                                     <span class="sr-only">Open user menu</span>
@@ -183,7 +171,7 @@
                                 </button>
                                 
                                 <!-- Dropdown menu -->
-                                <div class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50" id="dropdown">
+                                <div class="hidden absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50" id="dropdown">
                                     <div class="px-4 py-3">
                                         <p class="text-sm text-gray-900">{{ Auth::user()->name }}</p>
                                         <p class="text-sm text-gray-500 truncate">{{ Auth::user()->email }}</p>
@@ -205,8 +193,8 @@
         </nav>
         
         <div class="flex overflow-hidden pt-16">
-            <!-- Sidebar -->
-            <aside id="sidebar" class="fixed hidden z-20 h-full top-0 left-0 pt-16 lg:flex flex-shrink-0 flex-col w-64 transition-width duration-300" aria-label="Sidebar">
+            <!-- Sidebar - Moved to right side for RTL -->
+            <aside id="sidebar" class="fixed hidden z-20 h-full top-0 right-0 pt-16 lg:flex flex-shrink-0 flex-col w-64 transition-width duration-300" aria-label="Sidebar">
                 <div class="relative flex-1 flex flex-col min-h-0 border-r border-gray-200 bg-white pt-0">
                     <div class="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
                         <div class="flex-1 px-3 bg-white divide-y space-y-1">
@@ -361,15 +349,15 @@
                     </div>
                     
                     <!-- Tenant Info -->
-                    <div class="hidden absolute bottom-0 left-0 justify-center p-4 space-x-4 w-full lg:flex bg-white border-t border-gray-200">
+                    <div class="hidden absolute bottom-0 right-0 justify-center p-4 space-x-4 w-full lg:flex bg-white border-t border-gray-200">
                         <div class="flex items-center">
                             <div class="flex-shrink-0">
                                 <div class="relative">
-                                    <img class="w-8 h-8 rounded-full" src="https://ui-avatars.com/api/?name={{ urlencode($siteSettings['general']['site_name'] ?? config('app.name')) }}&background=6366F1&color=ffffff" alt="Tenant Logo">
+                                    <img class="w-8 h-8 rounded-full" src="https://ui-avatars.com/api/?name={{ urlencode($siteName) }}&background=6366F1&color=ffffff" alt="Tenant Logo">
                                     <span class="absolute bottom-0 right-0 w-2 h-2 bg-green-400 rounded-full"></span>
                                 </div>
                             </div>
-                            <div class="ml-3">
+                            <div class="mr-3">
                                 <p class="text-sm font-medium text-gray-700 truncate">{{ request()->getHost() }}</p>
                                 <p class="text-xs font-medium text-gray-500 truncate">نشط</p>
                             </div>
@@ -382,7 +370,7 @@
             <div class="bg-gray-900 opacity-50 hidden fixed inset-0 z-10" id="sidebarBackdrop"></div>
             
             <!-- Main Content -->
-            <div id="main-content" class="h-full w-full bg-gray-50 relative overflow-y-auto lg:ml-64">
+            <div id="main-content" class="h-full w-full bg-gray-50 relative overflow-y-auto lg:mr-64">
                 <main class="py-10 px-4 sm:px-6 lg:px-8">
                     <!-- Page Header -->
                     <div class="mb-8">
@@ -420,7 +408,7 @@
                 
                 <!-- Footer -->
                 <footer class="bg-white p-4 shadow md:flex md:items-center md:justify-between md:p-6 border-t">
-                    <span class="text-sm text-gray-500 sm:text-center">{{ $siteSettings['general']['footer_text'] ?? '© ' . date('Y') . ' ' . ($siteSettings['general']['site_name'] ?? config('app.name')) . '. جميع الحقوق محفوظة.' }}
+                    <span class="text-sm text-gray-500 sm:text-center">{{ \App\Models\SiteSetting::get('footer_text', '© ' . date('Y') . ' ' . $siteName . '. جميع الحقوق محفوظة.') }}
                     </span>
                     <ul class="flex flex-wrap items-center mt-3 text-sm text-gray-500 sm:mt-0">
                         <li>
