@@ -66,10 +66,10 @@
 
         <div class="min-h-screen bg-gray-100">
             <!-- Site Header with Contact Info and Social Media -->
-            @include('layouts.header')
+            <x-site-header />
             
             <!-- Navigation Menu -->
-            @include('layouts.navigation')
+            @livewire('navigation-menu')
 
             <!-- Page Heading -->
             @if (isset($header))

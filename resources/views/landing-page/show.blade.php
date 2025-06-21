@@ -176,8 +176,8 @@
     </style>
 </head>
 <body class="font-sans antialiased">
-    <!-- Header Navigation -->
-    @include('layouts.header')
+    <!-- Header Navigation with User Menu -->
+    @include('components.landing-page-nav')
     
     <!-- Hero Section -->
     <section class="hero-section" style="background-image: url('{{ Storage::url($landingPage->header_image) }}');">
@@ -420,26 +420,9 @@
     <!-- Site Footer -->
     @include('layouts.footer')
     
-    <script>
-        // Toggle user dropdown
+    <script>        
+        // Mobile menu toggle
         document.addEventListener('DOMContentLoaded', function() {
-            const userMenuButton = document.getElementById('user-menu-button');
-            const userDropdown = document.getElementById('user-dropdown');
-            
-            if (userMenuButton && userDropdown) {
-                userMenuButton.addEventListener('click', function() {
-                    userDropdown.classList.toggle('hidden');
-                });
-                
-                // Close dropdown when clicking outside
-                document.addEventListener('click', function(event) {
-                    if (!userMenuButton.contains(event.target) && !userDropdown.contains(event.target)) {
-                        userDropdown.classList.add('hidden');
-                    }
-                });
-            }
-            
-            // Mobile menu toggle
             const mobileMenuButton = document.getElementById('mobile-menu-button');
             const mobileMenu = document.getElementById('mobile-menu');
             
@@ -449,7 +432,7 @@
                 });
             }
         });
-        
+
         // RTL support for the page
         document.documentElement.dir = 'rtl';
     </script>
