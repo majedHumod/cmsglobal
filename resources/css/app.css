@@ -2,11 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Alpine.js cloak */
-[x-cloak] {
-    display: none !important;
-}
-
 /* RTL Support */
 [dir="rtl"] .ltr\:origin-top-right {
     --tw-origin-x: 0;
