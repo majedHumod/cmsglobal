@@ -91,14 +91,15 @@
                 @auth
                     <div class="relative ml-3" x-data="{ open: false }">
                         <div>
-                            <button type="button" @click="open = !open" class="flex text-sm bg-gray-800 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
+                            <button type="button" @click="open = !open" class="flex text-sm bg-gray-800 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" id="user-menu-button" aria-expanded="false" aria-haspopup="true" x-bind:aria-expanded="open.toString()">
                                 <span class="sr-only">فتح قائمة المستخدم</span>
                                 <img class="h-8 w-8 rounded-full" src="{{ Auth::user()->profile_photo_url }}" alt="{{ Auth::user()->name }}">
                             </button>
                         </div>
                         
                         <!-- Dropdown menu -->
-                        <div x-show="open" 
+                        <div x-cloak
+                             x-show="open" 
                              @click.away="open = false"
                              x-transition:enter="transition ease-out duration-100"
                              x-transition:enter-start="transform opacity-0 scale-95"
@@ -110,8 +111,7 @@
                              role="menu" 
                              aria-orientation="vertical" 
                              aria-labelledby="user-menu-button" 
-                             tabindex="-1"
-                             style="display: none;">
+                             tabindex="-1">
                             <div class="px-4 py-2 text-xs text-gray-500">
                                 <div>{{ Auth::user()->name }}</div>
                                 <div class="font-medium truncate">{{ Auth::user()->email }}</div>

@@ -418,10 +418,10 @@
     </section>
     
     <!-- Site Footer -->
-    @include('layouts.footer')
+    <x-site-footer />
     
-    <script>        
-        // Mobile menu toggle
+    <script>
+        // Mobile menu toggle for landing page
         document.addEventListener('DOMContentLoaded', function() {
             const mobileMenuButton = document.getElementById('mobile-menu-button');
             const mobileMenu = document.getElementById('mobile-menu');
@@ -432,9 +432,6 @@
                 });
             }
         });
-
-        // RTL support for the page
-        document.documentElement.dir = 'rtl';
     </script>
 </body>
 </html>
