@@ -1,22 +1,66 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() == 'ar' ? 'rtl' : 'ltr' }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ $page->seo_title }} - {{ config('app.name', 'Laravel') }}</title>
+    <title>{{ $page->meta_title ?? $page->title }} - {{ \App\Models\SiteSetting::get('site_name', config('app.name', 'Laravel')) }}</title>
     
-    @if($page->seo_description)
-        <meta name="description" content="{{ $page->seo_description }}">
+    @if($page->meta_description)
+        <meta name="description" content="{{ $page->meta_description }}">
+    @endif
+
+    <!-- Favicon -->
+    @php
+        $siteFavicon = \App\Models\SiteSetting::get('site_favicon');
+    @endphp
+    @if($siteFavicon)
+        <link rel="icon" href="{{ Storage::url($siteFavicon) }}" type="image/x-icon">
     @endif
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.bunny.net/css?family=tajawal:400,500,700&display=swap" rel="stylesheet" />
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    
+    <!-- Custom Colors -->
+    @php
+        $primaryColor = \App\Models\SiteSetting::get('primary_color', '#6366f1');
+        $secondaryColor = \App\Models\SiteSetting::get('secondary_color', '#10b981');
+    @endphp
+    <style>
+        :root {
+            --primary-color: {{ $primaryColor }};
+            --secondary-color: {{ $secondaryColor }};
+        }
+        
+        .bg-primary {
+            background-color: var(--primary-color);
+        }
+        
+        .text-primary {
+            color: var(--primary-color);
+        }
+        
+        .border-primary {
+            border-color: var(--primary-color);
+        }
+        
+        .bg-secondary {
+            background-color: var(--secondary-color);
+        }
+        
+        .text-secondary {
+            color: var(--secondary-color);
+        }
+        
+        .border-secondary {
+            border-color: var(--secondary-color);
+        }
+    </style>
     
     <!-- Styles for rich content -->
     <style>
@@ -59,7 +103,7 @@
         .prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
             margin-top: 2rem;
             margin-bottom: 1rem;
-            font-weight: 600;
+            font-weight: 700;
         }
         .prose h1 { font-size: 2.25rem; }
         .prose h2 { font-size: 1.875rem; }
@@ -70,6 +114,7 @@
         .prose p {
             margin-bottom: 1rem;
             line-height: 1.75;
+            text-align: right;
         }
         .prose a {
             color: #6366f1;
@@ -103,25 +148,7 @@
 <body class="font-sans antialiased">
     <div class="min-h-screen bg-gray-100">
         <!-- Navigation -->
-        <nav class="bg-white shadow">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex justify-between h-16">
-                    <div class="flex items-center">
-                        <a href="/" class="text-xl font-bold text-gray-800">
-                            {{ config('app.name', 'Laravel') }}
-                        </a>
-                    </div>
-                    
-                    <div class="flex items-center space-x-4">
-                        @auth
-                            <a href="{{ route('dashboard') }}" class="text-gray-600 hover:text-gray-900">لوحة التحكم</a>
-                        @else
-                            <a href="{{ route('login') }}" class="text-gray-600 hover:text-gray-900">تسجيل الدخول</a>
-                        @endauth
-                    </div>
-                </div>
-            </div>
-        </nav>
+        @include('layouts.header')
 
         <!-- Page Content -->
         <main class="py-12">
@@ -178,13 +205,22 @@
                 </article>
 
                 <!-- Navigation Links -->
-                <div class="mt-8 flex justify-center">
+                <div class="mt-8 flex justify-center space-x-4">
                     <a href="{{ route('pages.public') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
                         عرض جميع الصفحات
                     </a>
+                    
+                    @auth
+                        <a href="{{ route('dashboard') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                            العودة للوحة التحكم
+                        </a>
+                    @endauth
                 </div>
             </div>
         </main>
+        
+        <!-- Footer -->
+        @include('layouts.footer')
     </div>
 </body>
 </html>

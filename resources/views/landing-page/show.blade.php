@@ -66,9 +66,9 @@
     <style>
         .hero-section {
             position: relative;
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
+            background-size: cover !important;
+            background-position: center !important;
+            background-repeat: no-repeat !important;
             min-height: 600px;
             display: flex;
             align-items: center;
@@ -95,17 +95,17 @@
         }
         
         .hero-title {
-            font-size: 3rem;
+            font-size: 3rem !important;
             font-weight: 700;
-            margin-bottom: 1rem;
-            line-height: 1.2;
+            margin-bottom: 1rem !important;
+            line-height: 1.2 !important;
         }
         
         .hero-subtitle {
-            font-size: 1.5rem;
+            font-size: 1.5rem !important;
             font-weight: 500;
-            margin-bottom: 2rem;
-            line-height: 1.4;
+            margin-bottom: 2rem !important;
+            line-height: 1.4 !important;
         }
         
         .join-button {
@@ -126,9 +126,9 @@
         }
         
         .content-section {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 4rem 1rem;
+            max-width: 1200px !important;
+            margin: 0 auto !important;
+            padding: 4rem 1rem !important;
         }
         
         .content-section img {
@@ -162,179 +162,22 @@
         
         @media (max-width: 768px) {
             .hero-title {
-                font-size: 2.25rem;
+                font-size: 2.25rem !important;
             }
             
             .hero-subtitle {
-                font-size: 1.25rem;
+                font-size: 1.25rem !important;
             }
             
             .hero-section {
-                min-height: 450px;
+                min-height: 450px !important;
             }
         }
     </style>
 </head>
 <body class="font-sans antialiased">
     <!-- Header Navigation -->
-    <header class="bg-white shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <!-- Logo and Site Name -->
-                <div class="flex items-center">
-                    @php
-                        $siteLogo = \App\Models\SiteSetting::get('site_logo');
-                        $siteName = \App\Models\SiteSetting::get('site_name', config('app.name', 'Laravel'));
-                    @endphp
-                    @if($siteLogo)
-                        <a href="{{ route('home') }}" class="flex-shrink-0 flex items-center">
-                            <img class="h-8 w-auto" src="{{ Storage::url($siteLogo) }}" alt="{{ $siteName }}">
-                        </a>
-                    @else
-                        <a href="{{ route('home') }}" class="flex-shrink-0 flex items-center">
-                            <span class="text-xl font-bold text-indigo-600">{{ $siteName }}</span>
-                        </a>
-                    @endif
-                </div>
-                
-                <!-- Navigation Links -->
-                <div class="hidden md:flex md:items-center md:space-x-4">
-                    @php
-                        try {
-                            // جلب جميع الصفحات التي تظهر في القائمة والمنشورة
-                            $allMenuPages = \App\Models\Page::where('show_in_menu', true)
-                                           ->where('is_published', true)
-                                           ->orderBy('menu_order')
-                                           ->get();
-                            
-                            // تصفية الصفحات بناءً على صلاحيات المستخدم
-                            $user = auth()->user();
-                            $menuPages = $allMenuPages->filter(function($page) use ($user) {
-                                // الصفحات العامة متاحة للجميع
-                                if ($page->access_level === 'public') {
-                                    return true;
-                                }
-                                
-                                // إذا لم يكن المستخدم مسجل الدخول
-                                if (!$user) {
-                                    return false;
-                                }
-                                
-                                // المستخدمين المسجلين
-                                if ($page->access_level === 'authenticated') {
-                                    return true;
-                                }
-                                
-                                // المستخدمين العاديين
-                                if ($page->access_level === 'user' && $user->hasRole('user')) {
-                                    return true;
-                                }
-                                
-                                // مديري الصفحات
-                                if ($page->access_level === 'page_manager' && $user->hasRole('page_manager')) {
-                                    return true;
-                                }
-                                
-                                // المديرين
-                                if ($page->access_level === 'admin' && $user->hasRole('admin')) {
-                                    return true;
-                                }
-                                
-                                // العضويات المدفوعة
-                                if ($page->access_level === 'membership' && $user->membership_type_id) {
-                                    $requiredTypes = $page->required_membership_types;
-                                    if (is_string($requiredTypes)) {
-                                        $requiredTypes = json_decode($requiredTypes, true) ?: [];
-                                    }
-                                    
-                                    return in_array($user->membership_type_id, $requiredTypes);
-                                }
-                                
-                                return false;
-                            });
-                        } catch (\Exception $e) {
-                            $menuPages = collect();
-                        }
-                    @endphp
-                    
-                    @foreach($menuPages as $menuPage)
-                        <a href="{{ route('pages.show', $menuPage->slug) }}" class="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">
-                            {{ $menuPage->access_level_icon }} {{ $menuPage->title }}
-                        </a>
-                    @endforeach
-                    
-                    <a href="{{ route('pages.public') }}" class="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">الصفحات</a>
-                    <a href="{{ route('meal-plans.public') }}" class="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">الوجبات</a>
-                    
-                    @auth
-                        <div class="relative ml-3">
-                            <div>
-                                <button type="button" id="user-menu-button" class="flex text-sm bg-gray-800 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" aria-expanded="false" aria-haspopup="true">
-                                    <span class="sr-only">Open user menu</span>
-                                    <img class="h-8 w-8 rounded-full" src="{{ Auth::user()->profile_photo_url }}" alt="{{ Auth::user()->name }}">
-                                </button>
-                            </div>
-                            
-                            <!-- Dropdown menu -->
-                            <div id="user-dropdown" class="hidden origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
-                                <div class="px-4 py-2 text-xs text-gray-500">
-                                    <div>{{ Auth::user()->name }}</div>
-                                    <div class="font-medium truncate">{{ Auth::user()->email }}</div>
-                                </div>
-                                <a href="{{ route('dashboard') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">لوحة التحكم</a>
-                                <a href="{{ route('profile.show') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">الملف الشخصي</a>
-                                <a href="{{ route('admin.settings.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">الإعدادات</a>
-                                <div class="border-t border-gray-100"></div>
-                                <form method="POST" action="{{ route('logout') }}">
-                                    @csrf
-                                    <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">تسجيل الخروج</button>
-                                </form>
-                            </div>
-                        </div>
-                    @else
-                        <a href="{{ route('login') }}" class="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">تسجيل الدخول</a>
-                        <a href="{{ route('register') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-md text-sm font-medium">إنشاء حساب</a>
-                    @endauth
-                </div>
-                
-                <!-- Mobile menu button -->
-                <div class="flex items-center md:hidden">
-                    <button type="button" id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500" aria-expanded="false">
-                        <span class="sr-only">Open main menu</span>
-                        <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Mobile menu, show/hide based on menu state -->
-        <div class="hidden md:hidden" id="mobile-menu">
-            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                @foreach($menuPages as $menuPage)
-                    <a href="{{ route('pages.show', $menuPage->slug) }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
-                        {{ $menuPage->access_level_icon }} {{ $menuPage->title }}
-                    </a>
-                @endforeach
-                
-                <a href="{{ route('pages.public') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">الصفحات</a>
-                <a href="{{ route('meal-plans.public') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">الوجبات</a>
-                
-                @auth
-                    <a href="{{ route('dashboard') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">لوحة التحكم</a>
-                    <a href="{{ route('profile.show') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">الملف الشخصي</a>
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button type="submit" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">تسجيل الخروج</button>
-                    </form>
-                @else
-                    <a href="{{ route('login') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">تسجيل الدخول</a>
-                    <a href="{{ route('register') }}" class="block px-3 py-2 rounded-md text-base font-medium text-indigo-600 hover:text-indigo-800 hover:bg-gray-50">إنشاء حساب</a>
-                @endauth
-            </div>
-        </div>
-    </header>
+    @include('layouts.header')
     
     <!-- Hero Section -->
     <section class="hero-section" style="background-image: url('{{ Storage::url($landingPage->header_image) }}');">
@@ -575,7 +418,7 @@
     </section>
     
     <!-- Site Footer -->
-    <x-site-footer />
+    @include('layouts.footer')
     
     <script>
         // Toggle user dropdown
@@ -606,6 +449,9 @@
                 });
             }
         });
+        
+        // RTL support for the page
+        document.documentElement.dir = 'rtl';
     </script>
 </body>
 </html>
