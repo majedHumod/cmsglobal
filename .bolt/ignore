@@ -1,9 +1,9 @@
 # مجلدات النظام
-/vendor
-/node_modules
-/storage
-/bootstrap/cache
-/public/storage
+vendor/
+node_modules/
+storage/
+bootstrap/cache/
+public/storage/
 
 # بيئة التشغيل
 .env
@@ -20,9 +20,9 @@ webpack.mix.js
 vite.config.js
 
 # مجلدات الاختبارات
-/tests
-/database/factories
-/database/seeders
+tests/
+database/factories/
+database/seeders/
 
 # ملفات الوثائق والصور
 README.md
@@ -56,15 +56,13 @@ CHANGELOG.md
 *.rar
 *.tgz
 
-
 # ملفات النظام وبيئة التطوير
 .DS_Store
 Thumbs.db
 .vscode/
 .idea/
-*.log
 
-# ملفات Git (لا داعي لتحليلها)
+# ملفات Git
 .git
 .gitattributes
 .gitignore
