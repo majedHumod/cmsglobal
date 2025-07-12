@@ -34,6 +34,28 @@ CHANGELOG.md
 *.jpeg
 *.gif
 *.svg
+*.sqlite
+*.json
+*.tsbuildinfo
+*.zip
+*.tar
+*.mp4
+*.mp3
+*.wav
+*.xls
+*.xlsx
+*.ppt
+*.doc
+*.docx
+*.csv
+*.log
+*.bak
+*.old
+*.tar.gz
+*.7z
+*.rar
+*.tgz
+
 
 # ملفات النظام وبيئة التطوير
 .DS_Store
