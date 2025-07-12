@@ -24,7 +24,7 @@
 
         <!-- Styles -->
         @livewireStyles
-        
+
         <!-- Custom Colors -->
         @php
             $primaryColor = \App\Models\SiteSetting::get('primary_color', '#6366f1');
@@ -35,29 +35,33 @@
                 --primary-color: {{ $primaryColor }};
                 --secondary-color: {{ $secondaryColor }};
             }
-            
+
             .bg-primary {
                 background-color: var(--primary-color);
             }
-            
+
             .text-primary {
                 color: var(--primary-color);
             }
-            
+
             .border-primary {
                 border-color: var(--primary-color);
             }
-            
+
             .bg-secondary {
                 background-color: var(--secondary-color);
             }
-            
+
             .text-secondary {
                 color: var(--secondary-color);
             }
-            
+
             .border-secondary {
                 border-color: var(--secondary-color);
+            }
+
+            div.ms-3.relative {
+                z-index: 50 !important;
             }
         </style>
     </head>
@@ -67,7 +71,7 @@
         <div class="min-h-screen bg-gray-100">
             <!-- Site Header with Contact Info and Social Media -->
             <x-site-header />
-            
+
             <!-- Navigation Menu -->
             @livewire('navigation-menu')
 
@@ -87,7 +91,7 @@
                     {{ $slot }}
                 @endisset
             </main>
-            
+
             <!-- Site Footer with Contact Info and Social Media -->
             @include('layouts.footer')
         </div>

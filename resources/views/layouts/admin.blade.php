@@ -177,7 +177,7 @@
                                         <p class="text-sm text-gray-500 truncate">{{ Auth::user()->email }}</p>
                                     </div>
                                     <hr>
-                                    <a href="{{ route('profile.show') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">الملف الشخصي</a>
+                                    <a href="{{ route('profile.show') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">222الملف الشخصي</a>
                                     <a href="{{ route('admin.settings.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">الإعدادات</a>
                                     <hr>
                                     <form method="POST" action="{{ route('logout') }}">
