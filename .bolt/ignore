@@ -9,7 +9,7 @@ public/storage/
 .env
 .env.*
 .phpunit.result.cache
-
+ 
 # ملفات لا تفيد الذكاء الاصطناعي في الفهم والتحليل
 composer.lock
 package-lock.json
