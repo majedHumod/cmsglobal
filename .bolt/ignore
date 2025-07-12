@@ -1,2 +1,68 @@
+# مجلدات النظام
+vendor/*
+node_modules/*
+storage/*
+bootstrap/cache/*
+public/storage/*
+
+# بيئة التشغيل
+.env
+.env.*
+.phpunit.result.cache
+
+# ملفات لا تفيد الذكاء الاصطناعي في الفهم والتحليل
+composer.lock
+package-lock.json
+yarn.lock
+artisan
+phpunit.xml
+webpack.mix.js
+vite.config.js
+
+# مجلدات الاختبارات
 tests/*
-tests/**/*
+database/factories/*
+database/seeders/*
+
+# ملفات الوثائق والصور
+README.md
+CHANGELOG.md
+*.md
+*.pdf
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.sqlite
+*.json
+*.tsbuildinfo
+*.zip
+*.tar
+*.mp4
+*.mp3
+*.wav
+*.xls
+*.xlsx
+*.ppt
+*.doc
+*.docx
+*.csv
+*.log
+*.bak
+*.old
+*.tar.gz
+*.7z
+*.rar
+*.tgz
+
+# ملفات النظام وبيئة التطوير
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# ملفات Git
+.git
+.gitattributes
+.gitignore
