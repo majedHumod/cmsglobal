@@ -1,40 +1,48 @@
-# مجلدات Laravel التلقائية
-vendor
-node_modules
-storage
-bootstrap/cache
-public/storage
+# مجلدات النظام
+/vendor
+/node_modules
+/storage
+/bootstrap/cache
+/public/storage
+
+# بيئة التشغيل
 .env
 .env.*
+.phpunit.result.cache
 
-# ملفات السجلات
-*.log
-
-# ملفات النظام
-.DS_Store
-Thumbs.db
-
-# ملفات التكوين غير المهمة للذكاء الاصطناعي
+# ملفات لا تفيد الذكاء الاصطناعي في الفهم والتحليل
 composer.lock
 package-lock.json
 yarn.lock
 artisan
 phpunit.xml
-docker-compose.yml
-Dockerfile
+webpack.mix.js
+vite.config.js
 
-# الاختبارات
-tests/
-phpunit.xml
+# مجلدات الاختبارات
+/tests
+/database/factories
+/database/seeders
 
-# وثائق وصور
+# ملفات الوثائق والصور
 README.md
+CHANGELOG.md
 *.md
 *.pdf
 *.png
 *.jpg
+*.jpeg
+*.gif
 *.svg
 
-# أدوات IDE
+# ملفات النظام وبيئة التطوير
+.DS_Store
+Thumbs.db
 .vscode/
 .idea/
+*.log
+
+# ملفات Git (لا داعي لتحليلها)
+.git
+.gitattributes
+.gitignore
