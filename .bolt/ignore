@@ -1,0 +1,40 @@
+# مجلدات Laravel التلقائية
+vendor
+node_modules
+storage
+bootstrap/cache
+public/storage
+.env
+.env.*
+
+# ملفات السجلات
+*.log
+
+# ملفات النظام
+.DS_Store
+Thumbs.db
+
+# ملفات التكوين غير المهمة للذكاء الاصطناعي
+composer.lock
+package-lock.json
+yarn.lock
+artisan
+phpunit.xml
+docker-compose.yml
+Dockerfile
+
+# الاختبارات
+tests/
+phpunit.xml
+
+# وثائق وصور
+README.md
+*.md
+*.pdf
+*.png
+*.jpg
+*.svg
+
+# أدوات IDE
+.vscode/
+.idea/
