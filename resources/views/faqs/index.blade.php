@@ -62,9 +62,9 @@
     <!-- Header Navigation -->
     <header class="bg-white shadow-sm fixed top-0 left-0 right-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
+            <div class="flex justify-between h-16" dir="rtl">
                 <!-- Logo and Site Name -->
-                <div class="flex items-center">
+                <div class="flex items-center order-1">
                     @php
                         $siteLogo = \App\Models\SiteSetting::get('site_logo');
                         $siteName = \App\Models\SiteSetting::get('site_name', config('app.name', 'Laravel'));
@@ -81,7 +81,7 @@
                 </div>
 
                 <!-- Navigation Links -->
-                <div class="hidden md:flex md:items-center md:space-x-4">
+                <div class="hidden md:flex md:items-center md:space-x-4 order-2">
                     <a href="{{ route('home') }}" class="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">الرئيسية</a>
                     <a href="{{ route('faqs.index') }}" class="text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">الأسئلة الشائعة</a>
 
@@ -160,7 +160,7 @@
                 </div>
 
                 <!-- Mobile menu button -->
-                <div class="flex items-center md:hidden">
+                <div class="flex items-center md:hidden order-3">
                     <button type="button" id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500" aria-expanded="false">
                         <span class="sr-only">فتح القائمة الرئيسية</span>
                         <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
