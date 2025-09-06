@@ -175,7 +175,7 @@
         }
     </style>
 </head>
-<body class="font-sans antialiased">
+<body class="font-sans antialiased pt-16">
     <!-- Header Navigation with User Menu -->
     @include('components.landing-page-nav')
     

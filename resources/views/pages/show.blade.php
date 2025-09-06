@@ -145,10 +145,10 @@
         }
     </style>
 </head>
-<body class="font-sans antialiased">
+<body class="font-sans antialiased pt-16">
     <div class="min-h-screen bg-gray-100">
         <!-- Navigation -->
-        @include('layouts.header')
+        @include('components.landing-page-nav')
 
         <!-- Page Content -->
         <main class="py-12">
