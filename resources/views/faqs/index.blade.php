@@ -214,7 +214,7 @@
 
     <!-- Page Content -->
     <main class="py-12">
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8" dir="rtl">
         <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
             <div class="p-6">
                 <h1 class="text-3xl font-bold text-gray-900 mb-8 text-center">الأسئلة الشائعة</h1>
@@ -237,7 +237,7 @@
                                         class="flex justify-between items-center w-full text-right focus:outline-none"
                                     >
                                         <span>{{ $category }}</span>
-                                        <svg class="w-5 h-5 text-gray-500 transition-transform duration-300" :class="{'rotate-180': activeCategory === '{{ $category }}'}" fill="currentColor" viewBox="0 0 20 20">
+                                        <svg class="w-5 h-5 text-gray-500 transition-transform duration-300 mr-2" :class="{'rotate-180': activeCategory === '{{ $category }}'}" fill="currentColor" viewBox="0 0 20 20">
                                             <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
                                         </svg>
                                     </button>
@@ -252,12 +252,12 @@
                                                     class="flex justify-between items-center w-full text-right focus:outline-none"
                                                 >
                                                     <h3 class="text-lg font-medium text-gray-900">{{ $faq->question }}</h3>
-                                                    <svg class="w-5 h-5 text-gray-500 transition-transform duration-300" :class="{'rotate-180': open}" fill="currentColor" viewBox="0 0 20 20">
+                                                    <svg class="w-5 h-5 text-gray-500 transition-transform duration-300 mr-2" :class="{'rotate-180': open}" fill="currentColor" viewBox="0 0 20 20">
                                                         <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
                                                     </svg>
                                                 </button>
                                                 
-                                                <div x-show="open" x-collapse class="mt-4 text-gray-600 prose max-w-none">
+                                                <div x-show="open" x-collapse class="mt-4 text-gray-600 prose max-w-none text-right">
                                                     {!! $faq->answer !!}
                                                 </div>
                                             </div>
