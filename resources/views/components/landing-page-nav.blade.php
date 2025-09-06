@@ -20,8 +20,7 @@
 
             <!-- Navigation Links -->
             <div class="hidden md:flex md:items-center md:space-x-4">
-                <a href="{{ route('pages.public') }}" class="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">الصفحات</a>
-                <a href="{{ route('meal-plans.public') }}" class="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">الوجبات</a>
+                <a href="{{ route('home') }}" class="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">الرئيسية</a>
                 <a href="{{ route('faqs.index') }}" class="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">الأسئلة الشائعة</a>
 
                 @php
@@ -55,7 +54,7 @@
 
                 @foreach($menuPages as $menuPage)
                     <a href="{{ route('pages.show', $menuPage->slug) }}" class="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">
-                        {{ $menuPage->access_level_icon }} {{ $menuPage->title }}
+                        {{ $menuPage->title }}
                     </a>
                 @endforeach
 
@@ -113,13 +112,12 @@
     <!-- Mobile menu -->
     <div class="hidden md:hidden" id="mobile-menu">
         <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            <a href="{{ route('pages.public') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">الصفحات</a>
-            <a href="{{ route('meal-plans.public') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">الوجبات</a>
+            <a href="{{ route('home') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">الرئيسية</a>
             <a href="{{ route('faqs.index') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">الأسئلة الشائعة</a>
 
             @foreach($menuPages as $menuPage)
                 <a href="{{ route('pages.show', $menuPage->slug) }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
-                    {{ $menuPage->access_level_icon }} {{ $menuPage->title }}
+                    {{ $menuPage->title }}
                 </a>
             @endforeach
 

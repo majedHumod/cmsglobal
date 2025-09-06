@@ -272,20 +272,20 @@
                 <h2 class="text-2xl font-bold text-gray-900 mb-8">استكشف المزيد</h2>
                 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <a href="{{ route('pages.public') }}" class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                    <a href="{{ route('home') }}" class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
                         <svg class="h-12 w-12 text-indigo-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
                         </svg>
-                        <h3 class="text-lg font-medium text-gray-900 mb-2">الصفحات</h3>
-                        <p class="text-gray-600">استكشف صفحات الموقع المختلفة</p>
+                        <h3 class="text-lg font-medium text-gray-900 mb-2">الرئيسية</h3>
+                        <p class="text-gray-600">العودة إلى الصفحة الرئيسية</p>
                     </a>
                     
-                    <a href="{{ route('meal-plans.public') }}" class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                    <a href="{{ route('faqs.index') }}" class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
                         <svg class="h-12 w-12 text-indigo-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
-                        <h3 class="text-lg font-medium text-gray-900 mb-2">الجداول الغذائية</h3>
-                        <p class="text-gray-600">تصفح الوجبات والجداول الغذائية</p>
+                        <h3 class="text-lg font-medium text-gray-900 mb-2">الأسئلة الشائعة</h3>
+                        <p class="text-gray-600">تصفح الأسئلة والإجابات الشائعة</p>
                     </a>
                     
                     @auth
