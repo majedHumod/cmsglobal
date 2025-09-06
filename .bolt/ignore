@@ -5,6 +5,12 @@ storage/*
 bootstrap/cache/*
 public/storage/*
 
+
+
+src/old-pages/*
+
+
+
 # بيئة التشغيل
 .env
 .env.*
