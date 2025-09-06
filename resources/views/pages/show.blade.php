@@ -145,7 +145,7 @@
         }
     </style>
 </head>
-<body class="font-sans antialiased pt-16">
+<body class="font-sans antialiased pt-16" dir="rtl">
     <div class="min-h-screen bg-gray-100">
         <!-- Navigation -->
         <header class="bg-white shadow-sm fixed top-0 left-0 right-0 z-50">
@@ -301,7 +301,7 @@
         </header>
 
         <!-- Page Content -->
-        <main class="py-12">
+        <main class="py-12" dir="rtl">
             <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
                 <article class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                     @if($page->featured_image)
@@ -340,12 +340,12 @@
                             </div>
                         </header>
 
-                        <div class="prose prose-lg max-w-none">
+                        <div class="prose prose-lg max-w-none text-right" dir="rtl">
                             {!! $page->content !!}
                         </div>
 
                         @if($page->updated_at != $page->created_at)
-                            <footer class="mt-8 pt-6 border-t border-gray-200">
+                            <footer class="mt-8 pt-6 border-t border-gray-200 text-right" dir="rtl">
                                 <p class="text-sm text-gray-500">
                                     آخر تحديث: {{ $page->updated_at->format('d F Y H:i') }}
                                 </p>
@@ -355,7 +355,7 @@
                 </article>
 
                 <!-- Navigation Links -->
-                <div class="mt-8 flex justify-center space-x-4">
+                <div class="mt-8 flex justify-center space-x-4" dir="rtl">
                     <a href="{{ route('pages.public') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
                         عرض جميع الصفحات
                     </a>
