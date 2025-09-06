@@ -74,7 +74,7 @@
         /* Custom Styles */
         .sidebar-item.active {
             background-color: rgba(99, 102, 241, 0.1) !important;
-            border-left: 3px solid #6366f1 !important;
+            border-right: 3px solid #6366f1 !important;
             color: #6366f1 !important;
         }
         
@@ -87,7 +87,7 @@
         }
         
         .sidebar-item:hover .sidebar-icon {
-            transform: translateX(-4px);
+            transform: translateX(4px);
         }
         
         /* Dashboard Cards */
@@ -194,61 +194,61 @@
         
         <div class="flex overflow-hidden pt-16">
             <!-- Sidebar - Moved to right side for RTL -->
-            <aside id="sidebar" class="fixed hidden z-20 h-full top-0 right-0 pt-16 lg:flex flex-shrink-0 flex-col w-64 transition-width duration-300" aria-label="Sidebar">
+            <aside id="sidebar" class="fixed hidden z-20 h-full top-0 right-0 pt-16 lg:flex flex-shrink-0 flex-col w-64 transition-width duration-300" aria-label="Sidebar" dir="rtl">
                 <div class="relative flex-1 flex flex-col min-h-0 border-r border-gray-200 bg-white pt-0">
                     <div class="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
                         <div class="flex-1 px-3 bg-white divide-y space-y-1">
                             <!-- Main Navigation -->
                             <ul class="space-y-2 pb-2">
                                 <li>
-                                    <a href="{{ route('dashboard') }}" class="sidebar-item text-base font-normal rounded-lg flex items-center p-2 hover:text-indigo-600 group {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                                    <a href="{{ route('dashboard') }}" class="sidebar-item text-base font-normal rounded-lg flex items-center p-2 hover:text-indigo-600 group {{ request()->routeIs('dashboard') ? 'active' : '' }}" dir="rtl">
                                         <svg class="w-6 h-6 sidebar-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
                                             <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
                                         </svg>
-                                        <span class="ml-3">لوحة التحكم</span>
+                                        <span class="mr-3">لوحة التحكم</span>
                                     </a>
                                 </li>
                                 
                                 <!-- Content Management -->
                                 <li>
-                                    <a href="{{ route('pages.index') }}" class="sidebar-item text-base font-normal rounded-lg flex items-center p-2 hover:text-indigo-600 group {{ request()->routeIs('pages.*') ? 'active' : '' }}">
+                                    <a href="{{ route('pages.index') }}" class="sidebar-item text-base font-normal rounded-lg flex items-center p-2 hover:text-indigo-600 group {{ request()->routeIs('pages.*') ? 'active' : '' }}" dir="rtl">
                                         <svg class="w-6 h-6 sidebar-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                             <path fill-rule="evenodd" d="M2 5a2 2 0 012-2h8a2 2 0 012 2v10a2 2 0 002 2H4a2 2 0 01-2-2V5zm3 1h6v4H5V6zm6 6H5v2h6v-2z" clip-rule="evenodd"></path>
                                             <path d="M15 7h1a2 2 0 012 2v5.5a1.5 1.5 0 01-3 0V7z"></path>
                                         </svg>
-                                        <span class="ml-3">إدارة الصفحات</span>
+                                        <span class="mr-3">إدارة الصفحات</span>
                                     </a>
                                 </li>
                                 
                                 @role('admin')
                                 <li>
-                                    <a href="{{ route('articles.index') }}" class="sidebar-item text-base font-normal rounded-lg flex items-center p-2 hover:text-indigo-600 group {{ request()->routeIs('articles.*') ? 'active' : '' }}">
+                                    <a href="{{ route('articles.index') }}" class="sidebar-item text-base font-normal rounded-lg flex items-center p-2 hover:text-indigo-600 group {{ request()->routeIs('articles.*') ? 'active' : '' }}" dir="rtl">
                                         <svg class="w-6 h-6 sidebar-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                             <path fill-rule="evenodd" d="M2 5a2 2 0 012-2h8a2 2 0 012 2v10a2 2 0 002 2H4a2 2 0 01-2-2V5zm3 1h6v4H5V6zm6 6H5v2h6v-2z" clip-rule="evenodd"></path>
                                             <path d="M15 7h1a2 2 0 012 2v5.5a1.5 1.5 0 01-3 0V7z"></path>
                                         </svg>
-                                        <span class="ml-3">المقالات</span>
+                                        <span class="mr-3">المقالات</span>
                                     </a>
                                 </li>
                                 @endrole
                                 
                                 <li>
-                                    <a href="{{ route('notes.index') }}" class="sidebar-item text-base font-normal rounded-lg flex items-center p-2 hover:text-indigo-600 group {{ request()->routeIs('notes.*') ? 'active' : '' }}">
+                                    <a href="{{ route('notes.index') }}" class="sidebar-item text-base font-normal rounded-lg flex items-center p-2 hover:text-indigo-600 group {{ request()->routeIs('notes.*') ? 'active' : '' }}" dir="rtl">
                                         <svg class="w-6 h-6 sidebar-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"></path>
                                             <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"></path>
                                         </svg>
-                                        <span class="ml-3">الملاحظات</span>
+                                        <span class="mr-3">الملاحظات</span>
                                     </a>
                                 </li>
                                 
                                 <li>
-                                    <a href="{{ route('meal-plans.index') }}" class="sidebar-item text-base font-normal rounded-lg flex items-center p-2 hover:text-indigo-600 group {{ request()->routeIs('meal-plans.*') ? 'active' : '' }}">
+                                    <a href="{{ route('meal-plans.index') }}" class="sidebar-item text-base font-normal rounded-lg flex items-center p-2 hover:text-indigo-600 group {{ request()->routeIs('meal-plans.*') ? 'active' : '' }}" dir="rtl">
                                         <svg class="w-6 h-6 sidebar-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"></path>
                                         </svg>
-                                        <span class="ml-3">الجداول الغذائية</span>
+                                        <span class="mr-3">الجداول الغذائية</span>
                                     </a>
                                 </li>
                             </ul>
@@ -257,69 +257,69 @@
                             @role('admin')
                             <ul class="pt-4 mt-4 space-y-2 border-t border-gray-200">
                                 <li>
-                                    <a href="{{ route('admin.landing-pages.index') }}" class="sidebar-item text-base font-normal rounded-lg flex items-center p-2 hover:text-indigo-600 group {{ request()->routeIs('admin.landing-pages.*') ? 'active' : '' }}">
+                                    <a href="{{ route('admin.landing-pages.index') }}" class="sidebar-item text-base font-normal rounded-lg flex items-center p-2 hover:text-indigo-600 group {{ request()->routeIs('admin.landing-pages.*') ? 'active' : '' }}" dir="rtl">
                                         <svg class="w-6 h-6 sidebar-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
                                         </svg>
-                                        <span class="ml-3">الصفحة الرئيسية</span>
+                                        <span class="mr-3">الصفحة الرئيسية</span>
                                     </a>
                                 </li>
                                 
                                 <li>
-                                    <a href="{{ route('admin.faqs.index') }}" class="sidebar-item text-base font-normal rounded-lg flex items-center p-2 hover:text-indigo-600 group {{ request()->routeIs('admin.faqs.*') ? 'active' : '' }}">
+                                    <a href="{{ route('admin.faqs.index') }}" class="sidebar-item text-base font-normal rounded-lg flex items-center p-2 hover:text-indigo-600 group {{ request()->routeIs('admin.faqs.*') ? 'active' : '' }}" dir="rtl">
                                         <svg class="w-6 h-6 sidebar-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                             <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path>
                                         </svg>
-                                        <span class="ml-3">الأسئلة الشائعة</span>
+                                        <span class="mr-3">الأسئلة الشائعة</span>
                                     </a>
                                 </li>
                                 
                                 <li>
-                                    <a href="{{ route('membership-types.index') }}" class="sidebar-item text-base font-normal rounded-lg flex items-center p-2 hover:text-indigo-600 group {{ request()->routeIs('membership-types.*') ? 'active' : '' }}">
+                                    <a href="{{ route('membership-types.index') }}" class="sidebar-item text-base font-normal rounded-lg flex items-center p-2 hover:text-indigo-600 group {{ request()->routeIs('membership-types.*') ? 'active' : '' }}" dir="rtl">
                                         <svg class="w-6 h-6 sidebar-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                             <path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd"></path>
                                         </svg>
-                                        <span class="ml-3">إدارة العضويات</span>
+                                        <span class="mr-3">إدارة العضويات</span>
                                     </a>
                                 </li>
                                 
                                 <li>
-                                    <a href="{{ route('admin.permissions.index') }}" class="sidebar-item text-base font-normal rounded-lg flex items-center p-2 hover:text-indigo-600 group {{ request()->routeIs('admin.permissions.*') ? 'active' : '' }}">
+                                    <a href="{{ route('admin.permissions.index') }}" class="sidebar-item text-base font-normal rounded-lg flex items-center p-2 hover:text-indigo-600 group {{ request()->routeIs('admin.permissions.*') ? 'active' : '' }}" dir="rtl">
                                         <svg class="w-6 h-6 sidebar-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                             <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path>
                                         </svg>
-                                        <span class="ml-3">إدارة الصلاحيات</span>
+                                        <span class="mr-3">إدارة الصلاحيات</span>
                                     </a>
                                 </li>
                                 
                                 <li>
-                                    <a href="{{ route('admin.settings.index') }}" class="sidebar-item text-base font-normal rounded-lg flex items-center p-2 hover:text-indigo-600 group {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">
+                                    <a href="{{ route('admin.settings.index') }}" class="sidebar-item text-base font-normal rounded-lg flex items-center p-2 hover:text-indigo-600 group {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}" dir="rtl">
                                         <svg class="w-6 h-6 sidebar-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                             <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"></path>
                                         </svg>
-                                        <span class="ml-3">إعدادات الموقع</span>
+                                        <span class="mr-3">إعدادات الموقع</span>
                                     </a>
                                 </li>
                                 
                                 <li>
-                                    <button type="button" class="sidebar-item text-base font-normal rounded-lg flex items-center p-2 w-full hover:text-indigo-600 group" aria-controls="dropdown-system" data-collapse-toggle="dropdown-system">
+                                    <button type="button" class="sidebar-item text-base font-normal rounded-lg flex items-center p-2 w-full hover:text-indigo-600 group" aria-controls="dropdown-system" data-collapse-toggle="dropdown-system" dir="rtl">
                                         <svg class="w-6 h-6 sidebar-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                             <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"></path>
                                         </svg>
-                                        <span class="flex-1 ml-3 text-left whitespace-nowrap">إعدادات النظام</span>
+                                        <span class="flex-1 mr-3 text-right whitespace-nowrap">إعدادات النظام</span>
                                         <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                             <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
                                         </svg>
                                     </button>
                                     <ul id="dropdown-system" class="hidden py-2 space-y-2">
                                         <li>
-                                            <a href="{{ route('admin.settings.index') }}" class="flex items-center p-2 pl-11 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100">الإعدادات العامة</a>
+                                            <a href="{{ route('admin.settings.index') }}" class="flex items-center p-2 pr-11 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100" dir="rtl">الإعدادات العامة</a>
                                         </li>
                                         <li>
-                                            <a href="#" class="flex items-center p-2 pl-11 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100">النسخ الاحتياطي</a>
+                                            <a href="#" class="flex items-center p-2 pr-11 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100" dir="rtl">النسخ الاحتياطي</a>
                                         </li>
                                         <li>
-                                            <a href="#" class="flex items-center p-2 pl-11 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100">سجلات النظام</a>
+                                            <a href="#" class="flex items-center p-2 pr-11 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100" dir="rtl">سجلات النظام</a>
                                         </li>
                                     </ul>
                                 </li>
@@ -329,19 +329,19 @@
                             <!-- Help & Support -->
                             <ul class="pt-4 mt-4 space-y-2 border-t border-gray-200">
                                 <li>
-                                    <a href="#" class="sidebar-item text-base font-normal rounded-lg flex items-center p-2 hover:text-indigo-600 group">
+                                    <a href="#" class="sidebar-item text-base font-normal rounded-lg flex items-center p-2 hover:text-indigo-600 group" dir="rtl">
                                         <svg class="w-6 h-6 sidebar-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                             <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path>
                                         </svg>
-                                        <span class="ml-3">المساعدة والدعم</span>
+                                        <span class="mr-3">المساعدة والدعم</span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="{{ route('admin.settings.index') }}" class="sidebar-item text-base font-normal rounded-lg flex items-center p-2 hover:text-indigo-600 group {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">
+                                    <a href="{{ route('admin.settings.index') }}" class="sidebar-item text-base font-normal rounded-lg flex items-center p-2 hover:text-indigo-600 group {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}" dir="rtl">
                                         <svg class="w-6 h-6 sidebar-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                             <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"></path>
                                         </svg>
-                                        <span class="ml-3">الإعدادات</span>
+                                        <span class="mr-3">الإعدادات</span>
                                     </a>
                                 </li>
                             </ul>
