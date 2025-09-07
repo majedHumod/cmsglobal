@@ -89,7 +89,6 @@ class WorkoutController extends Controller
                 'duration' => 'required|integer|min:1|max:300',
                 'difficulty' => 'required|in:easy,medium,hard',
                 'video_url' => 'nullable|url|max:500',
-                'status' => 'boolean'
             ]);
 
             $validated['user_id'] = auth()->id();
@@ -156,7 +155,6 @@ class WorkoutController extends Controller
                 'duration' => 'required|integer|min:1|max:300',
                 'difficulty' => 'required|in:easy,medium,hard',
                 'video_url' => 'nullable|url|max:500',
-                'status' => 'boolean'
             ]);
 
             $validated['status'] = $request->has('status');
