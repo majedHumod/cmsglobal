@@ -86,7 +86,6 @@ class WorkoutScheduleController extends Controller
                 'workout_id' => 'required|exists:workouts,id',
                 'week_number' => 'required|integer|min:1|max:52',
                 'session_number' => 'required|integer|min:1|max:7',
-                'status' => 'boolean'
             ]);
 
             $validated['user_id'] = auth()->id();
