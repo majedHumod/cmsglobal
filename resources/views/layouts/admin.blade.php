@@ -92,6 +92,26 @@
                     </a>
                     @endhasanyrole
 
+                    <!-- Workouts -->
+                    @hasanyrole('admin|coach|client')
+                    <a href="{{ route('workouts.index') }}" class="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-100 {{ request()->routeIs('workouts.*') ? 'bg-indigo-100 text-indigo-700 border-r-4 border-indigo-500' : '' }}">
+                        <svg class="w-5 h-5 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                        التمارين الرياضية
+                    </a>
+                    @endhasanyrole
+
+                    <!-- Workout Schedules -->
+                    @hasanyrole('admin|coach|client')
+                    <a href="{{ route('workout-schedules.index') }}" class="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-100 {{ request()->routeIs('workout-schedules.*') ? 'bg-indigo-100 text-indigo-700 border-r-4 border-indigo-500' : '' }}">
+                        <svg class="w-5 h-5 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3a4 4 0 118 0v4m-4 8a2 2 0 100-4 2 2 0 000 4zm0 0v4a2 2 0 002 2h6a2 2 0 002-2v-4"></path>
+                        </svg>
+                        الجدول الأسبوعي
+                    </a>
+                    @endhasanyrole
+
                     <!-- Membership Types -->
                     @role('admin')
                     <a href="{{ route('membership-types.index') }}" class="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-100 {{ request()->routeIs('membership-types.*') ? 'bg-indigo-100 text-indigo-700 border-r-4 border-indigo-500' : '' }}">

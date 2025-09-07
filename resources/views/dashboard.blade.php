@@ -46,6 +46,26 @@
                     </div>
                     @endhasanyrole
 
+                    <!-- Workouts Card - Visible to admin, coach, and client roles -->
+                    @hasanyrole('admin|coach|client')
+                    <div class="bg-white overflow-hidden shadow rounded-lg">
+                        <div class="px-4 py-5 sm:p-6">
+                            <h3 class="text-lg font-medium text-gray-900">التمارين الرياضية</h3>
+                            <p class="mt-1 text-sm text-gray-500">
+                                إدارة وتنظيم التمارين والبرامج التدريبية.
+                            </p>
+                            <div class="mt-4 space-x-2">
+                                <a href="{{ route('workouts.index') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700">
+                                    إدارة التمارين
+                                </a>
+                                <a href="{{ route('workout-schedules.index') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                                    الجدول الأسبوعي
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    @endhasanyrole
+
                     <!-- Articles Card - Visible only to admin role -->
                     @role('admin')
                     <div class="bg-white overflow-hidden shadow rounded-lg">

@@ -104,6 +104,17 @@ Route::middleware([
         Route::delete('/{faq}', [FaqController::class, 'destroy'])->name('destroy');
         Route::patch('/{faq}/toggle-status', [FaqController::class, 'toggleStatus'])->name('toggle-status');
     });
+
+    // Workouts routes - accessible to admin, coach, and client with different permissions
+    Route::middleware(['auth', 'role:admin|coach|client'])->group(function () {
+        Route::resource('/workouts', \App\Http\Controllers\WorkoutController::class);
+    });
+
+    // Workout Schedules routes - accessible to admin, coach, and client with different permissions
+    Route::middleware(['auth', 'role:admin|coach|client'])->group(function () {
+        Route::resource('/workout-schedules', \App\Http\Controllers\WorkoutScheduleController::class);
+        Route::get('/workout-schedules-weekly', [\App\Http\Controllers\WorkoutScheduleController::class, 'weeklyView'])->name('workout-schedules.weekly');
+    });
 });
 
 // Public page view route (accessible to everyone)
