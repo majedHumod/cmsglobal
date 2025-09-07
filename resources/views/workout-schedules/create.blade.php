@@ -92,6 +92,15 @@
                         @enderror
                     </div>
                 </div>
+                
+                <!-- ملاحظات إضافية -->
+                <div class="mt-6">
+                    <label for="notes" class="block text-sm font-medium text-gray-700">ملاحظات إضافية</label>
+                    <textarea name="notes" id="notes" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="ملاحظات خاصة للمدرب أو العميل حول هذه الجدولة">{{ old('notes') }}</textarea>
+                    @error('notes')
+                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
             </div>
             
             <!-- ملاحظات إضافية -->
