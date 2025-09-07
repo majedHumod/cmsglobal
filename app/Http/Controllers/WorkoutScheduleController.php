@@ -86,7 +86,6 @@ class WorkoutScheduleController extends Controller
                 'workout_id' => 'required|exists:workouts,id',
                 'week_number' => 'required|integer|min:1|max:52',
                 'session_number' => 'required|integer|min:1|max:7',
-                'notes' => 'nullable|string',
                 'status' => 'boolean'
             ]);
 
@@ -147,7 +146,6 @@ class WorkoutScheduleController extends Controller
                 'week_number' => 'required|integer|min:1|max:52',
                 'session_number' => 'required|integer|min:1|max:7',
                 'notes' => 'nullable|string',
-                'status' => 'boolean'
             ]);
 
             $validated['status'] = $request->has('status');
