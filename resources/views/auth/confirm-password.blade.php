@@ -4,7 +4,7 @@
             <x-authentication-card-logo />
         </x-slot>
 
-        <div class="mb-4 text-sm text-gray-600">
+        <div class="mb-4 text-sm text-gray-600 text-right">
             هذه منطقة آمنة في التطبيق. يرجى تأكيد كلمة المرور قبل المتابعة.
         </div>
 
@@ -19,7 +19,7 @@
             </div>
 
             <div class="flex justify-end mt-4">
-                <x-button class="ms-4">
+                <x-button class="mr-4">
                     تأكيد
                 </x-button>
             </div>

@@ -44,11 +44,11 @@
             @endif
 
             <div class="flex items-center justify-end mt-4">
-                <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('login') }}" dir="rtl">
+                <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 text-right" href="{{ route('login') }}">
                     لديك حساب بالفعل؟
                 </a>
 
-                <x-button class="ms-4">
+                <x-button class="mr-4">
                     إنشاء حساب
                 </x-button>
             </div>

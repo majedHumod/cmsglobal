@@ -5,11 +5,11 @@
         </x-slot>
 
         <div x-data="{ recovery: false }">
-            <div class="mb-4 text-sm text-gray-600" x-show="! recovery">
+            <div class="mb-4 text-sm text-gray-600 text-right" x-show="! recovery">
                 يرجى تأكيد الوصول إلى حسابك عن طريق إدخال رمز المصادقة المقدم من تطبيق المصادقة الخاص بك.
             </div>
 
-            <div class="mb-4 text-sm text-gray-600" x-cloak x-show="recovery">
+            <div class="mb-4 text-sm text-gray-600 text-right" x-cloak x-show="recovery">
                 يرجى تأكيد الوصول إلى حسابك عن طريق إدخال أحد رموز الاسترداد الطارئة الخاصة بك.
             </div>
 
@@ -29,7 +29,7 @@
                 </div>
 
                 <div class="flex items-center justify-end mt-4">
-                    <button type="button" class="text-sm text-gray-600 hover:text-gray-900 underline cursor-pointer"
+                    <button type="button" class="text-sm text-gray-600 hover:text-gray-900 underline cursor-pointer text-right"
                                     x-show="! recovery"
                                     x-on:click="
                                         recovery = true;
@@ -38,7 +38,7 @@
                         استخدام رمز الاسترداد
                     </button>
 
-                    <button type="button" class="text-sm text-gray-600 hover:text-gray-900 underline cursor-pointer"
+                    <button type="button" class="text-sm text-gray-600 hover:text-gray-900 underline cursor-pointer text-right"
                                     x-cloak
                                     x-show="recovery"
                                     x-on:click="
@@ -48,7 +48,7 @@
                         استخدام رمز المصادقة
                     </button>
 
-                    <x-button class="ms-4">
+                    <x-button class="mr-4">
                         تسجيل الدخول
                     </x-button>
                 </div>
