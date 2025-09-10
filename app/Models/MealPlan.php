@@ -14,6 +14,9 @@ class MealPlan extends Model
         'description',
         'meal_type',
         'calories',
+        'protein',
+        'carbs',
+        'fats',
         'ingredients',
         'instructions',
         'image',
@@ -28,6 +31,9 @@ class MealPlan extends Model
     protected $casts = [
         'is_active' => 'boolean',
         'calories' => 'integer',
+        'protein' => 'integer',
+        'carbs' => 'integer',
+        'fats' => 'integer',
         'prep_time' => 'integer',
         'cook_time' => 'integer',
         'servings' => 'integer',
@@ -64,5 +70,31 @@ class MealPlan extends Model
     public function getTotalTimeAttribute()
     {
         return ($this->prep_time ?? 0) + ($this->cook_time ?? 0);
+    }
+
+    /**
+     * الحصول على إجمالي المغذيات الكبرى
+     */
+    public function getTotalMacrosAttribute()
+    {
+        return ($this->protein ?? 0) + ($this->carbs ?? 0) + ($this->fats ?? 0);
+    }
+
+    /**
+     * الحصول على توزيع المغذيات كنسب مئوية
+     */
+    public function getMacroPercentagesAttribute()
+    {
+        $total = $this->total_macros;
+        
+        if ($total == 0) {
+            return ['protein' => 0, 'carbs' => 0, 'fats' => 0];
+        }
+        
+        return [
+            'protein' => round((($this->protein ?? 0) / $total) * 100, 1),
+            'carbs' => round((($this->carbs ?? 0) / $total) * 100, 1),
+            'fats' => round((($this->fats ?? 0) / $total) * 100, 1),
+        ];
     }
 }
