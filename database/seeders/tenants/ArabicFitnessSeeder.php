@@ -15,6 +15,7 @@ use App\Models\SiteSetting;
 use App\Models\MembershipType;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 
 class ArabicFitnessSeeder extends Seeder
@@ -93,35 +94,79 @@ class ArabicFitnessSeeder extends Seeder
 
     private function createSiteSettings()
     {
-        $settings = [
-            // إعدادات عامة
-            ['key' => 'site_name', 'value' => 'أكاديمية اللياقة البدنية', 'group' => 'general'],
-            ['key' => 'site_description', 'value' => 'أكاديمية متخصصة في التدريب الشخصي وبناء الأجسام مع برامج غذائية متكاملة', 'group' => 'general'],
-            ['key' => 'primary_color', 'value' => '#ef4444', 'group' => 'general'],
-            ['key' => 'secondary_color', 'value' => '#10b981', 'group' => 'general'],
-            ['key' => 'footer_text', 'value' => '© 2025 أكاديمية اللياقة البدنية. جميع الحقوق محفوظة. تحويل حياتك يبدأ من هنا.', 'group' => 'general'],
-            
-            // معلومات الاتصال
-            ['key' => 'contact_email', 'value' => 'info@fitnessacademy.sa', 'group' => 'contact'],
-            ['key' => 'contact_phone', 'value' => '+966501234567', 'group' => 'contact'],
-            ['key' => 'contact_whatsapp', 'value' => '+966501234567', 'group' => 'contact'],
-            ['key' => 'contact_address', 'value' => 'الرياض، حي الملقا، شارع الأمير سلطان', 'group' => 'contact'],
-            
-            // وسائل التواصل الاجتماعي
-            ['key' => 'social_instagram', 'value' => 'https://instagram.com/fitnessacademy_sa', 'group' => 'social'],
-            ['key' => 'social_youtube', 'value' => 'https://youtube.com/c/fitnessacademysa', 'group' => 'social'],
-            ['key' => 'social_twitter', 'value' => 'https://twitter.com/fitnessacademy_sa', 'group' => 'social'],
+        $this->command->info('إنشاء إعدادات الموقع...');
+        
+        // إعدادات عامة
+        $generalSettings = [
+            ['key' => 'site_name', 'value' => 'أكاديمية اللياقة البدنية', 'group' => 'general', 'type' => 'string', 'description' => 'اسم الموقع'],
+            ['key' => 'site_description', 'value' => 'أكاديمية متخصصة في اللياقة البدنية والتغذية الصحية مع برامج تدريبية متقدمة ومتابعة شخصية من خبراء معتمدين', 'group' => 'general', 'type' => 'string', 'description' => 'وصف الموقع'],
+            ['key' => 'primary_color', 'value' => '#dc2626', 'group' => 'general', 'type' => 'string', 'description' => 'اللون الرئيسي'],
+            ['key' => 'secondary_color', 'value' => '#16a34a', 'group' => 'general', 'type' => 'string', 'description' => 'اللون الثانوي'],
+            ['key' => 'footer_text', 'value' => '© ' . date('Y') . ' أكاديمية اللياقة البدنية. جميع الحقوق محفوظة. نحو حياة صحية أفضل.', 'group' => 'general', 'type' => 'string', 'description' => 'نص التذييل'],
         ];
 
-        foreach ($settings as $setting) {
-            SiteSetting::create([
-                'key' => $setting['key'],
-                'value' => $setting['value'],
-                'group' => $setting['group'],
-                'type' => 'string',
-                'is_public' => true,
-                'is_tenant_specific' => true,
-            ]);
+        foreach ($generalSettings as $setting) {
+            DB::table('site_settings')->updateOrInsert(
+                ['key' => $setting['key']],
+                [
+                    'value' => $setting['value'],
+                    'group' => $setting['group'],
+                    'type' => $setting['type'],
+                    'description' => $setting['description'],
+                    'is_public' => true,
+                    'is_tenant_specific' => true,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]
+            );
+        }
+        
+        // معلومات الاتصال
+        $contactSettings = [
+            ['key' => 'contact_email', 'value' => 'info@fitness-academy.com', 'description' => 'البريد الإلكتروني'],
+            ['key' => 'contact_phone', 'value' => '+966541234567', 'description' => 'رقم الهاتف'],
+            ['key' => 'contact_whatsapp', 'value' => '+966541234567', 'description' => 'رقم الواتساب'],
+            ['key' => 'contact_address', 'value' => 'الرياض، حي الملقا، شارع الأمير محمد بن عبدالعزيز', 'description' => 'العنوان'],
+        ];
+
+        foreach ($contactSettings as $setting) {
+            DB::table('site_settings')->updateOrInsert(
+                ['key' => $setting['key']],
+                [
+                    'value' => $setting['value'],
+                    'group' => 'contact',
+                    'type' => 'string',
+                    'description' => $setting['description'],
+                    'is_public' => true,
+                    'is_tenant_specific' => true,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]
+            );
+        }
+        
+        // وسائل التواصل الاجتماعي
+        $socialSettings = [
+            ['key' => 'social_facebook', 'value' => 'https://facebook.com/fitness.academy.sa', 'description' => 'فيسبوك'],
+            ['key' => 'social_instagram', 'value' => 'https://instagram.com/fitness.academy.sa', 'description' => 'انستقرام'],
+            ['key' => 'social_youtube', 'value' => 'https://youtube.com/c/fitnessacademysa', 'description' => 'يوتيوب'],
+            ['key' => 'social_twitter', 'value' => 'https://twitter.com/fitnessacademysa', 'description' => 'تويتر'],
+        ];
+
+        foreach ($socialSettings as $setting) {
+            DB::table('site_settings')->updateOrInsert(
+                ['key' => $setting['key']],
+                [
+                    'value' => $setting['value'],
+                    'group' => 'social',
+                    'type' => 'string',
+                    'description' => $setting['description'],
+                    'is_public' => true,
+                    'is_tenant_specific' => true,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]
+            );
         }
     }
 
