@@ -83,7 +83,7 @@
                                         </div>
                                         
                                         <p class="text-xs text-gray-400 mb-3">
-                                            بواسطة: {{ $mealPlan->user->name }} | {{ $mealPlan->created_at->format('d/m/Y') }}
+                                            بواسطة: {{ $mealPlan->user->name }} | {{ $mealPlan->created_at ? $mealPlan->created_at->format('d/m/Y') : '—' }}
                                         </p>
                                         
                                         <div class="flex space-x-2">
