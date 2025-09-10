@@ -148,6 +148,24 @@
                                                 <span class="font-medium">{{ $mealPlan->calories }} سعرة</span>
                                             </div>
                                         @endif
+                                        @if($mealPlan->protein)
+                                            <div class="flex items-center justify-between text-sm">
+                                                <span class="text-gray-500">البروتين:</span>
+                                                <span class="font-medium">{{ $mealPlan->protein }}ج</span>
+                                            </div>
+                                        @endif
+                                        @if($mealPlan->carbs)
+                                            <div class="flex items-center justify-between text-sm">
+                                                <span class="text-gray-500">الكربوهيدرات:</span>
+                                                <span class="font-medium">{{ $mealPlan->carbs }}ج</span>
+                                            </div>
+                                        @endif
+                                        @if($mealPlan->fats)
+                                            <div class="flex items-center justify-between text-sm">
+                                                <span class="text-gray-500">الدهون:</span>
+                                                <span class="font-medium">{{ $mealPlan->fats }}ج</span>
+                                            </div>
+                                        @endif
                                         @if($mealPlan->total_time > 0)
                                             <div class="flex items-center justify-between text-sm">
                                                 <span class="text-gray-500">الوقت الكلي:</span>
@@ -227,6 +245,9 @@
                                     <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">اسم الوجبة</th>
                                     <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">النوع</th>
                                     <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">السعرات</th>
+                                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">البروتين</th>
+                                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">الكربوهيدرات</th>
+                                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">الدهون</th>
                                     <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">الحصص</th>
                                     <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">تاريخ الإنشاء</th>
                                     <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">الإجراءات</th>
@@ -246,6 +267,15 @@
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                             {{ $mealPlan->calories ?? '—' }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            {{ $mealPlan->protein ?? '—' }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            {{ $mealPlan->carbs ?? '—' }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            {{ $mealPlan->fats ?? '—' }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                             {{ $mealPlan->servings }}

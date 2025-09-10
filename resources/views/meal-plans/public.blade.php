@@ -82,6 +82,9 @@
                                 @if($mealPlan->description)
                                     <p class="text-gray-600 text-sm mb-3">{{ Str::limit($mealPlan->description, 100) }}</p>
                                 @endif
+                                @if($mealPlan->protein)
+                                    <span>{{ $mealPlan->protein }}ج بروتين</span>
+                                @endif
                                 
                                 <div class="flex items-center justify-between text-sm text-gray-500 mb-3">
                                     @if($mealPlan->calories)

@@ -100,11 +100,49 @@
                         @enderror
                     </div>
 
+                    <!-- البروتين -->
+                    <div>
+                        <label for="protein" class="block text-sm font-medium text-gray-700">البروتين (جرام)</label>
+                        <input type="number" name="protein" id="protein" min="0" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" value="{{ old('protein') }}" placeholder="25">
+                        @error('protein')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <!-- الكربوهيدرات -->
+                    <div>
+                        <label for="carbs" class="block text-sm font-medium text-gray-700">الكربوهيدرات (جرام)</label>
+                        <input type="number" name="carbs" id="carbs" min="0" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" value="{{ old('carbs') }}" placeholder="30">
+                        @error('carbs')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <!-- الدهون -->
+                    <div>
+                        <label for="fats" class="block text-sm font-medium text-gray-700">الدهون (جرام)</label>
+                        <input type="number" name="fats" id="fats" min="0" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" value="{{ old('fats') }}" placeholder="10">
+                        @error('fats')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
                     <!-- وقت التحضير -->
                     <div>
                         <label for="prep_time" class="block text-sm font-medium text-gray-700">وقت التحضير (دقيقة)</label>
                         <input type="number" name="prep_time" id="prep_time" min="0" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" value="{{ old('prep_time') }}" placeholder="15">
                         @error('prep_time')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <!-- وقت الطبخ -->
+                    <div>
+                        <label for="cook_time" class="block text-sm font-medium text-gray-700">وقت الطبخ (دقيقة)</label>
+                        <input type="number" name="cook_time" id="cook_time" min="0" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" value="{{ old('cook_time') }}" placeholder="20">
+                        @error('cook_time')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
@@ -133,15 +171,6 @@
                     <div>
                         <label for="difficulty" class="block text-sm font-medium text-gray-700">مستوى الصعوبة *</label>
                         <select name="difficulty" id="difficulty" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
-                            <option value="easy" {{ old('difficulty', 'easy') == 'easy' ? 'selected' : '' }}>سهل</option>
-                            <option value="medium" {{ old('difficulty') == 'medium' ? 'selected' : '' }}>متوسط</option>
-                            <option value="hard" {{ old('difficulty') == 'hard' ? 'selected' : '' }}>صعب</option>
-                        </select>
-                        @error('difficulty')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
-
                     <!-- صورة الوجبة -->
                     <div>
                         <label for="image" class="block text-sm font-medium text-gray-700">صورة الوجبة</label>

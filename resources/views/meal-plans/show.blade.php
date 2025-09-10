@@ -74,6 +74,83 @@
             </div>
         </div>
 
+        <!-- معلومات التغذية -->
+        @if($mealPlan->protein || $mealPlan->carbs || $mealPlan->fats)
+            <div class="mb-6">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">المعلومات الغذائية</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    @if($mealPlan->protein)
+                        <div class="bg-red-50 p-4 rounded-lg text-center">
+                            <div class="text-2xl font-bold text-red-600">{{ $mealPlan->protein }}ج</div>
+                            <div class="text-sm text-gray-600">بروتين</div>
+                        </div>
+                    @endif
+                    
+                    @if($mealPlan->carbs)
+                        <div class="bg-orange-50 p-4 rounded-lg text-center">
+                            <div class="text-2xl font-bold text-orange-600">{{ $mealPlan->carbs }}ج</div>
+                            <div class="text-sm text-gray-600">كربوهيدرات</div>
+                        </div>
+                    @endif
+                    
+                    @if($mealPlan->fats)
+                        <div class="bg-yellow-50 p-4 rounded-lg text-center">
+                            <div class="text-2xl font-bold text-yellow-600">{{ $mealPlan->fats }}ج</div>
+                            <div class="text-sm text-gray-600">دهون</div>
+                        </div>
+                    @endif
+                </div>
+                
+                <!-- نسب المغذيات -->
+                @if($mealPlan->total_macros > 0)
+                    <div class="mt-4 bg-gray-50 p-4 rounded-lg">
+                        <h3 class="text-sm font-medium text-gray-900 mb-3">توزيع المغذيات الكبرى</h3>
+                        <div class="space-y-2">
+                            @if($mealPlan->protein)
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-600">البروتين</span>
+                                    <div class="flex items-center">
+                                        <div class="w-32 bg-gray-200 rounded-full h-2 mr-2">
+                                            <div class="bg-red-500 h-2 rounded-full" style="width: {{ $mealPlan->macro_percentages['protein'] }}%"></div>
+                                        </div>
+                                        <span class="text-sm text-gray-500">{{ $mealPlan->macro_percentages['protein'] }}%</span>
+                                    </div>
+                                </div>
+                            @endif
+                            
+                            @if($mealPlan->carbs)
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-600">الكربوهيدرات</span>
+                                    <div class="flex items-center">
+                                        <div class="w-32 bg-gray-200 rounded-full h-2 mr-2">
+                                            <div class="bg-orange-500 h-2 rounded-full" style="width: {{ $mealPlan->macro_percentages['carbs'] }}%"></div>
+                                        </div>
+                                        <span class="text-sm text-gray-500">{{ $mealPlan->macro_percentages['carbs'] }}%</span>
+                                    </div>
+                                </div>
+                            @endif
+                            
+                            @if($mealPlan->fats)
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-600">الدهون</span>
+                                    <div class="flex items-center">
+                                        <div class="w-32 bg-gray-200 rounded-full h-2 mr-2">
+                                            <div class="bg-yellow-500 h-2 rounded-full" style="width: {{ $mealPlan->macro_percentages['fats'] }}%"></div>
+                                        </div>
+                                        <span class="text-sm text-gray-500">{{ $mealPlan->macro_percentages['fats'] }}%</span>
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                @endif
+                        <dt class="text-sm font-medium text-gray-500">إجمالي المغذيات:</dt>
+                        <dd class="mt-1 text-sm text-gray-900">{{ $mealPlan->total_macros }}ج</dd>
+                    </div>
+                    <div>
+            </div>
+        @endif
+
         <!-- تفاصيل إضافية -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
             <div class="flex items-center space-x-2">

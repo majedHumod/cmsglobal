@@ -108,11 +108,49 @@
                         @enderror
                     </div>
 
+                    <!-- البروتين -->
+                    <div>
+                        <label for="protein" class="block text-sm font-medium text-gray-700">البروتين (جرام)</label>
+                        <input type="number" name="protein" id="protein" min="0" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" value="{{ old('protein', $mealPlan->protein) }}" placeholder="25">
+                        @error('protein')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <!-- الكربوهيدرات -->
+                    <div>
+                        <label for="carbs" class="block text-sm font-medium text-gray-700">الكربوهيدرات (جرام)</label>
+                        <input type="number" name="carbs" id="carbs" min="0" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" value="{{ old('carbs', $mealPlan->carbs) }}" placeholder="30">
+                        @error('carbs')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <!-- الدهون -->
+                    <div>
+                        <label for="fats" class="block text-sm font-medium text-gray-700">الدهون (جرام)</label>
+                        <input type="number" name="fats" id="fats" min="0" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" value="{{ old('fats', $mealPlan->fats) }}" placeholder="10">
+                        @error('fats')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
                     <!-- وقت التحضير -->
                     <div>
                         <label for="prep_time" class="block text-sm font-medium text-gray-700">وقت التحضير (دقيقة)</label>
                         <input type="number" name="prep_time" id="prep_time" min="0" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" value="{{ old('prep_time', $mealPlan->prep_time) }}">
                         @error('prep_time')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <!-- وقت الطبخ -->
+                    <div>
+                        <label for="cook_time" class="block text-sm font-medium text-gray-700">وقت الطبخ (دقيقة)</label>
+                        <input type="number" name="cook_time" id="cook_time" min="0" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" value="{{ old('cook_time', $mealPlan->cook_time) }}">
+                        @error('cook_time')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
@@ -150,20 +188,33 @@
                         @enderror
                     </div>
 
-                    <!-- صورة الوجبة -->
+                    <!-- مستوى الصعوبة -->
                     <div>
-                        <label for="image" class="block text-sm font-medium text-gray-700">صورة الوجبة</label>
-                        @if($mealPlan->image)
-                            <div class="mb-2">
-                                <img src="{{ Storage::url($mealPlan->image) }}" alt="{{ $mealPlan->name }}" class="w-32 h-32 object-cover rounded">
-                                <p class="text-sm text-gray-500 mt-1">الصورة الحالية</p>
-                            </div>
-                        @endif
-                        <input type="file" name="image" id="image" accept="image/*" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
-                        @error('image')
+                        <label for="difficulty" class="block text-sm font-medium text-gray-700">مستوى الصعوبة *</label>
+                        <select name="difficulty" id="difficulty" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
+                            <option value="easy" {{ old('difficulty', $mealPlan->difficulty) == 'easy' ? 'selected' : '' }}>سهل</option>
+                            <option value="medium" {{ old('difficulty', $mealPlan->difficulty) == 'medium' ? 'selected' : '' }}>متوسط</option>
+                            <option value="hard" {{ old('difficulty', $mealPlan->difficulty) == 'hard' ? 'selected' : '' }}>صعب</option>
+                        </select>
+                        @error('difficulty')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
+                </div>
+
+                <!-- صورة الوجبة -->
+                <div class="mt-6">
+                    <label for="image" class="block text-sm font-medium text-gray-700">صورة الوجبة</label>
+                    @if($mealPlan->image)
+                        <div class="mb-2">
+                            <img src="{{ Storage::url($mealPlan->image) }}" alt="{{ $mealPlan->name }}" class="w-32 h-32 object-cover rounded">
+                            <p class="text-sm text-gray-500 mt-1">الصورة الحالية</p>
+                        </div>
+                    @endif
+                    <input type="file" name="image" id="image" accept="image/*" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                    @error('image')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
                 </div>
             </div>
 
