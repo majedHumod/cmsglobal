@@ -44,7 +44,7 @@ class MealPlanController extends Controller
             'cook_time' => 'nullable|integer|min:0',
             'servings' => 'required|integer|min:1',
             'difficulty' => 'required|in:easy,medium,hard',
-            'is_active' => 'boolean'
+            'is_active' => 'nullable|boolean'
         ]);
 
         if ($request->hasFile('image')) {
@@ -53,7 +53,7 @@ class MealPlanController extends Controller
         }
 
         $validated['user_id'] = auth()->id();
-        $validated['is_active'] = $request->has('is_active');
+        $validated['is_active'] = $request->has('is_active') ? true : false;
 
         MealPlan::create($validated);
 
@@ -99,7 +99,7 @@ class MealPlanController extends Controller
             'cook_time' => 'nullable|integer|min:0',
             'servings' => 'required|integer|min:1',
             'difficulty' => 'required|in:easy,medium,hard',
-            'is_active' => 'boolean'
+            'is_active' => 'nullable|boolean'
         ]);
 
         if ($request->hasFile('image')) {
@@ -111,7 +111,7 @@ class MealPlanController extends Controller
             $validated['image'] = $imagePath;
         }
 
-        $validated['is_active'] = $request->has('is_active');
+        $validated['is_active'] = $request->has('is_active') ? true : false;
 
         $mealPlan->update($validated);
 
