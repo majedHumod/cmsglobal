@@ -1,27 +1,62 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('تعديل الصفحة: ') . $page->title }}
-        </h2>
-    </x-slot>
+@extends('layouts.admin')
 
-    <div class="py-12">
-        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
-                <div class="p-6">
-                    <form action="{{ route('pages.update', $page) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
-                        @csrf
-                        @method('PUT')
-                        
-                        <!-- العنوان -->
-                        <div>
-                            <label for="title" class="block text-sm font-medium text-gray-700 mb-2">عنوان الصفحة *</label>
-                            <input type="text" name="title" id="title" class="w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500" value="{{ old('title', $page->title) }}" required>
-                            @error('title')
-                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
+@section('title', 'تعديل الصفحة')
 
+@section('header', 'تعديل الصفحة: ' . $page->title)
+
+@section('header_actions')
+<div class="flex space-x-2">
+    <a href="{{ route('pages.show', $page->slug) }}" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50" target="_blank">
+        <svg class="-ml-1 mr-2 h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+        </svg>
+        عرض الصفحة
+    </a>
+    <a href="{{ route('pages.index') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+        <svg class="-ml-1 mr-2 h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+        </svg>
+        العودة للقائمة
+    </a>
+</div>
+@endsection
+
+@section('content')
+<div class="bg-white shadow-md rounded-lg overflow-hidden">
+    <div class="p-6">
+        <div class="mb-6">
+            <h2 class="text-lg font-medium text-gray-900">تعديل الصفحة</h2>
+            <p class="mt-1 text-sm text-gray-500">قم بتعديل محتوى وإعدادات الصفحة.</p>
+        </div>
+
+        <form action="{{ route('pages.update', $page) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+            @csrf
+            @method('PUT')
+            
+            <!-- معلومات الصفحة الأساسية -->
+            <div class="border-b border-gray-200 pb-6">
+                <h3 class="text-lg font-medium text-gray-900">معلومات الصفحة الأساسية</h3>
+                <p class="mt-1 text-sm text-gray-500">تعديل المعلومات الأساسية للصفحة.</p>
+                
+                <div class="mt-6">
+                    <!-- العنوان -->
+                    <div>
+                        <label for="title" class="block text-sm font-medium text-gray-700 mb-2">عنوان الصفحة *</label>
+                        <input type="text" name="title" id="title" class="w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500" value="{{ old('title', $page->title) }}" required>
+                        @error('title')
+                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
+            </div>
+            
+            <!-- محتوى الصفحة -->
+            <div class="border-b border-gray-200 py-6">
+                <h3 class="text-lg font-medium text-gray-900">محتوى الصفحة</h3>
+                <p class="mt-1 text-sm text-gray-500">تعديل محتوى الصفحة مع إمكانيات التنسيق المتقدمة.</p>
+                
+                <div class="mt-6">
                         <!-- المحتوى مع المحرر المجاني -->
                         <div>
                             <label for="content" class="block text-sm font-medium text-gray-700 mb-2">محتوى الصفحة *</label>
@@ -88,54 +123,67 @@
                             @enderror
                             <p class="text-xs text-gray-500 mt-1">استخدم أدوات التنسيق أعلاه لتنسيق المحتوى</p>
                         </div>
+                </div>
+            </div>
+            
+            <!-- معلومات إضافية -->
+            <div class="border-b border-gray-200 py-6">
+                <h3 class="text-lg font-medium text-gray-900">معلومات إضافية</h3>
+                <p class="mt-1 text-sm text-gray-500">تعديل المعلومات الإضافية للصفحة.</p>
+                
+                <div class="mt-6">
+                    <!-- المقتطف -->
+                    <div class="mb-6">
+                        <label for="excerpt" class="block text-sm font-medium text-gray-700 mb-2">مقتطف قصير</label>
+                        <textarea name="excerpt" id="excerpt" rows="3" class="w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="وصف مختصر للصفحة">{{ old('excerpt', $page->excerpt) }}</textarea>
+                        @error('excerpt')
+                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
 
-                        <!-- المقتطف -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- عنوان SEO -->
                         <div>
-                            <label for="excerpt" class="block text-sm font-medium text-gray-700 mb-2">مقتطف قصير</label>
-                            <textarea name="excerpt" id="excerpt" rows="3" class="w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="وصف مختصر للصفحة">{{ old('excerpt', $page->excerpt) }}</textarea>
-                            @error('excerpt')
+                            <label for="meta_title" class="block text-sm font-medium text-gray-700 mb-2">عنوان SEO</label>
+                            <input type="text" name="meta_title" id="meta_title" class="w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500" value="{{ old('meta_title', $page->meta_title) }}" placeholder="عنوان محرك البحث">
+                            @error('meta_title')
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                             @enderror
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <!-- عنوان SEO -->
-                            <div>
-                                <label for="meta_title" class="block text-sm font-medium text-gray-700 mb-2">عنوان SEO</label>
-                                <input type="text" name="meta_title" id="meta_title" class="w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500" value="{{ old('meta_title', $page->meta_title) }}" placeholder="عنوان محرك البحث">
-                                @error('meta_title')
-                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                @enderror
-                            </div>
-
-                            <!-- الصورة المميزة -->
-                            <div>
-                                <label for="featured_image" class="block text-sm font-medium text-gray-700 mb-2">الصورة المميزة</label>
-                                @if($page->featured_image)
-                                    <div class="mb-2">
-                                        <img src="{{ Storage::url($page->featured_image) }}" alt="{{ $page->title }}" class="w-32 h-32 object-cover rounded">
-                                        <p class="text-sm text-gray-500 mt-1">الصورة الحالية</p>
-                                    </div>
-                                @endif
-                                <input type="file" name="featured_image" id="featured_image" accept="image/*" class="w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                                @error('featured_image')
-                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <!-- وصف SEO -->
+                        <!-- الصورة المميزة -->
                         <div>
-                            <label for="meta_description" class="block text-sm font-medium text-gray-700 mb-2">وصف SEO</label>
-                            <textarea name="meta_description" id="meta_description" rows="2" class="w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="وصف الصفحة لمحركات البحث (160 حرف كحد أقصى)">{{ old('meta_description', $page->meta_description) }}</textarea>
-                            @error('meta_description')
+                            <label for="featured_image" class="block text-sm font-medium text-gray-700 mb-2">الصورة المميزة</label>
+                            @if($page->featured_image)
+                                <div class="mb-2">
+                                    <img src="{{ Storage::url($page->featured_image) }}" alt="{{ $page->title }}" class="w-32 h-32 object-cover rounded">
+                                    <p class="text-sm text-gray-500 mt-1">الصورة الحالية</p>
+                                </div>
+                            @endif
+                            <input type="file" name="featured_image" id="featured_image" accept="image/*" class="w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                            @error('featured_image')
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                             @enderror
                         </div>
+                    </div>
 
-                        <!-- إعدادات الوصول -->
-                        <div class="bg-gray-50 p-4 rounded-lg">
-                            <h3 class="text-lg font-medium text-gray-900 mb-4">إعدادات الوصول والصلاحيات</h3>
+                    <!-- وصف SEO -->
+                    <div class="mt-6">
+                        <label for="meta_description" class="block text-sm font-medium text-gray-700 mb-2">وصف SEO</label>
+                        <textarea name="meta_description" id="meta_description" rows="2" class="w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="وصف الصفحة لمحركات البحث (160 حرف كحد أقصى)">{{ old('meta_description', $page->meta_description) }}</textarea>
+                        @error('meta_description')
+                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
+            </div>
+
+            <!-- إعدادات الوصول -->
+            <div class="border-b border-gray-200 py-6">
+                <h3 class="text-lg font-medium text-gray-900">إعدادات الوصول والصلاحيات</h3>
+                <p class="mt-1 text-sm text-gray-500">تعديل إعدادات الوصول والصلاحيات للصفحة.</p>
+                
+                <div class="mt-6 bg-gray-50 p-4 rounded-lg">
                             
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <!-- مستوى الوصول -->
@@ -207,52 +255,87 @@
                                    @endforelse
                                </div>
                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <!-- ترتيب القائمة -->
-                            <div>
-                                <label for="menu_order" class="block text-sm font-medium text-gray-700 mb-2">ترتيب القائمة</label>
-                                <input type="number" name="menu_order" id="menu_order" min="0" class="w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500" value="{{ old('menu_order', $page->menu_order) }}">
-                                @error('menu_order')
-                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                @enderror
-                            </div>
-
-                            <!-- تاريخ النشر -->
-                            <div>
-                                <label for="published_at" class="block text-sm font-medium text-gray-700 mb-2">تاريخ النشر</label>
-                                <input type="datetime-local" name="published_at" id="published_at" class="w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500" value="{{ old('published_at', $page->published_at ? $page->published_at->format('Y-m-d\TH:i') : '') }}">
-                                @error('published_at')
-                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <!-- خيارات النشر -->
-                        <div class="space-y-4">
-                            <div class="flex items-center">
-                                <input type="checkbox" name="is_published" id="is_published" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" {{ old('is_published', $page->is_published) ? 'checked' : '' }}>
-                                <label for="is_published" class="ml-2 block text-sm text-gray-700">نشر الصفحة</label>
-                            </div>
-
-                            <div class="flex items-center">
-                                <input type="checkbox" name="show_in_menu" id="show_in_menu" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" {{ old('show_in_menu', $page->show_in_menu) ? 'checked' : '' }}>
-                                <label for="show_in_menu" class="ml-2 block text-sm text-gray-700">إظهار في قائمة التنقل</label>
-                            </div>
-                        </div>
-
-                        <div class="flex items-center justify-between pt-6 border-t border-gray-200">
-                            <a href="{{ route('pages.index') }}" class="text-gray-500 hover:text-gray-700">إلغاء</a>
-                            <button type="submit" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                تحديث الصفحة
-                            </button>
-                        </div>
-                    </form>
                 </div>
             </div>
-        </div>
+
+            <!-- إعدادات النشر -->
+            <div class="py-6">
+                <h3 class="text-lg font-medium text-gray-900">إعدادات النشر</h3>
+                <p class="mt-1 text-sm text-gray-500">تعديل إعدادات النشر والعرض للصفحة.</p>
+                
+                <div class="mt-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- ترتيب القائمة -->
+                        <div>
+                            <label for="menu_order" class="block text-sm font-medium text-gray-700 mb-2">ترتيب القائمة</label>
+                            <input type="number" name="menu_order" id="menu_order" min="0" class="w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500" value="{{ old('menu_order', $page->menu_order) }}">
+                            @error('menu_order')
+                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <!-- تاريخ النشر -->
+                        <div>
+                            <label for="published_at" class="block text-sm font-medium text-gray-700 mb-2">تاريخ النشر</label>
+                            <input type="datetime-local" name="published_at" id="published_at" class="w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500" value="{{ old('published_at', $page->published_at ? $page->published_at->format('Y-m-d\TH:i') : '') }}">
+                            @error('published_at')
+                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <!-- خيارات النشر -->
+                    <div class="mt-6 space-y-4">
+                        <div class="flex items-center">
+                            <input type="checkbox" name="is_published" id="is_published" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" {{ old('is_published', $page->is_published) ? 'checked' : '' }}>
+                            <label for="is_published" class="ml-2 block text-sm text-gray-700">نشر الصفحة</label>
+                        </div>
+
+                        <div class="flex items-center">
+                            <input type="checkbox" name="show_in_menu" id="show_in_menu" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" {{ old('show_in_menu', $page->show_in_menu) ? 'checked' : '' }}>
+                            <label for="show_in_menu" class="ml-2 block text-sm text-gray-700">إظهار في قائمة التنقل</label>
+                        </div>
+                    </div>
+                    
+                    <!-- معلومات الصفحة -->
+                    <div class="mt-6 bg-gray-50 rounded-lg p-4">
+                        <h4 class="text-sm font-medium text-gray-900 mb-3">معلومات الصفحة</h4>
+                        <dl class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <dt class="text-sm font-medium text-gray-500">تاريخ الإنشاء</dt>
+                                <dd class="mt-1 text-sm text-gray-900">{{ $page->created_at->format('d/m/Y H:i') }}</dd>
+                            </div>
+                            <div>
+                                <dt class="text-sm font-medium text-gray-500">آخر تحديث</dt>
+                                <dd class="mt-1 text-sm text-gray-900">{{ $page->updated_at->format('d/m/Y H:i') }}</dd>
+                            </div>
+                            <div>
+                                <dt class="text-sm font-medium text-gray-500">المؤلف</dt>
+                                <dd class="mt-1 text-sm text-gray-900">{{ $page->user->name }}</dd>
+                            </div>
+                            <div>
+                                <dt class="text-sm font-medium text-gray-500">عدد الكلمات</dt>
+                                <dd class="mt-1 text-sm text-gray-900">{{ str_word_count(strip_tags($page->content)) }} كلمة</dd>
+                            </div>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-end space-x-3">
+                <a href="{{ route('pages.index') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                    إلغاء
+                </a>
+                <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    تحديث الصفحة
+                </button>
+            </div>
+        </form>
     </div>
+</div>
 
     <!-- محرر مجاني بالكامل -->
     <script>
@@ -412,4 +495,4 @@
             }
         });
     </script>
-</x-app-layout>
+@endsection
