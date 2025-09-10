@@ -155,15 +155,6 @@
                         @enderror
                     </div>
 
-                    <!-- وقت الطبخ -->
-                    <div>
-                        <label for="cook_time" class="block text-sm font-medium text-gray-700">وقت الطبخ (دقيقة)</label>
-                        <input type="number" name="cook_time" id="cook_time" min="0" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" value="{{ old('cook_time', $mealPlan->cook_time) }}">
-                        @error('cook_time')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
-
                     <!-- عدد الحصص -->
                     <div>
                         <label for="servings" class="block text-sm font-medium text-gray-700">عدد الحصص *</label>
@@ -179,6 +170,7 @@
                     <div>
                         <label for="difficulty" class="block text-sm font-medium text-gray-700">مستوى الصعوبة *</label>
                         <select name="difficulty" id="difficulty" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
+                            <option value="">اختر مستوى الصعوبة</option>
                             <option value="easy" {{ old('difficulty', $mealPlan->difficulty) == 'easy' ? 'selected' : '' }}>سهل</option>
                             <option value="medium" {{ old('difficulty', $mealPlan->difficulty) == 'medium' ? 'selected' : '' }}>متوسط</option>
                             <option value="hard" {{ old('difficulty', $mealPlan->difficulty) == 'hard' ? 'selected' : '' }}>صعب</option>
@@ -188,33 +180,20 @@
                         @enderror
                     </div>
 
-                    <!-- مستوى الصعوبة -->
+                    <!-- صورة الوجبة -->
                     <div>
-                        <label for="difficulty" class="block text-sm font-medium text-gray-700">مستوى الصعوبة *</label>
-                        <select name="difficulty" id="difficulty" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
-                            <option value="easy" {{ old('difficulty', $mealPlan->difficulty) == 'easy' ? 'selected' : '' }}>سهل</option>
-                            <option value="medium" {{ old('difficulty', $mealPlan->difficulty) == 'medium' ? 'selected' : '' }}>متوسط</option>
-                            <option value="hard" {{ old('difficulty', $mealPlan->difficulty) == 'hard' ? 'selected' : '' }}>صعب</option>
-                        </select>
-                        @error('difficulty')
+                        <label for="image" class="block text-sm font-medium text-gray-700">صورة الوجبة</label>
+                        @if($mealPlan->image)
+                            <div class="mb-2">
+                                <img src="{{ Storage::url($mealPlan->image) }}" alt="{{ $mealPlan->name }}" class="w-32 h-32 object-cover rounded">
+                                <p class="text-sm text-gray-500 mt-1">الصورة الحالية</p>
+                            </div>
+                        @endif
+                        <input type="file" name="image" id="image" accept="image/*" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                        @error('image')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
-                </div>
-
-                <!-- صورة الوجبة -->
-                <div class="mt-6">
-                    <label for="image" class="block text-sm font-medium text-gray-700">صورة الوجبة</label>
-                    @if($mealPlan->image)
-                        <div class="mb-2">
-                            <img src="{{ Storage::url($mealPlan->image) }}" alt="{{ $mealPlan->name }}" class="w-32 h-32 object-cover rounded">
-                            <p class="text-sm text-gray-500 mt-1">الصورة الحالية</p>
-                        </div>
-                    @endif
-                    <input type="file" name="image" id="image" accept="image/*" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
-                    @error('image')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
                 </div>
             </div>
 

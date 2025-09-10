@@ -147,15 +147,6 @@
                         @enderror
                     </div>
 
-                    <!-- وقت الطبخ -->
-                    <div>
-                        <label for="cook_time" class="block text-sm font-medium text-gray-700">وقت الطبخ (دقيقة)</label>
-                        <input type="number" name="cook_time" id="cook_time" min="0" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" value="{{ old('cook_time') }}" placeholder="20">
-                        @error('cook_time')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
-
                     <!-- عدد الحصص -->
                     <div>
                         <label for="servings" class="block text-sm font-medium text-gray-700">عدد الحصص *</label>
@@ -171,6 +162,15 @@
                     <div>
                         <label for="difficulty" class="block text-sm font-medium text-gray-700">مستوى الصعوبة *</label>
                         <select name="difficulty" id="difficulty" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
+                            <option value="">اختر مستوى الصعوبة</option>
+                            <option value="easy" {{ old('difficulty') == 'easy' ? 'selected' : '' }}>سهل</option>
+                            <option value="medium" {{ old('difficulty') == 'medium' ? 'selected' : '' }}>متوسط</option>
+                            <option value="hard" {{ old('difficulty') == 'hard' ? 'selected' : '' }}>صعب</option>
+                        </select>
+                        @error('difficulty')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
                     <!-- صورة الوجبة -->
                     <div>
                         <label for="image" class="block text-sm font-medium text-gray-700">صورة الوجبة</label>
