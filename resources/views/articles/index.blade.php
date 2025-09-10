@@ -1,17 +1,20 @@
 @extends('layouts.admin')
 
 @section('title', 'إدارة المقالات')
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            @if(session('success'))
-                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
-                    <span class="block sm:inline">{{ session('success') }}</span>
-                </div>
-            @endif
 
 @section('header', 'إدارة المقالات')
-            <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
-                <div class="p-6">
+
+@section('header_actions')
+<div class="flex space-x-2">
+    <a href="{{ route('articles.create') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
+        <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+        </svg>
+        إضافة مقال جديد
+    </a>
+</div>
+@endsection
+
 @section('content')
 <div class="bg-white shadow-md rounded-lg overflow-hidden">
     <div class="p-6">
@@ -19,7 +22,7 @@
             <h2 class="text-lg font-medium text-gray-900">قائمة المقالات</h2>
             <p class="mt-1 text-sm text-gray-500">إدارة وتنظيم مقالات الموقع من هنا.</p>
         </div>
-                        <p class="text-gray-500 text-center">No articles found.</p>
+
         @if($articles->isEmpty())
             <div class="text-center py-12">
                 <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-gray-100 mb-4">
@@ -101,7 +104,7 @@
                                 </form>
                             </div>
                         </div>
-        </svg>
+                    </div>
                 @endforeach
             </div>
         @endif
