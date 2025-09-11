@@ -354,18 +354,6 @@
                     </div>
                 </article>
 
-                <!-- Navigation Links -->
-                <div class="mt-8 flex justify-center space-x-4" dir="rtl">
-                    <a href="{{ route('pages.public') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
-                        عرض جميع الصفحات
-                    </a>
-                    
-                    @auth
-                        <a href="{{ route('dashboard') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
-                            العودة للوحة التحكم
-                        </a>
-                    @endauth
-                </div>
             </div>
         </main>
         
