@@ -259,11 +259,11 @@
                         @else
                             <div class="space-y-3" x-data="{ activeCategory: null }">
                                 @foreach($faqs as $category => $categoryFaqs)
-                                    <div class="bg-gray-50 rounded-lg p-3">
+                                    <div class="bg-gray-50 rounded-lg p-2 mb-2">
                                         <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center">
                                             <button 
                                                 @click="activeCategory = activeCategory === '{{ $category }}' ? null : '{{ $category }}'"
-                                                class="flex justify-between items-center w-full text-right focus:outline-none"
+                                                class="flex justify-between items-center w-full text-right focus:outline-none py-1"
                                             >
                                                 <span>{{ $category }}</span>
                                                 <svg class="w-5 h-5 text-gray-500 transition-transform duration-300 mr-2" :class="{'rotate-180': activeCategory === '{{ $category }}'}" fill="currentColor" viewBox="0 0 20 20">
@@ -273,12 +273,12 @@
                                         </h2>
                                         
                                         <div x-show="activeCategory === '{{ $category }}'" x-collapse>
-                                            <div class="space-y-1 mt-1">
+                                            <div class="space-y-0">
                                                 @foreach($categoryFaqs as $faq)
-                                                    <div class="bg-white rounded-lg shadow-sm p-2 mb-1" x-data="{ open: false }">
+                                                    <div class="bg-white rounded-lg shadow-sm p-1 mb-1" x-data="{ open: false }">
                                                         <button 
                                                             @click="open = !open" 
-                                                            class="flex justify-between items-center w-full text-right focus:outline-none py-1"
+                                                            class="flex justify-between items-center w-full text-right focus:outline-none py-0.5"
                                                         >
                                                             <h3 class="text-base font-medium text-gray-900">{{ $faq->question }}</h3>
                                                             <svg class="w-5 h-5 text-gray-500 transition-transform duration-300 mr-2" :class="{'rotate-180': open}" fill="currentColor" viewBox="0 0 20 20">
@@ -286,7 +286,7 @@
                                                             </svg>
                                                         </button>
                                                         
-                                                        <div x-show="open" x-collapse class="mt-1 pt-1 pb-1 text-gray-600 prose prose-sm max-w-none text-right">
+                                                        <div x-show="open" x-collapse class="pt-0.5 pb-0.5 text-gray-600 prose prose-sm max-w-none text-right">
                                                             {!! $faq->answer !!}
                                                         </div>
                                                     </div>
