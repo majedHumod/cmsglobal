@@ -304,7 +304,7 @@
         <main class="py-12" dir="rtl">
             <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
                 <!-- Breadcrumb Navigation -->
-                <nav class="flex mb-4" aria-label="Breadcrumb">
+                <nav class="flex mb-4 mt-2" aria-label="Breadcrumb">
                     <ol class="inline-flex items-center space-x-1 md:space-x-3 space-x-reverse">
                         <li class="inline-flex items-center">
                             <a href="{{ route('home') }}" class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-indigo-600">
@@ -332,7 +332,7 @@
                         </div>
                     @endif
 
-                    <div class="p-6 md:p-8 pt-4 md:pt-6">
+                    <div class="p-6 md:p-8">
                         <header class="mb-8">
                             <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">{{ $page->title }}</h1>
                             
