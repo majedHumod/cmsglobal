@@ -304,7 +304,7 @@
         <main class="py-12" dir="rtl">
             <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
                 <!-- Breadcrumb Navigation -->
-                <nav class="flex mb-8" aria-label="Breadcrumb">
+                <nav class="flex mb-4" aria-label="Breadcrumb">
                     <ol class="inline-flex items-center space-x-1 md:space-x-3 space-x-reverse">
                         <li class="inline-flex items-center">
                             <a href="{{ route('home') }}" class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-indigo-600">
@@ -317,7 +317,7 @@
                         <li>
                             <div class="flex items-center">
                                 <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                                    <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path>
                                 </svg>
                                 <span class="ml-1 md:ml-2 text-sm font-medium text-gray-500">{{ $page->title }}</span>
                             </div>
@@ -332,7 +332,7 @@
                         </div>
                     @endif
 
-                    <div class="p-6 md:p-8">
+                    <div class="p-6 md:p-8 pt-4 md:pt-6">
                         <header class="mb-8">
                             <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">{{ $page->title }}</h1>
                             
