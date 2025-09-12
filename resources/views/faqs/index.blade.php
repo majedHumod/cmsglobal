@@ -257,44 +257,57 @@
                                 <p class="mt-1 text-sm text-gray-500">لم يتم إضافة أي أسئلة شائعة بعد.</p>
                             </div>
                         @else
-                            <div class="space-y-3" x-data="{ activeCategory: null }">
-                                @foreach($faqs as $category => $categoryFaqs)
-                                    <div class="bg-gray-50 rounded-lg p-2 mb-2">
-                                        <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center">
-                                            <button 
-                                                @click="activeCategory = activeCategory === '{{ $category }}' ? null : '{{ $category }}'"
-                                                class="flex justify-between items-center w-full text-right focus:outline-none py-1"
-                                            >
-                                                <span>{{ $category }}</span>
-                                                <svg class="w-5 h-5 text-gray-500 transition-transform duration-300 mr-2" :class="{'rotate-180': activeCategory === '{{ $category }}'}" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                                                </svg>
-                                            </button>
-                                        </h2>
-                                        
-                                        <div x-show="activeCategory === '{{ $category }}'" x-collapse>
-                                            <div class="space-y-0">
+                            <div class="grid grid-cols-1 lg:grid-cols-4 gap-8" x-data="{ activeCategory: Object.keys({{ json_encode($faqs->keys()) }})[0] || null }">
+                                <!-- Sidebar with Categories -->
+                                <div class="lg:col-span-1">
+                                    <div class="bg-white rounded-lg shadow-sm p-4 sticky top-20">
+                                        <h3 class="text-lg font-semibold text-gray-900 mb-4">الأقسام</h3>
+                                        <nav class="space-y-2">
+                                            @foreach($faqs as $category => $categoryFaqs)
+                                                <button 
+                                                    @click="activeCategory = '{{ $category }}'"
+                                                    :class="activeCategory === '{{ $category }}' ? 'bg-indigo-50 text-indigo-700 border-indigo-200' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'"
+                                                    class="w-full text-right px-3 py-2 rounded-md border border-transparent transition-colors duration-200 flex items-center justify-between"
+                                                >
+                                                    <span class="font-medium">{{ $category }}</span>
+                                                    <span class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">{{ $categoryFaqs->count() }}</span>
+                                                </button>
+                                            @endforeach
+                                        </nav>
+                                    </div>
+                                </div>
+                                
+                                <!-- FAQ Content -->
+                                <div class="lg:col-span-3">
+                                    @foreach($faqs as $category => $categoryFaqs)
+                                        <div x-show="activeCategory === '{{ $category }}'" class="space-y-4">
+                                            <div class="mb-6">
+                                                <h2 class="text-2xl font-bold text-gray-900 mb-2">{{ $category }}</h2>
+                                                <p class="text-gray-600">إجابات على الأسئلة الأكثر شيوعاً</p>
+                                            </div>
+                                            
+                                            <div class="space-y-3">
                                                 @foreach($categoryFaqs as $faq)
-                                                    <div class="bg-white rounded-lg shadow-sm p-1 mb-1" x-data="{ open: false }">
+                                                    <div class="bg-white rounded-lg shadow-sm border border-gray-200" x-data="{ open: false }">
                                                         <button 
                                                             @click="open = !open" 
-                                                            class="flex justify-between items-center w-full text-right focus:outline-none py-0.5"
+                                                            class="flex justify-between items-center w-full text-right focus:outline-none p-4 hover:bg-gray-50 transition-colors duration-200"
                                                         >
-                                                            <h3 class="text-base font-medium text-gray-900">{{ $faq->question }}</h3>
-                                                            <svg class="w-5 h-5 text-gray-500 transition-transform duration-300 mr-2" :class="{'rotate-180': open}" fill="currentColor" viewBox="0 0 20 20">
+                                                            <h3 class="text-lg font-medium text-gray-900 pr-4">{{ $faq->question }}</h3>
+                                                            <svg class="w-5 h-5 text-gray-500 transition-transform duration-300 flex-shrink-0" :class="{'rotate-180': open}" fill="currentColor" viewBox="0 0 20 20">
                                                                 <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
                                                             </svg>
                                                         </button>
                                                         
-                                                        <div x-show="open" x-collapse class="pt-0.5 pb-0.5 text-gray-600 prose prose-sm max-w-none text-right">
+                                                        <div x-show="open" x-collapse class="px-4 pb-4 text-gray-600 prose prose-sm max-w-none text-right border-t border-gray-100">
                                                             {!! $faq->answer !!}
                                                         </div>
                                                     </div>
                                                 @endforeach
                                             </div>
                                         </div>
-                                    </div>
-                                @endforeach
+                                    @endforeach
+                                </div>
                             </div>
                             
                             <div class="mt-4 text-center">
