@@ -264,13 +264,31 @@
                                         <h3 class="text-lg font-semibold text-gray-900 mb-4">الأقسام</h3>
                                         <nav class="space-y-2">
                                             @foreach($faqs as $category => $categoryFaqs)
+                                                @php
+                                                    $categoryIcons = [
+                                                        'عام' => ['icon' => '🔍', 'color' => 'orange'],
+                                                        'العضويات' => ['icon' => '⭐', 'color' => 'blue'],
+                                                        'الدفع' => ['icon' => '💳', 'color' => 'green'],
+                                                        'الحساب' => ['icon' => '👤', 'color' => 'purple'],
+                                                        'المحتوى' => ['icon' => '📄', 'color' => 'indigo'],
+                                                        'الدعم الفني' => ['icon' => '🛠️', 'color' => 'gray']
+                                                    ];
+                                                    $categoryData = $categoryIcons[$category] ?? ['icon' => '❓', 'color' => 'gray'];
+                                                @endphp
                                                 <button 
                                                     @click="activeCategory = '{{ $category }}'"
-                                                    :class="activeCategory === '{{ $category }}' ? 'bg-indigo-50 text-indigo-700 border-indigo-200' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'"
-                                                    class="w-full text-right px-3 py-2 rounded-md border border-transparent transition-colors duration-200 flex items-center justify-between"
+                                                    :class="activeCategory === '{{ $category }}' ? 'bg-{{ $categoryData['color'] }}-50 text-{{ $categoryData['color'] }}-700 border-{{ $categoryData['color'] }}-200' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'"
+                                                    class="w-full text-right px-3 py-3 rounded-lg border border-transparent transition-colors duration-200 flex items-center justify-between shadow-sm hover:shadow-md"
                                                 >
-                                                    <span class="font-medium">{{ $category }}</span>
-                                                    <span class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">{{ $categoryFaqs->count() }}</span>
+                                                    <div class="flex items-center">
+                                                        <div class="w-8 h-8 rounded-lg bg-{{ $categoryData['color'] }}-100 flex items-center justify-center ml-3">
+                                                            <span class="text-lg">{{ $categoryData['icon'] }}</span>
+                                                        </div>
+                                                        <div class="text-right">
+                                                            <div class="font-medium text-sm">{{ $category }}</div>
+                                                            <div class="text-xs text-gray-500">{{ $categoryFaqs->count() }} سؤال</div>
+                                                        </div>
+                                                    </div>
                                                 </button>
                                             @endforeach
                                         </nav>
@@ -280,13 +298,23 @@
                                 <!-- FAQ Content -->
                                 <div class="lg:col-span-3">
                                     @foreach($faqs as $category => $categoryFaqs)
-                                        <div x-show="activeCategory === '{{ $category }}'" class="space-y-4">
+                                        <div x-show="activeCategory === '{{ $category }}'" class="space-y-3">
+                                            @php
+                                                $categoryData = $categoryIcons[$category] ?? ['icon' => '❓', 'color' => 'gray'];
+                                            @endphp
                                             <div class="mb-6">
-                                                <h2 class="text-2xl font-bold text-gray-900 mb-2">{{ $category }}</h2>
-                                                <p class="text-gray-600">إجابات على الأسئلة الأكثر شيوعاً</p>
+                                                <div class="flex items-center mb-3">
+                                                    <div class="w-10 h-10 rounded-xl bg-{{ $categoryData['color'] }}-100 flex items-center justify-center ml-4">
+                                                        <span class="text-xl">{{ $categoryData['icon'] }}</span>
+                                                    </div>
+                                                    <div>
+                                                        <h2 class="text-2xl font-bold text-gray-900">{{ $category }}</h2>
+                                                        <p class="text-sm text-gray-600">{{ $categoryFaqs->count() }} سؤال متاح</p>
+                                                    </div>
+                                                </div>
                                             </div>
                                             
-                                            <div class="space-y-3">
+                                            <div class="space-y-2">
                                                 @foreach($categoryFaqs as $faq)
                                                     <div class="bg-white rounded-lg shadow-sm border border-gray-200" x-data="{ open: false }">
                                                         <button 
