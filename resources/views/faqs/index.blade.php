@@ -213,10 +213,10 @@
     </header>
 
     <!-- Page Content -->
-    <main class="pt-6 pb-12" dir="rtl">
+    <main class="pt-2 pb-12" dir="rtl">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
             <!-- Breadcrumb Navigation -->
-            <nav class="flex mb-4" aria-label="Breadcrumb">
+            <nav class="flex mb-2" aria-label="Breadcrumb">
                 <ol class="inline-flex items-center space-x-1 md:space-x-3 space-x-reverse">
                     <li class="inline-flex items-center">
                         <a href="{{ route('home') }}" class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-indigo-600">
@@ -247,7 +247,7 @@
                         </div>
                     </header>
                 
-                    <div class="prose prose-lg max-w-none text-right mt-4" dir="rtl">
+                    <div class="prose prose-lg max-w-none text-right" dir="rtl">
                         @if($faqs->isEmpty())
                             <div class="text-center py-12">
                                 <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -257,9 +257,9 @@
                                 <p class="mt-1 text-sm text-gray-500">لم يتم إضافة أي أسئلة شائعة بعد.</p>
                             </div>
                         @else
-                            <div class="space-y-4" x-data="{ activeCategory: null }">
+                            <div class="space-y-3" x-data="{ activeCategory: null }">
                                 @foreach($faqs as $category => $categoryFaqs)
-                                    <div class="bg-gray-50 rounded-lg p-4">
+                                    <div class="bg-gray-50 rounded-lg p-3">
                                         <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center">
                                             <button 
                                                 @click="activeCategory = activeCategory === '{{ $category }}' ? null : '{{ $category }}'"
@@ -273,9 +273,9 @@
                                         </h2>
                                         
                                         <div x-show="activeCategory === '{{ $category }}'" x-collapse>
-                                            <div class="space-y-3 mt-2">
+                                            <div class="space-y-2 mt-2">
                                                 @foreach($categoryFaqs as $faq)
-                                                    <div class="bg-white rounded-lg shadow-sm p-3" x-data="{ open: false }">
+                                                    <div class="bg-white rounded-lg shadow-sm p-2" x-data="{ open: false }">
                                                         <button 
                                                             @click="open = !open" 
                                                             class="flex justify-between items-center w-full text-right focus:outline-none"
@@ -286,7 +286,7 @@
                                                             </svg>
                                                         </button>
                                                         
-                                                        <div x-show="open" x-collapse class="mt-2 text-gray-600 prose max-w-none text-right">
+                                                        <div x-show="open" x-collapse class="mt-1 text-gray-600 prose max-w-none text-right">
                                                             {!! $faq->answer !!}
                                                         </div>
                                                     </div>
@@ -297,7 +297,7 @@
                                 @endforeach
                             </div>
                             
-                            <div class="mt-6 text-center">
+                            <div class="mt-4 text-center">
                                 <p class="text-gray-600 mb-4">لم تجد إجابة لسؤالك؟</p>
                                 <a href="#" class="inline-flex items-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
                                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
