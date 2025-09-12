@@ -266,28 +266,57 @@
                                             @foreach($faqs as $category => $categoryFaqs)
                                                 @php
                                                     $categoryIcons = [
-                                                        'عام' => ['icon' => '🔍', 'color' => 'orange'],
-                                                        'العضويات' => ['icon' => '⭐', 'color' => 'blue'],
-                                                        'الدفع' => ['icon' => '💳', 'color' => 'green'],
-                                                        'الحساب' => ['icon' => '👤', 'color' => 'purple'],
-                                                        'المحتوى' => ['icon' => '📄', 'color' => 'indigo'],
-                                                        'الدعم الفني' => ['icon' => '🛠️', 'color' => 'gray']
+                                                        'عام' => [
+                                                            'svg' => '<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path></svg>',
+                                                            'color' => 'orange',
+                                                            'description' => 'ابدأ من هنا مع الأساسيات'
+                                                        ],
+                                                        'العضويات' => [
+                                                            'svg' => '<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>',
+                                                            'color' => 'blue',
+                                                            'description' => 'تعرف على خطط العضوية المتاحة'
+                                                        ],
+                                                        'الدفع' => [
+                                                            'svg' => '<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z"></path><path fill-rule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z" clip-rule="evenodd"></path></svg>',
+                                                            'color' => 'green',
+                                                            'description' => 'معلومات حول المدفوعات والفواتير'
+                                                        ],
+                                                        'الحساب' => [
+                                                            'svg' => '<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>',
+                                                            'color' => 'purple',
+                                                            'description' => 'إدارة حسابك وإعداداتك الشخصية'
+                                                        ],
+                                                        'المحتوى' => [
+                                                            'svg' => '<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd"></path></svg>',
+                                                            'color' => 'indigo',
+                                                            'description' => 'أسئلة حول المحتوى والصفحات'
+                                                        ],
+                                                        'الدعم الفني' => [
+                                                            'svg' => '<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"></path></svg>',
+                                                            'color' => 'gray',
+                                                            'description' => 'مساعدة تقنية ودعم فني'
+                                                        ]
                                                     ];
                                                     $categoryData = $categoryIcons[$category] ?? ['icon' => '❓', 'color' => 'gray'];
                                                 @endphp
                                                 <button 
                                                     @click="activeCategory = '{{ $category }}'"
                                                     :class="activeCategory === '{{ $category }}' ? 'bg-{{ $categoryData['color'] }}-50 text-{{ $categoryData['color'] }}-700 border-{{ $categoryData['color'] }}-200' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'"
-                                                    class="w-full text-right px-3 py-3 rounded-lg border border-transparent transition-colors duration-200 flex items-center justify-between shadow-sm hover:shadow-md"
+                                                    class="w-full text-right px-4 py-3 rounded-lg border border-transparent transition-colors duration-200 flex items-center shadow-sm hover:shadow-md"
                                                 >
-                                                    <div class="flex items-center">
-                                                        <div class="w-8 h-8 rounded-lg bg-{{ $categoryData['color'] }}-100 flex items-center justify-center ml-3">
-                                                            <span class="text-lg">{{ $categoryData['icon'] }}</span>
+                                                    <div class="flex items-center flex-1">
+                                                        <div class="w-10 h-10 rounded-lg bg-{{ $categoryData['color'] }}-100 flex items-center justify-center ml-3 text-{{ $categoryData['color'] }}-600">
+                                                            {!! $categoryData['svg'] !!}
                                                         </div>
                                                         <div class="text-right">
-                                                            <div class="font-medium text-sm">{{ $category }}</div>
-                                                            <div class="text-xs text-gray-500">{{ $categoryFaqs->count() }} سؤال</div>
+                                                            <div class="font-semibold text-sm">{{ $category }}</div>
+                                                            <div class="text-xs text-gray-500 mt-0.5">{{ $categoryData['description'] }}</div>
                                                         </div>
+                                                    </div>
+                                                    <div class="flex items-center">
+                                                        <span class="inline-flex items-center justify-center w-6 h-6 text-xs font-medium text-{{ $categoryData['color'] }}-600 bg-{{ $categoryData['color'] }}-100 rounded-full">
+                                                            {{ $categoryFaqs->count() }}
+                                                        </span>
                                                     </div>
                                                 </button>
                                             @endforeach
@@ -302,32 +331,32 @@
                                             @php
                                                 $categoryData = $categoryIcons[$category] ?? ['icon' => '❓', 'color' => 'gray'];
                                             @endphp
-                                            <div class="mb-6">
+                                            <div class="mb-4">
                                                 <div class="flex items-center mb-3">
-                                                    <div class="w-10 h-10 rounded-xl bg-{{ $categoryData['color'] }}-100 flex items-center justify-center ml-4">
-                                                        <span class="text-xl">{{ $categoryData['icon'] }}</span>
+                                                    <div class="w-12 h-12 rounded-xl bg-{{ $categoryData['color'] }}-100 flex items-center justify-center ml-4 text-{{ $categoryData['color'] }}-600">
+                                                        {!! $categoryData['svg'] !!}
                                                     </div>
                                                     <div>
                                                         <h2 class="text-2xl font-bold text-gray-900">{{ $category }}</h2>
-                                                        <p class="text-sm text-gray-600">{{ $categoryFaqs->count() }} سؤال متاح</p>
+                                                        <p class="text-sm text-gray-600">{{ $categoryData['description'] }}</p>
                                                     </div>
                                                 </div>
                                             </div>
                                             
-                                            <div class="space-y-2">
+                                            <div class="space-y-1">
                                                 @foreach($categoryFaqs as $faq)
-                                                    <div class="bg-white rounded-lg shadow-sm border border-gray-200" x-data="{ open: false }">
+                                                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-1" x-data="{ open: false }">
                                                         <button 
                                                             @click="open = !open" 
-                                                            class="flex justify-between items-center w-full text-right focus:outline-none p-4 hover:bg-gray-50 transition-colors duration-200"
+                                                            class="flex justify-between items-center w-full text-right focus:outline-none px-4 py-3 hover:bg-gray-50 transition-colors duration-200"
                                                         >
-                                                            <h3 class="text-lg font-medium text-gray-900 pr-4">{{ $faq->question }}</h3>
+                                                            <h3 class="text-base font-medium text-gray-900 pr-4">{{ $faq->question }}</h3>
                                                             <svg class="w-5 h-5 text-gray-500 transition-transform duration-300 flex-shrink-0" :class="{'rotate-180': open}" fill="currentColor" viewBox="0 0 20 20">
                                                                 <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
                                                             </svg>
                                                         </button>
                                                         
-                                                        <div x-show="open" x-collapse class="px-4 pb-4 text-gray-600 prose prose-sm max-w-none text-right border-t border-gray-100">
+                                                        <div x-show="open" x-collapse class="px-4 pb-3 text-gray-600 prose prose-sm max-w-none text-right border-t border-gray-100">
                                                             {!! $faq->answer !!}
                                                         </div>
                                                     </div>
