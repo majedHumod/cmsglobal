@@ -343,20 +343,20 @@
                                                 </div>
                                             </div>
                                             
-                                            <div class="space-y-1">
+                                            <div class="space-y-0">
                                                 @foreach($categoryFaqs as $faq)
-                                                    <div class="bg-white rounded-lg shadow-sm border border-gray-200" x-data="{ open: false }">
+                                                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-1" x-data="{ open: false }">
                                                         <button 
                                                             @click="open = !open" 
-                                                            class="flex justify-between items-center w-full text-right focus:outline-none px-4 py-2 hover:bg-gray-50 transition-colors duration-200"
+                                                            class="flex justify-between items-center w-full text-right focus:outline-none px-4 py-1.5 hover:bg-gray-50 transition-colors duration-200"
                                                         >
-                                                            <h3 class="text-sm font-medium text-gray-900 pr-4">{{ $faq->question }}</h3>
+                                                            <h3 class="text-sm font-medium text-gray-900 pr-4 leading-tight">{{ $faq->question }}</h3>
                                                             <svg class="w-5 h-5 text-gray-500 transition-transform duration-300 flex-shrink-0" :class="{'rotate-180': open}" fill="currentColor" viewBox="0 0 20 20">
                                                                 <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
                                                             </svg>
                                                         </button>
                                                         
-                                                        <div x-show="open" x-collapse class="px-4 pb-2 text-gray-600 prose prose-sm max-w-none text-right border-t border-gray-100">
+                                                        <div x-show="open" x-collapse class="px-4 pt-1 pb-2 text-gray-600 prose prose-sm max-w-none text-right border-t border-gray-100">
                                                             {!! $faq->answer !!}
                                                         </div>
                                                     </div>
