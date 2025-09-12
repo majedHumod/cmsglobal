@@ -58,7 +58,7 @@
         }
     </style>
 </head>
-<body class="font-sans antialiased pt-16">
+<body class="font-sans antialiased pt-16 bg-gray-100">
     <!-- Header Navigation -->
     <header class="bg-white shadow-sm fixed top-0 left-0 right-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -229,7 +229,7 @@
                     <li>
                         <div class="flex items-center">
                             <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                                <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path>
                             </svg>
                             <span class="ml-1 md:ml-2 text-sm font-medium text-gray-500">الأسئلة الشائعة</span>
                         </div>
@@ -257,9 +257,9 @@
                                 <p class="mt-1 text-sm text-gray-500">لم يتم إضافة أي أسئلة شائعة بعد.</p>
                             </div>
                         @else
-                            <div class="space-y-8" x-data="{ activeCategory: null }">
+                            <div class="space-y-6" x-data="{ activeCategory: null }">
                                 @foreach($faqs as $category => $categoryFaqs)
-                                    <div class="bg-gray-50 rounded-lg p-4">
+                                    <div class="bg-gray-50 rounded-lg p-3">
                                         <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center">
                                             <button 
                                                 @click="activeCategory = activeCategory === '{{ $category }}' ? null : '{{ $category }}'"
@@ -273,9 +273,9 @@
                                         </h2>
                                         
                                         <div x-show="activeCategory === '{{ $category }}'" x-collapse>
-                                            <div class="space-y-4 mt-4">
+                                            <div class="space-y-3 mt-3">
                                                 @foreach($categoryFaqs as $faq)
-                                                    <div class="bg-white rounded-lg shadow-sm p-4" x-data="{ open: false }">
+                                                    <div class="bg-white rounded-lg shadow-sm p-3" x-data="{ open: false }">
                                                         <button 
                                                             @click="open = !open" 
                                                             class="flex justify-between items-center w-full text-right focus:outline-none"
@@ -286,7 +286,7 @@
                                                             </svg>
                                                         </button>
                                                         
-                                                        <div x-show="open" x-collapse class="mt-4 text-gray-600 prose max-w-none text-right">
+                                                        <div x-show="open" x-collapse class="mt-3 text-gray-600 prose max-w-none text-right">
                                                             {!! $faq->answer !!}
                                                         </div>
                                                     </div>
@@ -297,7 +297,7 @@
                                 @endforeach
                             </div>
                             
-                            <div class="mt-12 text-center">
+                            <div class="mt-8 text-center">
                                 <p class="text-gray-600 mb-4">لم تجد إجابة لسؤالك؟</p>
                                 <a href="#" class="inline-flex items-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
                                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -479,4 +479,3 @@
     </footer>
 </body>
 </html>
-    </div>
