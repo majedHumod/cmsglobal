@@ -58,7 +58,7 @@
         }
     </style>
 </head>
-<body class="font-sans antialiased pt-16 bg-gray-100">
+<body class="font-sans antialiased pt-16 bg-gray-50">
     <!-- Header Navigation -->
     <header class="bg-white shadow-sm fixed top-0 left-0 right-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -84,41 +84,6 @@
                 <div class="hidden md:flex md:items-center md:space-x-4 order-2">
                     <a href="{{ route('home') }}" class="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">الرئيسية</a>
                     <a href="{{ route('faqs.index') }}" class="text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">الأسئلة الشائعة</a>
-
-                    @php
-                        try {
-                            $allMenuPages = \App\Models\Page::where('show_in_menu', true)
-                                ->where('is_published', true)
-                                ->orderBy('menu_order')
-                                ->get();
-
-                            $user = auth()->user();
-                            $menuPages = $allMenuPages->filter(function($page) use ($user) {
-                                if ($page->access_level === 'public') return true;
-                                if (!$user) return false;
-                                if ($page->access_level === 'authenticated') return true;
-                                if ($page->access_level === 'user' && $user->hasRole('user')) return true;
-                                if ($page->access_level === 'page_manager' && $user->hasRole('page_manager')) return true;
-                                if ($page->access_level === 'admin' && $user->hasRole('admin')) return true;
-                                if ($page->access_level === 'membership' && $user->membership_type_id) {
-                                    $requiredTypes = $page->required_membership_types;
-                                    if (is_string($requiredTypes)) {
-                                        $requiredTypes = json_decode($requiredTypes, true) ?: [];
-                                    }
-                                    return in_array($user->membership_type_id, $requiredTypes);
-                                }
-                                return false;
-                            });
-                        } catch (\Exception $e) {
-                            $menuPages = collect([]);
-                        }
-                    @endphp
-
-                    @foreach($menuPages as $menuPage)
-                        <a href="{{ route('pages.show', $menuPage->slug) }}" class="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">
-                            {{ $menuPage->title }}
-                        </a>
-                    @endforeach
 
                     @auth
                         <div class="ms-3 relative" x-data="{ open: false }">
@@ -177,12 +142,6 @@
                 <a href="{{ route('home') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">الرئيسية</a>
                 <a href="{{ route('faqs.index') }}" class="block px-3 py-2 rounded-md text-base font-medium text-indigo-600 hover:text-indigo-800 hover:bg-gray-50">الأسئلة الشائعة</a>
 
-                @foreach($menuPages as $menuPage)
-                    <a href="{{ route('pages.show', $menuPage->slug) }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
-                        {{ $menuPage->title }}
-                    </a>
-                @endforeach
-
                 @auth
                     <a href="{{ route('dashboard') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">لوحة التحكم</a>
                     <a href="{{ route('profile.show') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">الملف الشخصي</a>
@@ -213,183 +172,143 @@
     </header>
 
     <!-- Page Content -->
-    <main class="pt-2 pb-12" dir="rtl">
-        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-            <!-- Breadcrumb Navigation -->
-            <nav class="flex mb-2" aria-label="Breadcrumb">
-                <ol class="inline-flex items-center space-x-1 md:space-x-3 space-x-reverse">
-                    <li class="inline-flex items-center">
-                        <a href="{{ route('home') }}" class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-indigo-600">
-                            <svg class="w-4 h-4 ml-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
-                            </svg>
-                            الرئيسية
-                        </a>
-                    </li>
-                    <li>
-                        <div class="flex items-center">
-                            <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                            </svg>
-                            <span class="ml-1 md:ml-2 text-sm font-medium text-gray-500">الأسئلة الشائعة</span>
-                        </div>
-                    </li>
-                </ol>
-            </nav>
-
-            <article class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
-                <div class="p-6 md:p-8">
-                    <header class="mb-8">
-                        <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">الأسئلة الشائعة</h1>
-                        
-                        <div class="flex items-center text-sm text-gray-500 mt-4">
-                            <span>إجابات على الأسئلة الأكثر شيوعاً</span>
-                        </div>
-                    </header>
+    <main class="pt-8 pb-12 bg-gray-50 min-h-screen">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Hero Section -->
+            <div class="text-center mb-12">
+                <h1 class="text-4xl font-bold text-gray-900 mb-4">كيف يمكننا مساعدتك؟</h1>
                 
-                    <div class="prose prose-lg max-w-none text-right" dir="rtl">
-                        @if($faqs->isEmpty())
-                            <div class="text-center py-12">
-                                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                                <h3 class="mt-2 text-lg font-medium text-gray-900">لا توجد أسئلة شائعة</h3>
-                                <p class="mt-1 text-sm text-gray-500">لم يتم إضافة أي أسئلة شائعة بعد.</p>
-                            </div>
-                        @else
-                            <div class="grid grid-cols-1 lg:grid-cols-4 gap-8" x-data="{ activeCategory: Object.keys({{ json_encode($faqs->keys()) }})[0] || null }">
-                                <!-- Sidebar with Categories -->
-                                <div class="lg:col-span-1">
-                                    <div class="bg-white rounded-lg shadow-sm p-4 sticky top-20">
-                                        <h3 class="text-lg font-semibold text-gray-900 mb-4">الأقسام</h3>
-                                        <nav class="space-y-2">
-                                            @foreach($faqs as $category => $categoryFaqs)
-                                                @php
-                                                    $categoryIcons = [
-                                                        'عام' => [
-                                                            'svg' => '<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path></svg>',
-                                                            'color' => 'orange',
-                                                            'description' => 'ابدأ من هنا مع الأساسيات'
-                                                        ],
-                                                         'التدريب' => [
-                                                            'svg' => '<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path></svg>',
-                                                            'color' => 'orange',
-                                                            'description' => 'ابدأ من هنا مع التدريب'
-                                                        ],
-
-                                                        'العضويات' => [
-                                                            'svg' => '<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>',
-                                                            'color' => 'blue',
-                                                            'description' => 'تعرف على خطط العضوية المتاحةfdsfds'
-                                                        ],
-                                                        'التغذية' => [
-                                                            'svg' => '<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z"></path><path fill-rule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z" clip-rule="evenodd"></path></svg>',
-                                                            'color' => 'green',
-                                                            'description' => 'معلومات حول المدفوعات والفواتير'
-                                                        ],
-                                                        'الصحة' => [
-                                                            'svg' => '<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>',
-                                                            'color' => 'purple',
-                                                            'description' => 'إدارة حسابك وإعداداتك الشخصية'
-                                                        ],
-                                                        'البرامج' => [
-                                                            'svg' => '<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd"></path></svg>',
-                                                            'color' => 'indigo',
-                                                            'description' => 'أسئلة حول المحتوى والصفحات'
-                                                        ]
-                                                    ];
-                                                    $categoryData = $categoryIcons[$category] ?? [
-                                                        'svg' => '<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path></svg>',
-                                                        'color' => 'gray',
-                                                        'description' => 'أسئلة متنوعة'
-                                                    ];
-                                                @endphp
-                                                <button 
-                                                    @click="activeCategory = '{{ $category }}'"
-                                                    :class="activeCategory === '{{ $category }}' ? 'bg-{{ $categoryData['color'] }}-50 text-{{ $categoryData['color'] }}-700 border-{{ $categoryData['color'] }}-200' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'"
-                                                    class="w-full text-right px-4 py-3 rounded-lg border border-transparent transition-colors duration-200 flex items-center shadow-sm hover:shadow-md"
-                                                >
-                                                    <div class="flex items-center flex-1">
-                                                        <div class="w-10 h-10 rounded-lg bg-{{ $categoryData['color'] }}-100 flex items-center justify-center ml-3 text-{{ $categoryData['color'] }}-600">
-                                                            {!! $categoryData['svg'] !!}
-                                                        </div>
-                                                        <div class="text-right">
-                                                            <div class="font-semibold text-sm">{{ $category }}</div>
-                                                            <div class="text-xs text-gray-500 mt-0.5">{{ $categoryData['description'] }}</div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="flex items-center">
-                                                        <span class="inline-flex items-center justify-center w-6 h-6 text-xs font-medium text-{{ $categoryData['color'] }}-600 bg-{{ $categoryData['color'] }}-100 rounded-full">
-                                                            {{ $categoryFaqs->count() }}
-                                                        </span>
-                                                    </div>
-                                                </button>
-                                            @endforeach
-                                        </nav>
-                                    </div>
-                                </div>
-                                
-                                <!-- FAQ Content -->
-                                <div class="lg:col-span-3">
-                                    @foreach($faqs as $category => $categoryFaqs)
-                                        <div x-show="activeCategory === '{{ $category }}'" class="space-y-3">
-                                            @php
-                                                $categoryData = $categoryIcons[$category] ?? ['icon' => '❓', 'color' => 'gray'];
-                                            @endphp
-                                            <div class="mb-4">
-                                                <div class="flex items-center mb-3">
-                                                    <div class="w-12 h-12 rounded-xl bg-{{ $categoryData['color'] }}-100 flex items-center justify-center ml-4 text-{{ $categoryData['color'] }}-600">
-                                                        {!! $categoryData['svg'] !!}
-                                                    </div>
-                                                    <div>
-                                                        <h2 class="text-2xl font-bold text-gray-900">{{ $category }}</h2>
-                                                        <p class="text-sm text-gray-600">{{ $categoryData['description'] }}</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            
-                                            <div class="space-y-0">
-                                                @foreach($categoryFaqs as $faq)
-                                                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-1" x-data="{ open: false }">
-                                                        <button 
-                                                            @click="open = !open" 
-                                                            class="flex justify-between items-center w-full text-right focus:outline-none px-4 py-1.5 hover:bg-gray-50 transition-colors duration-200"
-                                                        >
-                                                            <h3 class="text-sm font-medium text-gray-900 pr-4 leading-tight">{{ $faq->question }}</h3>
-                                                            <svg class="w-5 h-5 text-gray-500 transition-transform duration-300 flex-shrink-0" :class="{'rotate-180': open}" fill="currentColor" viewBox="0 0 20 20">
-                                                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                                                            </svg>
-                                                        </button>
-                                                        
-                                                        <div x-show="open" x-collapse class="px-4 pt-1 pb-2 text-gray-600 prose prose-sm max-w-none text-right border-t border-gray-100">
-                                                            {!! $faq->answer !!}
-                                                        </div>
-                                                    </div>
-                                                @endforeach
-                                            </div>
-                                        </div>
-                                    @endforeach
-                                </div>
-                            </div>
-                            
-                            <div class="mt-4 text-center">
-                                <p class="text-gray-600 mb-4">لم تجد إجابة لسؤالك؟</p>
-                                <a href="#" class="inline-flex items-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
-                                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                                    </svg>
-                                    تواصل معنا
-                                </a>
-                            </div>
-                        @endif
+                <!-- Search Bar -->
+                <div class="max-w-2xl mx-auto">
+                    <div class="relative">
+                        <input type="text" placeholder="ابحث هنا..." class="w-full px-6 py-4 text-lg border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm">
+                        <button class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg font-medium transition-colors">
+                            بحث
+                        </button>
                     </div>
                 </div>
-            </article>
+            </div>
+
+            <!-- Category Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+                @php
+                    $categories = [
+                        [
+                            'title' => 'حسابي',
+                            'description' => 'إدارة حسابك وإعداداتك الشخصية والملف الشخصي',
+                            'icon' => '<svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>',
+                            'color' => 'orange',
+                            'bg_color' => 'bg-orange-100',
+                            'text_color' => 'text-orange-600'
+                        ],
+                        [
+                            'title' => 'الدفع',
+                            'description' => 'معلومات حول المدفوعات والفواتير وطرق الدفع المتاحة',
+                            'icon' => '<svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z"></path><path fill-rule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z" clip-rule="evenodd"></path></svg>',
+                            'color' => 'blue',
+                            'bg_color' => 'bg-blue-100',
+                            'text_color' => 'text-blue-600'
+                        ],
+                        [
+                            'title' => 'الأمان',
+                            'description' => 'حماية حسابك وإعدادات الأمان والخصوصية',
+                            'icon' => '<svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path></svg>',
+                            'color' => 'red',
+                            'bg_color' => 'bg-red-100',
+                            'text_color' => 'text-red-600'
+                        ],
+                        [
+                            'title' => 'الدردشة المباشرة',
+                            'description' => 'تواصل مع فريق الدعم الفني عبر الدردشة المباشرة',
+                            'icon' => '<svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd"></path></svg>',
+                            'color' => 'blue',
+                            'bg_color' => 'bg-blue-100',
+                            'text_color' => 'text-blue-600'
+                        ]
+                    ];
+                @endphp
+
+                @foreach($categories as $category)
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow cursor-pointer">
+                        <div class="flex flex-col items-center text-center">
+                            <div class="w-16 h-16 {{ $category['bg_color'] }} rounded-full flex items-center justify-center mb-4 {{ $category['text_color'] }}">
+                                {!! $category['icon'] !!}
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-900 mb-2">{{ $category['title'] }}</h3>
+                            <p class="text-sm text-gray-600 leading-relaxed">{{ $category['description'] }}</p>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+
+            <!-- Popular Topics Section -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
+                <div class="mb-8">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-2">المواضيع الشائعة</h2>
+                    <p class="text-gray-600">الأسئلة الأكثر شيوعاً والتي يبحث عنها المستخدمون</p>
+                </div>
+
+                @if($faqs->isEmpty())
+                    <div class="text-center py-12">
+                        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <h3 class="mt-2 text-lg font-medium text-gray-900">لا توجد أسئلة شائعة</h3>
+                        <p class="mt-1 text-sm text-gray-500">لم يتم إضافة أي أسئلة شائعة بعد.</p>
+                    </div>
+                @else
+                    <!-- FAQ Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        @php
+                            $allFaqs = $faqs->flatten();
+                        @endphp
+                        
+                        @foreach($allFaqs as $faq)
+                            <div class="border border-gray-200 rounded-lg" x-data="{ open: false }">
+                                <button 
+                                    @click="open = !open" 
+                                    class="w-full text-right px-6 py-4 focus:outline-none hover:bg-gray-50 transition-colors duration-200 flex justify-between items-center"
+                                >
+                                    <span class="font-medium text-gray-900 text-sm">{{ $faq->question }}</span>
+                                    <svg class="w-5 h-5 text-gray-500 transition-transform duration-300 flex-shrink-0 mr-4" :class="{'rotate-180': open}" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </button>
+                                
+                                <div x-show="open" x-collapse class="px-6 pb-4 text-gray-600 text-sm border-t border-gray-100">
+                                    <div class="pt-4 prose prose-sm max-w-none text-right">
+                                        {!! $faq->answer !!}
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
+
+                <!-- Contact CTA -->
+                <div class="mt-12 text-center bg-gray-50 rounded-xl p-8">
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">لم تجد إجابة لسؤالك؟</h3>
+                    <p class="text-gray-600 mb-6">تواصل مع فريق الدعم الفني للحصول على مساعدة شخصية</p>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                        <a href="#" class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 transition-colors">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                            </svg>
+                            تواصل معنا
+                        </a>
+                        <a href="#" class="inline-flex items-center justify-center px-6 py-3 border border-gray-300 text-base font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition-colors">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd"></path>
+                            </svg>
+                            الدردشة المباشرة
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
     </main>
     
     <!-- Footer -->
-    <!-- Site Footer with RTL Support -->
     <footer class="bg-white border-t border-gray-200" dir="rtl">
         <div class="max-w-7xl mx-auto py-12 px-4 overflow-hidden sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
@@ -421,16 +340,6 @@
                             </a>
                         </li>
                         <li>
-                            <a href="{{ route('pages.public') }}" class="text-base text-gray-500 hover:text-indigo-600 text-right block">
-                                الصفحات
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ route('meal-plans.public') }}" class="text-base text-gray-500 hover:text-indigo-600 text-right block">
-                                الجداول الغذائية
-                            </a>
-                        </li>
-                        <li>
                             <a href="{{ route('faqs.index') }}" class="text-base text-gray-500 hover:text-indigo-600 text-right block">
                                 الأسئلة الشائعة
                             </a>
@@ -448,20 +357,8 @@
                         @if($contactPhone)
                             <li class="flex items-center justify-end">
                                 <span class="text-gray-500 mr-2">{{ $contactPhone }}</span>
-                                <svg class="flex-shrink-0 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <svg class="flex-shrink-0 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
-                                </svg>
-                            </li>
-                        @endif
-                        
-                        @php
-                            $contactWhatsapp = \App\Models\SiteSetting::get('contact_whatsapp');
-                        @endphp
-                        @if($contactWhatsapp)
-                            <li class="flex items-center justify-end">
-                                <span class="text-gray-500 mr-2">{{ $contactWhatsapp }}</span>
-                                <svg class="flex-shrink-0 h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"></path>
                                 </svg>
                             </li>
                         @endif
@@ -472,21 +369,8 @@
                         @if($contactEmail)
                             <li class="flex items-center justify-end">
                                 <span class="text-gray-500 mr-2">{{ $contactEmail }}</span>
-                                <svg class="flex-shrink-0 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <svg class="flex-shrink-0 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                                </svg>
-                            </li>
-                        @endif
-                        
-                        @php
-                            $contactAddress = \App\Models\SiteSetting::get('contact_address');
-                        @endphp
-                        @if($contactAddress)
-                            <li class="flex items-center justify-end">
-                                <span class="text-gray-500 mr-2">{{ $contactAddress }}</span>
-                                <svg class="flex-shrink-0 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                 </svg>
                             </li>
                         @endif
@@ -502,41 +386,8 @@
                         @endphp
                         @if($socialFacebook)
                             <a href="{{ $socialFacebook }}" target="_blank" class="text-gray-400 hover:text-indigo-600">
-                                <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
                                     <path fill-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clip-rule="evenodd"></path>
-                                </svg>
-                            </a>
-                        @endif
-                        
-                        @php
-                            $socialTwitter = \App\Models\SiteSetting::get('social_twitter');
-                        @endphp
-                        @if($socialTwitter)
-                            <a href="{{ $socialTwitter }}" target="_blank" class="text-gray-400 hover:text-indigo-600">
-                                <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                    <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.073 4.073 0 01.8 7.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 010 16.407a11.616 11.616 0 006.29 1.84"></path>
-                                </svg>
-                            </a>
-                        @endif
-                        
-                        @php
-                            $socialInstagram = \App\Models\SiteSetting::get('social_instagram');
-                        @endphp
-                        @if($socialInstagram)
-                            <a href="{{ $socialInstagram }}" target="_blank" class="text-gray-400 hover:text-indigo-600">
-                                <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                    <path fill-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z" clip-rule="evenodd"></path>
-                                </svg>
-                            </a>
-                        @endif
-                        
-                        @php
-                            $socialYoutube = \App\Models\SiteSetting::get('social_youtube');
-                        @endphp
-                        @if($socialYoutube)
-                            <a href="{{ $socialYoutube }}" target="_blank" class="text-gray-400 hover:text-indigo-600">
-                                <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"></path>
                                 </svg>
                             </a>
                         @endif
@@ -552,5 +403,31 @@
             </div>
         </div>
     </footer>
+
+    <script>
+        // Search functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.querySelector('input[type="text"]');
+            const searchButton = document.querySelector('button');
+            
+            if (searchButton) {
+                searchButton.addEventListener('click', function() {
+                    const query = searchInput.value.trim();
+                    if (query) {
+                        // Here you can implement search functionality
+                        console.log('Searching for:', query);
+                    }
+                });
+            }
+            
+            if (searchInput) {
+                searchInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        searchButton.click();
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>
