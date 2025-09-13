@@ -259,7 +259,7 @@
                 </div>
 
                 <!-- Testimonials Grid -->
-                @if($testimonials->isEmpty())
+                @if($testimonials->count() == 0)
                     <div class="text-center py-16">
                         <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-gray-100 mb-4">
                             <svg class="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -317,9 +317,11 @@
                     </div>
 
                     <!-- Pagination -->
-                    <div class="mt-12">
-                        {{ $testimonials->links() }}
-                    </div>
+                    @if(method_exists($testimonials, 'links'))
+                        <div class="mt-12">
+                            {{ $testimonials->links() }}
+                        </div>
+                    @endif
                 @endif
             </div>
         </main>

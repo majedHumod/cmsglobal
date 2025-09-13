@@ -25,7 +25,7 @@ Route::get('/', function() {
 Route::get('/faqs', [FaqController::class, 'index'])->name('faqs.index');
 
 // Public Testimonials Route
-Route::get('/testimonials', [\App\Http\Controllers\TestimonialController::class, 'index'])->name('testimonials.all');
+Route::get('/testimonials', [TestimonialController::class, 'index'])->name('testimonials.all');
 
 Route::middleware([
     'auth:sanctum',config('jetstream.auth_session'),'verified','tenants'])->group(function () {

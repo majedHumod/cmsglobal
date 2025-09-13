@@ -11,7 +11,7 @@ class TestimonialController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['auth', 'role:admin']);
+        $this->middleware(['auth', 'role:admin'])->except(['index']);
     }
 
     /**
@@ -19,7 +19,11 @@ class TestimonialController extends Controller
      */
     public function index()
     {
-        $testimonials = Testimonial::visible()->ordered()->paginate(12);
+        try {
+            $testimonials = Testimonial::visible()->ordered()->paginate(12);
+        } catch (\Exception $e) {
+            $testimonials = collect([]);
+        }
         return view('testimonials.all', compact('testimonials'));
     }
 
