@@ -23,6 +23,10 @@ Route::get('/', function() {
 
 // Public FAQs Route
 Route::get('/faqs', [FaqController::class, 'index'])->name('faqs.index');
+
+// Public Testimonials Route
+Route::get('/testimonials', [\App\Http\Controllers\TestimonialController::class, 'index'])->name('testimonials.all');
+
 Route::middleware([
     'auth:sanctum',config('jetstream.auth_session'),'verified','tenants'])->group(function () {
     Route::get('/dashboard', function () {
@@ -107,7 +111,7 @@ Route::middleware([
     
     // Testimonials routes - admin only
     Route::middleware(['auth', 'role:admin'])->prefix('admin/testimonials')->name('admin.testimonials.')->group(function () {
-        Route::get('/', [\App\Http\Controllers\TestimonialController::class, 'index'])->name('index');
+        Route::get('/', [\App\Http\Controllers\TestimonialController::class, 'adminIndex'])->name('index');
         Route::get('/create', [\App\Http\Controllers\TestimonialController::class, 'create'])->name('create');
         Route::post('/', [\App\Http\Controllers\TestimonialController::class, 'store'])->name('store');
         Route::get('/{testimonial}/edit', [\App\Http\Controllers\TestimonialController::class, 'edit'])->name('edit');

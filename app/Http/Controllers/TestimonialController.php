@@ -15,9 +15,18 @@ class TestimonialController extends Controller
     }
 
     /**
-     * Display a listing of testimonials
+     * Display all testimonials for public viewing
      */
     public function index()
+    {
+        $testimonials = Testimonial::visible()->ordered()->paginate(12);
+        return view('testimonials.all', compact('testimonials'));
+    }
+
+    /**
+     * Display a listing of testimonials
+     */
+    public function adminIndex()
     {
         $testimonials = Testimonial::with('user')->ordered()->get();
         return view('admin.testimonials.index', compact('testimonials'));
