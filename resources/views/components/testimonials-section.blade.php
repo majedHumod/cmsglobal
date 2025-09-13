@@ -122,10 +122,10 @@
                             slidesToShow = window.innerWidth >= 768 ? 2 : 1;
                         });
                     ">
-                        <div class="flex transition-transform duration-500 ease-in-out" 
-                             :style="`transform: translateX(-${currentSlide * (100 / slidesToShow)}%)`">
+                        <div class="flex transition-transform duration-500 ease-in-out"
+                             :style="`transform: translateX(-${currentSlide * (100 / slidesToShow)}%); width: ${{{ $testimonials->count() }} * (100 / slidesToShow)}%`">
                             @foreach($testimonials as $testimonial)
-                                <div class="w-full md:w-1/2 flex-shrink-0 px-3">
+                                <div class="flex-shrink-0 px-3" :style="`width: ${100 / slidesToShow}%`">
                                     <div class="bg-white rounded-xl shadow-lg p-8 h-full flex flex-col">
                                         <!-- Quote Icon -->
                                         <div class="mb-6">
@@ -180,12 +180,12 @@
                         
                         <!-- Dots Indicator -->
                         <div class="flex justify-center mt-8 space-x-2">
-                            @for($i = 0; $i < ceil($testimonials->count() / 2); $i++)
+                            <template x-for="(dot, index) in Array.from({length: Math.max(1, totalSlides - slidesToShow + 1)}, (_, i) => i)" :key="index">
                                 <button @click="goToSlide({{ $i }})" 
                                         class="w-3 h-3 rounded-full transition-colors duration-200"
-                                        :class="currentSlide === {{ $i }} ? 'bg-indigo-600' : 'bg-gray-300'">
+                                        :class="currentSlide === index ? 'bg-indigo-600' : 'bg-gray-300'">
                                 </button>
-                            @endfor
+                            </template>
                         </div>
                     </div>
                 </div>
