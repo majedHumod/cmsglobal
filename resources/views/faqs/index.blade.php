@@ -389,7 +389,7 @@
                             'bg_color' => 'bg-pink-100',
                             'text_color' => 'text-pink-600',
                             'description' => 'نصائح ومعلومات صحية'
-                        ]
+                        ],
                         'البرامج' => [
                             'icon' => '<svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" clip-rule="evenodd"></path></svg>',
                             'bg_color' => 'bg-cyan-100',
@@ -465,6 +465,11 @@
                         <p class="mt-1 text-sm text-gray-500">لم يتم العثور على أسئلة تطابق بحثك.</p>
                     </div>
 
+
+
+
+
+                    
                     @if($faqs->isEmpty())
                         <div class="text-center py-12">
                             <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -473,6 +478,7 @@
                             <h3 class="mt-2 text-lg font-medium text-gray-900">لا توجد أسئلة شائعة</h3>
                             <p class="mt-1 text-sm text-gray-500">لم يتم إضافة أي أسئلة شائعة بعد.</p>
                         </div>
+                   
                     @else
                         <!-- FAQ Content -->
                         <div id="faq-content">
@@ -482,27 +488,30 @@
                                     
                                     <!-- FAQ Grid for this category -->
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        @foreach($categoryFaqs as $faq)
-                                            <div class="faq-item border border-gray-200 rounded-lg" data-question="{{ strtolower($faq->question) }}" data-answer="{{ strtolower(strip_tags($faq->answer)) }}">
-                                                <button 
-                                                    class="faq-toggle w-full text-right px-6 py-4 focus:outline-none hover:bg-gray-50 transition-colors duration-200 flex justify-between items-center"
-                                                    data-target="faq-{{ $faq->id }}"
-                                                >
-                                                    <span class="font-medium text-gray-900 text-sm faq-content">{{ $faq->question }}</span>
-                                                    <svg class="w-5 h-5 text-gray-500 transition-transform duration-300 flex-shrink-0 mr-4 faq-arrow" fill="currentColor" viewBox="0 0 20 20">
-                                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                                                    </svg>
-                                        'icon' => '<svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path></svg>',
-                                        'bg_color' => 'bg-gray-100',
-                                        'text_color' => 'text-gray-600',
-                                        'description' => 'أسئلة متنوعة'
+                                                                            @foreach($categoryFaqs as $faq)
+                                                <div class="faq-item border border-gray-200 rounded-lg" 
+                                                    data-question="{{ strtolower($faq->question) }}" 
+                                                    data-answer="{{ strtolower(strip_tags($faq->answer)) }}">
+                                                    
+                                                    <button 
+                                                        class="faq-toggle w-full text-right px-6 py-4 focus:outline-none hover:bg-gray-50 transition-colors duration-200 flex justify-between items-center"
+                                                        data-target="faq-{{ $faq->id }}">
+                                                        <span class="font-medium text-gray-900 text-sm faq-content">{{ $faq->question }}</span>
+                                                        <svg class="w-5 h-5 text-gray-500 transition-transform duration-300 flex-shrink-0 mr-4 faq-arrow" fill="currentColor" viewBox="0 0 20 20">
+                                                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                                                        </svg>
+                                                    </button>
+
+                                                    <div id="faq-{{ $faq->id }}" class="faq-answer hidden px-6 py-4 border-t border-gray-200 text-gray-700 text-sm">
                                                         {!! $faq->answer !!}
                                                     </div>
                                                 </div>
-                                    <div class="w-16 h-16 {{ $categoryData['bg_color'] }} rounded-full flex items-center justify-center mb-4 mx-auto {{ $categoryData['text_color'] }}">
-                                        {!! $categoryData['icon'] !!}
-                                    <p class="text-xs text-gray-600">{{ $categoryData['description'] }}</p>
+                                            @endforeach
+
+                                    </div>
+                                         
                                 </div>
+
                             @endforeach
                         </div>
 
@@ -531,7 +540,12 @@
                                 </a>
                             </div>
                         </div>
+
+                        
                     @endif
+
+
+
                 </div>
             </div>
         </main>
