@@ -11,6 +11,7 @@ use App\Http\Controllers\AdvancedPermissionController;
 use App\Http\Controllers\SiteSettingController;
 use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\FaqController;
+use App\Http\Controllers\TestimonialController;
 
 // Landing Page Route
 Route::get('/', function() {
