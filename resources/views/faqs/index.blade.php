@@ -56,147 +56,272 @@
         .border-secondary {
             border-color: var(--secondary-color);
         }
+
+        /* FAQ specific styles */
+        .faq-content {
+            direction: rtl;
+            text-align: right;
+        }
+        
+        .faq-answer {
+            direction: rtl;
+            text-align: right;
+        }
+        
+        .faq-answer p {
+            text-align: right;
+            direction: rtl;
+        }
+        
+        .faq-answer ul, .faq-answer ol {
+            text-align: right;
+            direction: rtl;
+            padding-right: 1.5rem;
+            padding-left: 0;
+        }
+        
+        .category-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .category-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .category-card.active {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+        }
+        
+        .faq-item {
+            transition: all 0.3s ease;
+        }
+        
+        .faq-item:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
     </style>
 </head>
-<body class="font-sans antialiased pt-16 bg-gray-50">
-    <!-- Header Navigation -->
-    <header class="bg-white shadow-sm fixed top-0 left-0 right-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16" dir="rtl">
-                <!-- Logo and Site Name -->
-                <div class="flex items-center order-1">
-                    @php
-                        $siteLogo = \App\Models\SiteSetting::get('site_logo');
-                        $siteName = \App\Models\SiteSetting::get('site_name', config('app.name', 'Laravel'));
-                    @endphp
-                    @if($siteLogo)
-                        <a href="{{ route('home') }}" class="flex-shrink-0 flex items-center">
-                            <img class="h-8 w-auto" src="{{ Storage::url($siteLogo) }}" alt="{{ $siteName }}">
-                        </a>
-                    @else
-                        <a href="{{ route('home') }}" class="flex-shrink-0 flex items-center">
-                            <span class="text-xl font-bold text-indigo-600">{{ $siteName }}</span>
-                        </a>
-                    @endif
-                </div>
+<body class="font-sans antialiased pt-16" dir="rtl">
+    <div class="min-h-screen bg-gray-100">
+        <!-- Navigation -->
+        <header class="bg-white shadow-sm fixed top-0 left-0 right-0 z-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-16" dir="rtl">
+                    <!-- Logo and Site Name -->
+                    <div class="flex items-center order-1">
+                        @php
+                            $siteLogo = \App\Models\SiteSetting::get('site_logo');
+                            $siteName = \App\Models\SiteSetting::get('site_name', config('app.name', 'Laravel'));
+                        @endphp
+                        @if($siteLogo)
+                            <a href="{{ route('home') }}" class="flex-shrink-0 flex items-center">
+                                <img class="h-8 w-auto" src="{{ Storage::url($siteLogo) }}" alt="{{ $siteName }}">
+                            </a>
+                        @else
+                            <a href="{{ route('home') }}" class="flex-shrink-0 flex items-center">
+                                <span class="text-xl font-bold text-indigo-600">{{ $siteName }}</span>
+                            </a>
+                        @endif
+                    </div>
 
-                <!-- Navigation Links -->
-                <div class="hidden md:flex md:items-center md:space-x-4 order-2">
-                    <a href="{{ route('home') }}" class="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">الرئيسية</a>
-                    <a href="{{ route('faqs.index') }}" class="text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">الأسئلة الشائعة</a>
+                    <!-- Navigation Links -->
+                    <div class="hidden md:flex md:items-center md:space-x-4 order-2">
+                        <a href="{{ route('home') }}" class="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">الرئيسية</a>
+                        <a href="{{ route('faqs.index') }}" class="text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">الأسئلة الشائعة</a>
 
-                    @auth
-                        <div class="ms-3 relative" x-data="{ open: false }">
-                            <x-dropdown align="right" width="48">
-                                <x-slot name="trigger">
-                                    @if (Laravel\Jetstream\Jetstream::managesProfilePhotos())
-                                        <button class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition">
-                                            <img class="size-8 rounded-full object-cover" src="{{ Auth::user()->profile_photo_url }}" alt="{{ Auth::user()->name }}" />
-                                        </button>
-                                    @else
-                                        <span class="inline-flex rounded-md">
-                                            <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none focus:bg-gray-50 active:bg-gray-50 transition ease-in-out duration-150">
-                                                {{ Auth::user()->name }}
-                                                <svg class="ms-2 -me-0.5 size-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
+                        @php
+                            try {
+                                $allMenuPages = \App\Models\Page::where('show_in_menu', true)
+                                    ->where('is_published', true)
+                                    ->orderBy('menu_order')
+                                    ->get();
+
+                                $user = auth()->user();
+                                $menuPages = $allMenuPages->filter(function($page) use ($user) {
+                                    if ($page->access_level === 'public') return true;
+                                    if (!$user) return false;
+                                    if ($page->access_level === 'authenticated') return true;
+                                    if ($page->access_level === 'user' && $user->hasRole('user')) return true;
+                                    if ($page->access_level === 'page_manager' && $user->hasRole('page_manager')) return true;
+                                    if ($page->access_level === 'admin' && $user->hasRole('admin')) return true;
+                                    if ($page->access_level === 'membership' && $user->membership_type_id) {
+                                        $requiredTypes = $page->required_membership_types;
+                                        if (is_string($requiredTypes)) {
+                                            $requiredTypes = json_decode($requiredTypes, true) ?: [];
+                                        }
+                                        return in_array($user->membership_type_id, $requiredTypes);
+                                    }
+                                    return false;
+                                });
+                            } catch (\Exception $e) {
+                                $menuPages = collect([]);
+                            }
+                        @endphp
+
+                        @foreach($menuPages as $menuPage)
+                            <a href="{{ route('pages.show', $menuPage->slug) }}" class="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">
+                                {{ $menuPage->title }}
+                            </a>
+                        @endforeach
+
+                        @auth
+                            <div class="ms-3 relative" x-data="{ open: false }">
+                                <x-dropdown align="right" width="48">
+                                    <x-slot name="trigger">
+                                        @if (Laravel\Jetstream\Jetstream::managesProfilePhotos())
+                                            <button class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition">
+                                                <img class="size-8 rounded-full object-cover" src="{{ Auth::user()->profile_photo_url }}" alt="{{ Auth::user()->name }}" />
                                             </button>
-                                        </span>
-                                    @endif
-                                </x-slot>
-                                <x-slot name="content">
-                                    <a href="{{ route('dashboard') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">لوحة التحكم</a>
-                                    <a href="{{ route('profile.show') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">الملف الشخصي</a>
-                                    @role('admin')
-                                        <a href="{{ route('admin.settings.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">الإعدادات</a>
-                                    @endrole
-                                    <div class="border-t border-gray-100"></div>
-                                    <form method="POST" action="{{ route('logout') }}">
-                                        @csrf
-                                        <button type="submit" class="block w-full text-right px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">تسجيل الخروج</button>
-                                    </form>
-                                </x-slot>
-                            </x-dropdown>
-                        </div>
-                    @endauth
+                                        @else
+                                            <span class="inline-flex rounded-md">
+                                                <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none focus:bg-gray-50 active:bg-gray-50 transition ease-in-out duration-150">
+                                                    {{ Auth::user()->name }}
+                                                    <svg class="ms-2 -me-0.5 size-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
+                                                </button>
+                                            </span>
+                                        @endif
+                                    </x-slot>
+                                    <x-slot name="content">
+                                        <a href="{{ route('dashboard') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">لوحة التحكم</a>
+                                        <a href="{{ route('profile.show') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">الملف الشخصي</a>
+                                        @role('admin')
+                                            <a href="{{ route('admin.settings.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">الإعدادات</a>
+                                        @endrole
+                                        <div class="border-t border-gray-100"></div>
+                                        <form method="POST" action="{{ route('logout') }}">
+                                            @csrf
+                                            <button type="submit" class="block w-full text-right px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">تسجيل الخروج</button>
+                                        </form>
+                                    </x-slot>
+                                </x-dropdown>
+                            </div>
+                        @endauth
 
-                    @guest
-                        <a href="{{ route('login') }}" class="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">تسجيل الدخول</a>
-                        <a href="{{ route('register') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-md text-sm font-medium">إنشاء حساب</a>
-                    @endguest
-                </div>
+                        @guest
+                            <a href="{{ route('login') }}" class="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">تسجيل الدخول</a>
+                            <a href="{{ route('register') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-md text-sm font-medium">إنشاء حساب</a>
+                        @endguest
+                    </div>
 
-                <!-- Mobile menu button -->
-                <div class="flex items-center md:hidden order-3">
-                    <button type="button" id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500" aria-expanded="false">
-                        <span class="sr-only">فتح القائمة الرئيسية</span>
-                        <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Mobile menu -->
-        <div class="hidden md:hidden" id="mobile-menu">
-            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                <a href="{{ route('home') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">الرئيسية</a>
-                <a href="{{ route('faqs.index') }}" class="block px-3 py-2 rounded-md text-base font-medium text-indigo-600 hover:text-indigo-800 hover:bg-gray-50">الأسئلة الشائعة</a>
-
-                @auth
-                    <a href="{{ route('dashboard') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">لوحة التحكم</a>
-                    <a href="{{ route('profile.show') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">الملف الشخصي</a>
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button type="submit" class="block w-full text-right px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">تسجيل الخروج</button>
-                    </form>
-                @else
-                    <a href="{{ route('login') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">تسجيل الدخول</a>
-                    <a href="{{ route('register') }}" class="block px-3 py-2 rounded-md text-base font-medium text-indigo-600 hover:text-indigo-800 hover:bg-gray-50">إنشاء حساب</a>
-                @endauth
-            </div>
-        </div>
-
-        <script>
-            // Mobile menu toggle
-            document.addEventListener('DOMContentLoaded', function() {
-                const mobileMenuButton = document.getElementById('mobile-menu-button');
-                const mobileMenu = document.getElementById('mobile-menu');
-                
-                if (mobileMenuButton && mobileMenu) {
-                    mobileMenuButton.addEventListener('click', function() {
-                        mobileMenu.classList.toggle('hidden');
-                    });
-                }
-            });
-        </script>
-    </header>
-
-    <!-- Page Content -->
-    <main class="pt-8 pb-12 bg-gray-50 min-h-screen">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <!-- Hero Section -->
-            <div class="text-center mb-12">
-                <h1 class="text-4xl font-bold text-gray-900 mb-4">كيف يمكننا مساعدتك؟</h1>
-                
-                <!-- Search Bar -->
-                <div class="max-w-2xl mx-auto">
-                    <div class="relative">
-                        <input type="text" placeholder="ابحث هنا..." class="w-full px-6 py-4 text-lg border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm">
-                        <button class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg font-medium transition-colors">
-                            بحث
+                    <!-- Mobile menu button -->
+                    <div class="flex items-center md:hidden order-3">
+                        <button type="button" id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500" aria-expanded="false">
+                            <span class="sr-only">فتح القائمة الرئيسية</span>
+                            <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                            </svg>
                         </button>
                     </div>
                 </div>
             </div>
 
-            <!-- Category Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+            <!-- Mobile menu -->
+            <div class="hidden md:hidden" id="mobile-menu">
+                <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                    <a href="{{ route('home') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">الرئيسية</a>
+                    <a href="{{ route('faqs.index') }}" class="block px-3 py-2 rounded-md text-base font-medium text-indigo-600 hover:text-indigo-800 hover:bg-gray-50">الأسئلة الشائعة</a>
+
+                    @foreach($menuPages as $menuPage)
+                        <a href="{{ route('pages.show', $menuPage->slug) }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
+                            {{ $menuPage->title }}
+                        </a>
+                    @endforeach
+
+                    @auth
+                        <a href="{{ route('dashboard') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">لوحة التحكم</a>
+                        <a href="{{ route('profile.show') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">الملف الشخصي</a>
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit" class="block w-full text-right px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">تسجيل الخروج</button>
+                        </form>
+                    @else
+                        <a href="{{ route('login') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">تسجيل الدخول</a>
+                        <a href="{{ route('register') }}" class="block px-3 py-2 rounded-md text-base font-medium text-indigo-600 hover:text-indigo-800 hover:bg-gray-50">إنشاء حساب</a>
+                    @endauth
+                </div>
+            </div>
+
+            <script>
+                // Mobile menu toggle
+                document.addEventListener('DOMContentLoaded', function() {
+                    const mobileMenuButton = document.getElementById('mobile-menu-button');
+                    const mobileMenu = document.getElementById('mobile-menu');
+                    
+                    if (mobileMenuButton && mobileMenu) {
+                        mobileMenuButton.addEventListener('click', function() {
+                            mobileMenu.classList.toggle('hidden');
+                        });
+                    }
+                });
+            </script>
+        </header>
+
+        <!-- Page Content -->
+        <main class="pt-6 pb-12" dir="rtl">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                <!-- Breadcrumb Navigation -->
+                <nav class="flex mb-4" aria-label="Breadcrumb">
+                    <ol class="inline-flex items-center space-x-1 md:space-x-3 space-x-reverse">
+                        <li class="inline-flex items-center">
+                            <a href="{{ route('home') }}" class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-indigo-600">
+                                <svg class="w-4 h-4 ml-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
+                                </svg>
+                                الرئيسية
+                            </a>
+                        </li>
+                        <li>
+                            <div class="flex items-center">
+                                <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                </svg>
+                                <span class="ml-1 md:ml-2 text-sm font-medium text-gray-500">الأسئلة الشائعة</span>
+                            </div>
+                        </li>
+                    </ol>
+                </nav>
+
+                <!-- Hero Section -->
+                <div class="text-center mb-12">
+                    <h1 class="text-4xl font-bold text-gray-900 mb-4">كيف يمكننا مساعدتك؟</h1>
+                    
+                    <!-- Search Bar -->
+                    <div class="max-w-2xl mx-auto">
+                        <div class="relative">
+                            <input 
+                                type="text" 
+                                id="faq-search" 
+                                placeholder="ابحث في الأسئلة الشائعة..." 
+                                class="w-full px-6 py-4 text-lg border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm text-right"
+                                dir="rtl"
+                            >
+                            <button 
+                                id="search-button"
+                                class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg font-medium transition-colors"
+                            >
+                                بحث
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
                 @php
                     // جلب الفئات الفعلية من قاعدة البيانات
                     try {
                         $actualCategories = \App\Models\Faq::select('category')
                             ->where('is_active', true)
                             ->distinct()
+                            ->orderByRaw("CASE 
+                                WHEN category = 'عام' THEN 1
+                                WHEN category = 'العضويات' THEN 2
+                                WHEN category = 'الدفع' THEN 3
+                                WHEN category = 'الحساب' THEN 4
+                                WHEN category = 'المحتوى' THEN 5
+                                WHEN category = 'الدعم الفني' THEN 6
+                                ELSE 7 END")
                             ->pluck('category')
                             ->toArray();
                     } catch (\Exception $e) {
@@ -207,8 +332,8 @@
                     $categoryIcons = [
                         'عام' => [
                             'icon' => '<svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path></svg>',
-                            'bg_color' => 'bg-gray-100',
-                            'text_color' => 'text-gray-600',
+                            'bg_color' => 'bg-orange-100',
+                            'text_color' => 'text-orange-600',
                             'description' => 'أسئلة عامة ومعلومات أساسية'
                         ],
                         'العضويات' => [
@@ -225,8 +350,8 @@
                         ],
                         'الحساب' => [
                             'icon' => '<svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>',
-                            'bg_color' => 'bg-orange-100',
-                            'text_color' => 'text-orange-600',
+                            'bg_color' => 'bg-green-100',
+                            'text_color' => 'text-green-600',
                             'description' => 'إدارة حسابك وإعداداتك الشخصية'
                         ],
                         'المحتوى' => [
@@ -237,239 +362,258 @@
                         ],
                         'الدعم الفني' => [
                             'icon' => '<svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd"></path></svg>',
-                            'bg_color' => 'bg-green-100',
-                            'text_color' => 'text-green-600',
+                            'bg_color' => 'bg-teal-100',
+                            'text_color' => 'text-teal-600',
                             'description' => 'تواصل مع فريق الدعم الفني'
                         ]
                     ];
-
-                    // إنشاء مصفوفة الفئات النهائية
-                    $categories = [];
-                    foreach ($actualCategories as $category) {
-                        $categoryData = $categoryIcons[$category] ?? [
-                            'icon' => '<svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path></svg>',
-                            'bg_color' => 'bg-gray-100',
-                            'text_color' => 'text-gray-600',
-                            'description' => 'أسئلة متنوعة'
-                        ];
-                        
-                        $categories[] = [
-                            'title' => $category,
-                            'description' => $categoryData['description'],
-                            'icon' => $categoryData['icon'],
-                            'bg_color' => $categoryData['bg_color'],
-                            'text_color' => $categoryData['text_color']
-                        ];
-                    }
                 @endphp
-                @foreach($categories as $category)
-                    <a href="#{{ Str::slug($category['title']) }}" class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow cursor-pointer block">
-                        <div class="flex flex-col items-center text-center">
-                            <div class="w-16 h-16 {{ $category['bg_color'] }} rounded-full flex items-center justify-center mb-4 {{ $category['text_color'] }}">
-                                {!! $category['icon'] !!}
-                            </div>
-                            <h3 class="text-lg font-semibold text-gray-900 mb-2">{{ $category['title'] }}</h3>
-                            <p class="text-sm text-gray-600 leading-relaxed">{{ $category['description'] }}</p>
+
+                <!-- Category Cards -->
+                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-12">
+                    <!-- View All Button -->
+                    <div class="category-card bg-white rounded-xl shadow-sm border-2 border-gray-200 p-6 text-center" data-category="all">
+                        <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4 mx-auto text-gray-600">
+                            <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" clip-rule="evenodd"></path>
+                            </svg>
                         </div>
-                    </a>
-                @endforeach
-            </div>
-
-            <!-- Popular Topics Section -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
-                <div class="mb-8">
-                    <h2 class="text-2xl font-bold text-gray-900 mb-2">المواضيع الشائعة</h2>
-                    <p class="text-gray-600">الأسئلة الأكثر شيوعاً والتي يبحث عنها المستخدمون</p>
-                </div>
-
-                @if($faqs->isEmpty())
-                    <div class="text-center py-12">
-                        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        <h3 class="mt-2 text-lg font-medium text-gray-900">لا توجد أسئلة شائعة</h3>
-                        <p class="mt-1 text-sm text-gray-500">لم يتم إضافة أي أسئلة شائعة بعد.</p>
+                        <h3 class="text-sm font-semibold text-gray-900 mb-2">جميع الأسئلة</h3>
+                        <p class="text-xs text-gray-600">عرض كافة الأسئلة</p>
                     </div>
-                @else
-                    <!-- FAQ Categories -->
-                    @foreach($faqs as $categoryName => $categoryFaqs)
-                        <div class="mb-8" id="{{ Str::slug($categoryName) }}">
-                            <h3 class="text-xl font-semibold text-gray-900 mb-4">{{ $categoryName }}</h3>
-                            
-                            <!-- FAQ Grid for this category -->
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                @foreach($categoryFaqs as $faq)
-                                    <div class="border border-gray-200 rounded-lg" x-data="{ open: false }">
-                                        <button 
-                                            @click="open = !open" 
-                                            class="w-full text-right px-6 py-4 focus:outline-none hover:bg-gray-50 transition-colors duration-200 flex justify-between items-center"
-                                        >
-                                            <span class="font-medium text-gray-900 text-sm">{{ $faq->question }}</span>
-                                            <svg class="w-5 h-5 text-gray-500 transition-transform duration-300 flex-shrink-0 mr-4" :class="{'rotate-180': open}" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                                            </svg>
-                                        </button>
-                                        
-                                        <div x-show="open" x-collapse class="px-6 pb-4 text-gray-600 text-sm border-t border-gray-100">
-                                            <div class="pt-4 prose prose-sm max-w-none text-right">
-                                                {!! $faq->answer !!}
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endforeach
+
+                    @foreach($actualCategories as $category)
+                        @php
+                            $categoryData = $categoryIcons[$category] ?? [
+                                'icon' => '<svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path></svg>',
+                                'bg_color' => 'bg-gray-100',
+                                'text_color' => 'text-gray-600',
+                                'description' => 'أسئلة متنوعة'
+                            ];
+                        @endphp
+                        <div class="category-card bg-white rounded-xl shadow-sm border-2 border-gray-200 p-6 text-center {{ $loop->first ? 'active' : '' }}" data-category="{{ $category }}">
+                            <div class="w-16 h-16 {{ $categoryData['bg_color'] }} rounded-full flex items-center justify-center mb-4 mx-auto {{ $categoryData['text_color'] }}">
+                                {!! $categoryData['icon'] !!}
                             </div>
+                            <h3 class="text-sm font-semibold text-gray-900 mb-2">{{ $category }}</h3>
+                            <p class="text-xs text-gray-600">{{ $categoryData['description'] }}</p>
                         </div>
                     @endforeach
-                @endif
+                </div>
 
-                <!-- Contact CTA -->
-                <div class="mt-12 text-center bg-gray-50 rounded-xl p-8">
-                    <h3 class="text-xl font-semibold text-gray-900 mb-2">لم تجد إجابة لسؤالك؟</h3>
-                    <p class="text-gray-600 mb-6">تواصل مع فريق الدعم الفني للحصول على مساعدة شخصية</p>
-                    <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                        @php
-                            $contactEmail = \App\Models\SiteSetting::get('contact_email');
-                        @endphp
-                        <a href="{{ $contactEmail ? 'mailto:' . $contactEmail : '#' }}" class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 transition-colors">
-                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                <!-- FAQ Content -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
+                    <div class="mb-8">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-2" id="section-title">المواضيع الشائعة</h2>
+                        <p class="text-gray-600" id="section-description">الأسئلة الأكثر شيوعاً والتي يبحث عنها المستخدمون</p>
+                    </div>
+
+                    <!-- No Results Message -->
+                    <div id="no-results" class="text-center py-12 hidden">
+                        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                        <h3 class="mt-2 text-lg font-medium text-gray-900">لا توجد نتائج</h3>
+                        <p class="mt-1 text-sm text-gray-500">لم يتم العثور على أسئلة تطابق بحثك.</p>
+                    </div>
+
+                    @if($faqs->isEmpty())
+                        <div class="text-center py-12">
+                            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
-                            تواصل معنا
-                        </a>
-                        @php
-                            $contactWhatsapp = \App\Models\SiteSetting::get('contact_whatsapp');
-                        @endphp
-                        <a href="{{ $contactWhatsapp ? 'https://wa.me/' . str_replace(['+', ' ', '-'], '', $contactWhatsapp) : '#' }}" target="_blank" class="inline-flex items-center justify-center px-6 py-3 border border-gray-300 text-base font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition-colors">
-                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"></path>
-                            </svg>
-                            واتساب
-                        </a>
-                    </div>
+                            <h3 class="mt-2 text-lg font-medium text-gray-900">لا توجد أسئلة شائعة</h3>
+                            <p class="mt-1 text-sm text-gray-500">لم يتم إضافة أي أسئلة شائعة بعد.</p>
+                        </div>
+                    @else
+                        <!-- FAQ Content -->
+                        <div id="faq-content">
+                            @foreach($faqs as $categoryName => $categoryFaqs)
+                                <div class="faq-category mb-8" data-category="{{ $categoryName }}" style="{{ $categoryName !== 'عام' ? 'display: none;' : '' }}">
+                                    <h3 class="text-xl font-semibold text-gray-900 mb-6 faq-content">{{ $categoryName }}</h3>
+                                    
+                                    <!-- FAQ Grid for this category -->
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        @foreach($categoryFaqs as $faq)
+                                            <div class="faq-item border border-gray-200 rounded-lg" data-question="{{ strtolower($faq->question) }}" data-answer="{{ strtolower(strip_tags($faq->answer)) }}">
+                                                <button 
+                                                    class="faq-toggle w-full text-right px-6 py-4 focus:outline-none hover:bg-gray-50 transition-colors duration-200 flex justify-between items-center"
+                                                    data-target="faq-{{ $faq->id }}"
+                                                >
+                                                    <span class="font-medium text-gray-900 text-sm faq-content">{{ $faq->question }}</span>
+                                                    <svg class="w-5 h-5 text-gray-500 transition-transform duration-300 flex-shrink-0 mr-4 faq-arrow" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                                                    </svg>
+                                                </button>
+                                                
+                                                <div id="faq-{{ $faq->id }}" class="faq-answer hidden px-6 pb-4 text-gray-600 text-sm border-t border-gray-100">
+                                                    <div class="pt-4 prose prose-sm max-w-none faq-content">
+                                                        {!! $faq->answer !!}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+
+                        <!-- Contact CTA -->
+                        <div class="mt-12 text-center bg-gray-50 rounded-xl p-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-2 faq-content">لم تجد إجابة لسؤالك؟</h3>
+                            <p class="text-gray-600 mb-6 faq-content">تواصل مع فريق الدعم الفني للحصول على مساعدة شخصية</p>
+                            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                                @php
+                                    $contactEmail = \App\Models\SiteSetting::get('contact_email');
+                                @endphp
+                                <a href="{{ $contactEmail ? 'mailto:' . $contactEmail : '#' }}" class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 transition-colors">
+                                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                                    </svg>
+                                    تواصل معنا
+                                </a>
+                                @php
+                                    $contactWhatsapp = \App\Models\SiteSetting::get('contact_whatsapp');
+                                @endphp
+                                <a href="{{ $contactWhatsapp ? 'https://wa.me/' . str_replace(['+', ' ', '-'], '', $contactWhatsapp) : '#' }}" target="_blank" class="inline-flex items-center justify-center px-6 py-3 border border-gray-300 text-base font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition-colors">
+                                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"></path>
+                                    </svg>
+                                    واتساب
+                                </a>
+                            </div>
+                        </div>
+                    @endif
                 </div>
             </div>
-        </div>
-    </main>
-    
-    <!-- Footer -->
-    <footer class="bg-white border-t border-gray-200" dir="rtl">
-        <div class="max-w-7xl mx-auto py-12 px-4 overflow-hidden sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <!-- Logo and About -->
-                <div class="col-span-1 md:col-span-1">
-                    <div class="flex items-center">
-                        @php
-                            $siteLogo = \App\Models\SiteSetting::get('site_logo');
-                            $siteName = \App\Models\SiteSetting::get('site_name', config('app.name', 'Laravel'));
-                        @endphp
-                        @if($siteLogo)
-                            <img class="h-10 w-auto" src="{{ Storage::url($siteLogo) }}" alt="{{ $siteName }}">
-                        @else
-                            <span class="text-xl font-bold text-indigo-600">{{ $siteName }}</span>
-                        @endif
-                    </div>
-                    <p class="mt-4 text-gray-500 text-sm text-right">
-                        {{ \App\Models\SiteSetting::get('site_description', 'نظام إدارة محتوى متكامل يوفر حلول متقدمة لإدارة المحتوى الرقمي.') }}
-                    </p>
-                </div>
-                
-                <!-- Quick Links -->
-                <div class="col-span-1">
-                    <h3 class="text-sm font-semibold text-gray-900 tracking-wider uppercase text-right">روابط سريعة</h3>
-                    <ul class="mt-4 space-y-4">
-                        <li>
-                            <a href="{{ route('home') }}" class="text-base text-gray-500 hover:text-indigo-600 text-right block">
-                                الرئيسية
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ route('faqs.index') }}" class="text-base text-gray-500 hover:text-indigo-600 text-right block">
-                                الأسئلة الشائعة
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                
-                <!-- Contact Info -->
-                <div class="col-span-1">
-                    <h3 class="text-sm font-semibold text-gray-900 tracking-wider uppercase text-right">معلومات الاتصال</h3>
-                    <ul class="mt-4 space-y-4">
-                        @php
-                            $contactPhone = \App\Models\SiteSetting::get('contact_phone');
-                        @endphp
-                        @if($contactPhone)
-                            <li class="flex items-center justify-end">
-                                <span class="text-gray-500 mr-2">{{ $contactPhone }}</span>
-                                <svg class="flex-shrink-0 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
-                                </svg>
-                            </li>
-                        @endif
-                        
-                        @php
-                            $contactEmail = \App\Models\SiteSetting::get('contact_email');
-                        @endphp
-                        @if($contactEmail)
-                            <li class="flex items-center justify-end">
-                                <span class="text-gray-500 mr-2">{{ $contactEmail }}</span>
-                                <svg class="flex-shrink-0 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                                </svg>
-                            </li>
-                        @endif
-                    </ul>
-                </div>
-                
-                <!-- Social Media -->
-                <div class="col-span-1">
-                    <h3 class="text-sm font-semibold text-gray-900 tracking-wider uppercase text-right">تابعنا</h3>
-                    <div class="mt-4 flex justify-end space-x-6 space-x-reverse">
-                        @php
-                            $socialFacebook = \App\Models\SiteSetting::get('social_facebook');
-                        @endphp
-                        @if($socialFacebook)
-                            <a href="{{ $socialFacebook }}" target="_blank" class="text-gray-400 hover:text-indigo-600">
-                                <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
-                                    <path fill-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clip-rule="evenodd"></path>
-                                </svg>
-                            </a>
-                        @endif
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Copyright -->
-            <div class="mt-12 border-t border-gray-200 pt-8">
-                <p class="text-base text-gray-400 text-center">
-                    {{ \App\Models\SiteSetting::get('footer_text', '© ' . date('Y') . ' ' . $siteName . '. جميع الحقوق محفوظة.') }}
-                </p>
-            </div>
-        </div>
-    </footer>
+        </main>
+        
+        <!-- Footer -->
+        @include('layouts.footer')
+    </div>
 
     <script>
-        // Search functionality
         document.addEventListener('DOMContentLoaded', function() {
-            const searchInput = document.querySelector('input[type="text"]');
-            const searchButton = document.querySelector('button');
+            const searchInput = document.getElementById('faq-search');
+            const searchButton = document.getElementById('search-button');
+            const categoryCards = document.querySelectorAll('.category-card');
+            const faqCategories = document.querySelectorAll('.faq-category');
+            const faqItems = document.querySelectorAll('.faq-item');
+            const faqToggles = document.querySelectorAll('.faq-toggle');
+            const sectionTitle = document.getElementById('section-title');
+            const sectionDescription = document.getElementById('section-description');
+            const noResults = document.getElementById('no-results');
             
-            if (searchButton) {
-                searchButton.addEventListener('click', function() {
-                    const query = searchInput.value.trim();
-                    if (query) {
-                        // Here you can implement search functionality
-                        console.log('Searching for:', query);
+            let currentCategory = 'عام';
+            let searchQuery = '';
+
+            // Category selection
+            categoryCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    const category = this.dataset.category;
+                    
+                    // Update active state
+                    categoryCards.forEach(c => c.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Update current category
+                    currentCategory = category;
+                    searchQuery = '';
+                    searchInput.value = '';
+                    
+                    // Update section title
+                    if (category === 'all') {
+                        sectionTitle.textContent = 'جميع الأسئلة الشائعة';
+                        sectionDescription.textContent = 'جميع الأسئلة والإجابات المتاحة';
+                    } else {
+                        sectionTitle.textContent = 'أسئلة ' + category;
+                        sectionDescription.textContent = 'الأسئلة المتعلقة بـ ' + category;
+                    }
+                    
+                    filterFAQs();
+                });
+            });
+
+            // FAQ toggle functionality
+            faqToggles.forEach(toggle => {
+                toggle.addEventListener('click', function() {
+                    const targetId = this.dataset.target;
+                    const target = document.getElementById(targetId);
+                    const arrow = this.querySelector('.faq-arrow');
+                    
+                    if (target.classList.contains('hidden')) {
+                        target.classList.remove('hidden');
+                        arrow.style.transform = 'rotate(180deg)';
+                    } else {
+                        target.classList.add('hidden');
+                        arrow.style.transform = 'rotate(0deg)';
                     }
                 });
+            });
+
+            // Search functionality
+            function performSearch() {
+                searchQuery = searchInput.value.trim().toLowerCase();
+                filterFAQs();
             }
-            
-            if (searchInput) {
-                searchInput.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        searchButton.click();
+
+            searchButton.addEventListener('click', performSearch);
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    performSearch();
+                }
+            });
+
+            // Real-time search
+            searchInput.addEventListener('input', function() {
+                searchQuery = this.value.trim().toLowerCase();
+                if (searchQuery.length > 2 || searchQuery.length === 0) {
+                    filterFAQs();
+                }
+            });
+
+            // Filter FAQs based on category and search
+            function filterFAQs() {
+                let visibleCount = 0;
+                
+                faqCategories.forEach(categoryDiv => {
+                    const categoryName = categoryDiv.dataset.category;
+                    let categoryVisible = false;
+                    
+                    if (currentCategory === 'all' || currentCategory === categoryName) {
+                        const faqsInCategory = categoryDiv.querySelectorAll('.faq-item');
+                        
+                        faqsInCategory.forEach(faqItem => {
+                            const question = faqItem.dataset.question;
+                            const answer = faqItem.dataset.answer;
+                            
+                            if (searchQuery === '' || 
+                                question.includes(searchQuery) || 
+                                answer.includes(searchQuery)) {
+                                faqItem.style.display = 'block';
+                                categoryVisible = true;
+                                visibleCount++;
+                            } else {
+                                faqItem.style.display = 'none';
+                            }
+                        });
+                        
+                        categoryDiv.style.display = categoryVisible ? 'block' : 'none';
+                    } else {
+                        categoryDiv.style.display = 'none';
                     }
                 });
+                
+                // Show/hide no results message
+                if (visibleCount === 0 && (searchQuery !== '' || currentCategory !== 'all')) {
+                    noResults.classList.remove('hidden');
+                } else {
+                    noResults.classList.add('hidden');
+                }
             }
+
+            // Initialize with General category
+            filterFAQs();
         });
     </script>
 </body>
