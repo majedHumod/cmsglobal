@@ -366,6 +366,30 @@
                             'text_color' => 'text-teal-600',
                             'description' => 'تواصل مع فريق الدعم الفني'
                         ]
+                        'البرامج' => [
+                            'icon' => '<svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" clip-rule="evenodd"></path></svg>',
+                            'bg_color' => 'bg-cyan-100',
+                            'text_color' => 'text-cyan-600',
+                            'description' => 'معلومات حول البرامج والخدمات'
+                        ],
+                        'التدريب' => [
+                            'icon' => '<svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z" clip-rule="evenodd"></path><path d="M2 13.692V16a2 2 0 002 2h12a2 2 0 002-2v-2.308A24.974 24.974 0 0110 15c-2.796 0-5.487-.46-8-1.308z"></path></svg>',
+                            'bg_color' => 'bg-red-100',
+                            'text_color' => 'text-red-600',
+                            'description' => 'أسئلة حول التدريب والتمارين'
+                        ],
+                        'التغذية' => [
+                            'icon' => '<svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12 1.586l-4 4v12.828l4-4V1.586zM3.707 3.293A1 1 0 002 4v4a1 1 0 00.293.707L6 12.414V5.586L3.707 3.293zM17.707 5.293L14 1.586v12.828l2.293 2.293A1 1 0 0018 16v-4a1 1 0 00-.293-.707z" clip-rule="evenodd"></path></svg>',
+                            'bg_color' => 'bg-lime-100',
+                            'text_color' => 'text-lime-600',
+                            'description' => 'معلومات حول التغذية والوجبات'
+                        ],
+                        'الصحة' => [
+                            'icon' => '<svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path></svg>',
+                            'bg_color' => 'bg-pink-100',
+                            'text_color' => 'text-pink-600',
+                            'description' => 'نصائح ومعلومات صحية'
+                        ]
                     ];
                 @endphp
 
@@ -444,16 +468,16 @@
                                                     <svg class="w-5 h-5 text-gray-500 transition-transform duration-300 flex-shrink-0 mr-4 faq-arrow" fill="currentColor" viewBox="0 0 20 20">
                                                         <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
                                                     </svg>
-                                                </button>
-                                                
-                                                <div id="faq-{{ $faq->id }}" class="faq-answer hidden px-6 pb-4 text-gray-600 text-sm border-t border-gray-100">
-                                                    <div class="pt-4 prose prose-sm max-w-none faq-content">
+                                        'icon' => '<svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path></svg>',
+                                        'bg_color' => 'bg-gray-100',
+                                        'text_color' => 'text-gray-600',
+                                        'description' => 'أسئلة متنوعة'
                                                         {!! $faq->answer !!}
                                                     </div>
                                                 </div>
-                                            </div>
-                                        @endforeach
-                                    </div>
+                                    <div class="w-16 h-16 {{ $categoryData['bg_color'] }} rounded-full flex items-center justify-center mb-4 mx-auto {{ $categoryData['text_color'] }}">
+                                        {!! $categoryData['icon'] !!}
+                                    <p class="text-xs text-gray-600">{{ $categoryData['description'] }}</p>
                                 </div>
                             @endforeach
                         </div>
