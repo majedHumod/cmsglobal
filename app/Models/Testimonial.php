@@ -51,7 +51,7 @@ class Testimonial extends Model
     /**
      * Get all visible testimonials
      */
-    public static function getVisible()
+    public static function getVisibleTestimonials()
     {
         return Cache::remember('visible_testimonials', 3600, function () {
             return self::visible()->ordered()->get();

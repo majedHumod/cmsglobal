@@ -8,7 +8,7 @@
         
         @php
             try {
-                $testimonials = \App\Models\Testimonial::getVisible();
+                $testimonials = \App\Models\Testimonial::getVisibleTestimonials();
             } catch (\Exception $e) {
                 $testimonials = collect([]);
             }
