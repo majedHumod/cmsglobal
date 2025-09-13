@@ -181,7 +181,7 @@
                         <!-- Dots Indicator -->
                         <div class="flex justify-center mt-8 space-x-2">
                             <template x-for="(dot, index) in Array.from({length: Math.max(1, totalSlides - slidesToShow + 1)}, (_, i) => i)" :key="index">
-                                <button @click="goToSlide({{ $i }})" 
+                                <button @click="goToSlide(index)" 
                                         class="w-3 h-3 rounded-full transition-colors duration-200"
                                         :class="currentSlide === index ? 'bg-indigo-600' : 'bg-gray-300'">
                                 </button>
