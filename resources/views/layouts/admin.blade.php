@@ -139,6 +139,22 @@
                         </svg>
                         قصص النجاح
                     </a>
+                    
+                    <!-- Training Sessions -->
+                    <a href="{{ route('admin.training-sessions.index') }}" class="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-100 {{ request()->routeIs('admin.training-sessions.*') ? 'bg-indigo-100 text-indigo-700 border-r-4 border-indigo-500' : '' }}">
+                        <svg class="w-5 h-5 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                        جلسات التدريب الخاصة
+                    </a>
+                    
+                    <!-- Session Bookings -->
+                    <a href="{{ route('admin.session-bookings.index') }}" class="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-100 {{ request()->routeIs('admin.session-bookings.*') ? 'bg-indigo-100 text-indigo-700 border-r-4 border-indigo-500' : '' }}">
+                        <svg class="w-5 h-5 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3a4 4 0 118 0v4m-4 8a2 2 0 100-4 2 2 0 000 4zm0 0v4a2 2 0 002 2h6a2 2 0 002-2v-4"></path>
+                        </svg>
+                        حجوزات الجلسات
+                    </a>
                     @endrole
 
                     <!-- Landing Pages -->

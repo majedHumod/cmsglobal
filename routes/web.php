@@ -12,6 +12,8 @@ use App\Http\Controllers\SiteSettingController;
 use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\FaqController;
 use App\Http\Controllers\TestimonialController;
+use App\Http\Controllers\TrainingSessionController;
+use App\Http\Controllers\SessionBookingController;
 
 // Landing Page Route
 Route::get('/', function() {
@@ -27,6 +29,25 @@ Route::get('/faqs', [FaqController::class, 'index'])->name('faqs.index');
 
 // Public Testimonials Route
 Route::get('/testimonials', [TestimonialController::class, 'index'])->name('testimonials.all');
+
+// Public Training Sessions Routes
+Route::get('/training-sessions', function() {
+    try {
+        $trainingSessions = \App\Models\TrainingSession::getAllVisibleSessions();
+        return view('training-sessions.all', compact('trainingSessions'));
+    } catch (\Exception $e) {
+        return redirect()->route('home')->with('error', 'حدث خطأ أثناء تحميل جلسات التدريب.');
+    }
+})->name('training-sessions.all');
+
+Route::get('/training-sessions/{trainingSession}', [TrainingSessionController::class, 'show'])->name('training-sessions.show');
+
+// Booking routes (require authentication)
+Route::middleware('auth')->group(function () {
+    Route::post('/training-sessions/{trainingSession}/book', [TrainingSessionController::class, 'book'])->name('training-sessions.book');
+    Route::get('/training-sessions/booking/{sessionBooking}/payment', [TrainingSessionController::class, 'processPayment'])->name('training-sessions.payment');
+    Route::get('/training-sessions/booking/{sessionBooking}/success', [TrainingSessionController::class, 'paymentSuccess'])->name('training-sessions.booking-success');
+});
 
 Route::middleware([
     'auth:sanctum',config('jetstream.auth_session'),'verified','tenants'])->group(function () {
@@ -119,6 +140,26 @@ Route::middleware([
         Route::put('/{testimonial}', [\App\Http\Controllers\TestimonialController::class, 'update'])->name('update');
         Route::delete('/{testimonial}', [\App\Http\Controllers\TestimonialController::class, 'destroy'])->name('destroy');
         Route::patch('/{testimonial}/toggle-visibility', [\App\Http\Controllers\TestimonialController::class, 'toggleVisibility'])->name('toggle-visibility');
+    });
+
+    // Training Sessions routes - admin only
+    Route::middleware(['auth', 'role:admin'])->prefix('admin/training-sessions')->name('admin.training-sessions.')->group(function () {
+        Route::get('/', [TrainingSessionController::class, 'index'])->name('index');
+        Route::get('/create', [TrainingSessionController::class, 'create'])->name('create');
+        Route::post('/', [TrainingSessionController::class, 'store'])->name('store');
+        Route::get('/{trainingSession}/edit', [TrainingSessionController::class, 'edit'])->name('edit');
+        Route::put('/{trainingSession}', [TrainingSessionController::class, 'update'])->name('update');
+        Route::delete('/{trainingSession}', [TrainingSessionController::class, 'destroy'])->name('destroy');
+        Route::patch('/{trainingSession}/toggle-visibility', [TrainingSessionController::class, 'toggleVisibility'])->name('toggle-visibility');
+    });
+    
+    // Session Bookings routes - admin only
+    Route::middleware(['auth', 'role:admin'])->prefix('admin/session-bookings')->name('admin.session-bookings.')->group(function () {
+        Route::get('/', [SessionBookingController::class, 'index'])->name('index');
+        Route::get('/{sessionBooking}/edit', [SessionBookingController::class, 'edit'])->name('edit');
+        Route::put('/{sessionBooking}', [SessionBookingController::class, 'update'])->name('update');
+        Route::delete('/{sessionBooking}', [SessionBookingController::class, 'destroy'])->name('destroy');
+        Route::patch('/{sessionBooking}/update-status', [SessionBookingController::class, 'updateStatus'])->name('update-status');
     });
 
     // Workouts routes - accessible to admin, coach, and client with different permissions
