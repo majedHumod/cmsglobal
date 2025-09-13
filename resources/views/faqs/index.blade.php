@@ -536,6 +536,9 @@
             </div>
         </main>
         
+        <!-- Testimonials Section -->
+        @include('components.testimonials-section')
+        
         <!-- Footer -->
         @include('layouts.footer')
     </div>
