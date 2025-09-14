@@ -203,9 +203,6 @@
         </div>
     </section>
     
-    <!-- Membership Types Section -->
-    <section class="bg-gray-50 py-16">
-    
     <!-- Training Sessions Section -->
     @include('components.training-sessions-section')
     
@@ -272,7 +269,7 @@
     </section>
     
     <!-- Navigation Links -->
-    <section class="bg-white py-12">
+    <section class="bg-gray-50 py-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center">
                 <h2 class="text-2xl font-bold text-gray-900 mb-8">استكشف المزيد</h2>
@@ -320,7 +317,7 @@
     @include('components.testimonials-section')
     
     <!-- FAQ Section -->
-    <section class="bg-gray-50 py-16">
+    <section class="bg-white py-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-12">
                 <h2 class="text-3xl font-bold text-gray-900">الأسئلة الشائعة</h2>

@@ -1,5 +1,5 @@
 <!-- قسم قصص النجاح -->
-<section class="bg-white py-16" dir="rtl">
+<section class="bg-gray-50 py-16" dir="rtl">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         @php
             try {
