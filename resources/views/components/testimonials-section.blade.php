@@ -1,5 +1,5 @@
 <!-- قسم قصص النجاح -->
-<section class="bg-gray-50 py-16" dir="rtl">
+<section class="bg-gray-50 py-0" dir="rtl">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         @php
             try {
@@ -15,6 +15,11 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
                 <!-- Left Column: Title, Description, and View More Button -->
                 <div class="lg:sticky lg:top-8">
+                    <div class="space-y-6">
+                        <div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start py-16">
+                <!-- Left Column: Title, Description, and View More Button -->
+                <div class="lg:sticky lg:top-20">
                     <div class="space-y-6">
                         <div>
                             <h2 class="text-4xl font-bold text-gray-900 mb-4">
