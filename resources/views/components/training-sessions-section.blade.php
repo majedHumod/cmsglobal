@@ -34,69 +34,58 @@
                     </div>
                 </div>
 
-                <!-- Right Column: Training Sessions Grid -->
+                <!-- Right Column: Training Sessions Cards -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     @foreach($trainingSessions as $session)
-                        <div class="training-session-card bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 h-full flex flex-col">
+                        <div class="training-session-card relative rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 h-80">
+                            <!-- Background Image -->
                             @if($session->image)
-                                <div class="relative h-64 overflow-hidden">
+                                <div class="absolute inset-0 w-full h-full">
                                     <img src="{{ Storage::url($session->image) }}" alt="{{ $session->title }}" class="w-full h-full object-cover" loading="lazy">
-                                    
-                                    <!-- Overlay with session info -->
-                                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
-                                    
-                                    <!-- Session content overlay -->
-                                    <div class="absolute bottom-0 left-0 right-0 p-6 text-white">
-                                        <h3 class="text-xl font-bold mb-2" style="direction: rtl; text-align: right;">
-                                            {{ $session->title }}
-                                        </h3>
-                                        
-                                        <p class="text-sm text-white/90 mb-3" style="direction: rtl; text-align: right;">
-                                            {{ Str::limit($session->description, 80) }}
-                                        </p>
-                                        
-                                        <!-- Session Details -->
-                                        <div class="flex items-center justify-between text-sm text-white/90 mb-4">
-                                            <div class="flex items-center">
-                                                <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                                </svg>
-                                                <span>{{ $session->duration_text }}</span>
-                                            </div>
-                                            <div class="flex items-center">
-                                                <span class="text-lg font-bold">{{ $session->formatted_price }}</span>
-                                            </div>
-                                        </div>
-
-                                        <!-- Book Now Button -->
-                                        <a href="{{ route('training-sessions.show', $session) }}" class="block w-full text-center bg-white text-gray-900 font-semibold py-3 px-6 rounded-full hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 shadow-md hover:shadow-lg">
-                                            احجز الآن
-                                        </a>
-                                    </div>
                                 </div>
                             @else
-                                <!-- Fallback for sessions without images -->
-                                <div class="h-64 bg-gradient-to-br from-indigo-400 to-blue-500 flex items-center justify-center relative">
-                                    <div class="text-center text-white p-6">
-                                        <svg class="h-16 w-16 mx-auto mb-4 text-white/80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                <!-- Fallback gradient background -->
+                                <div class="absolute inset-0 w-full h-full bg-gradient-to-br from-indigo-500 to-purple-600"></div>
+                            @endif
+                            
+                            <!-- Gradient Overlay -->
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+                            
+                            <!-- Content Overlay -->
+                            <div class="absolute inset-0 flex flex-col justify-end p-6 text-white">
+                                <!-- Session Title -->
+                                <h3 class="text-xl font-bold mb-2 text-right" style="direction: rtl;">
+                                    {{ $session->title }}
+                                </h3>
+                                
+                                <!-- Session Subtitle/Specialty -->
+                                <p class="text-sm text-white/90 mb-3 text-right" style="direction: rtl;">
+                                    متخصص في التدريب الشخصي
+                                </p>
+                                
+                                <!-- Session Description -->
+                                <p class="text-sm text-white/80 mb-4 leading-relaxed text-right" style="direction: rtl;">
+                                    {{ Str::limit($session->description, 80) }}
+                                </p>
+                                
+                                <!-- Session Details -->
+                                <div class="flex items-center justify-between text-sm text-white/90 mb-4">
+                                    <div class="flex items-center">
+                                        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                         </svg>
-                                        <h3 class="text-xl font-bold mb-2">{{ $session->title }}</h3>
-                                        <p class="text-sm text-white/90 mb-4">{{ Str::limit($session->description, 80) }}</p>
-                                        
-                                        <!-- Session Details -->
-                                        <div class="flex items-center justify-between text-sm text-white/90 mb-4">
-                                            <span>{{ $session->duration_text }}</span>
-                                            <span class="text-lg font-bold">{{ $session->formatted_price }}</span>
-                                        </div>
-
-                                        <!-- Book Now Button -->
-                                        <a href="{{ route('training-sessions.show', $session) }}" class="inline-block bg-white text-gray-900 font-semibold py-3 px-6 rounded-full hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 shadow-md hover:shadow-lg">
-                                            احجز الآن
-                                        </a>
+                                        <span>{{ $session->duration_text }}</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="text-lg font-bold">{{ $session->formatted_price }}</span>
                                     </div>
                                 </div>
-                            @endif
+
+                                <!-- Book Now Button -->
+                                <a href="{{ route('training-sessions.show', $session) }}" class="block w-full text-center bg-white text-gray-900 font-semibold py-3 px-6 rounded-full hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 shadow-md hover:shadow-lg">
+                                    احجز الآن
+                                </a>
+                            </div>
                         </div>
                     @endforeach
                     
