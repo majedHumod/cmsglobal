@@ -114,7 +114,7 @@ class SiteSetting extends Model
                     $value = $setting->value;
                     switch ($setting->type) {
                         case 'boolean':
-                            $value = (bool) $value;
+                            $value = filter_var($value, FILTER_VALIDATE_BOOLEAN);
                             break;
                         case 'integer':
                             $value = (int) $value;
