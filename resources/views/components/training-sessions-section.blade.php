@@ -90,37 +90,6 @@
                             </div>
                         </div>
                     @endforeach
-                    
-                    <!-- View All Sessions Button (if more than 4 sessions exist) -->
-                    @php
-                        try {
-                            $totalSessions = \App\Models\TrainingSession::visible()->count();
-                            $maxSessionsToShow = \App\Models\SiteSetting::get('training_sessions_count', 4);
-                        } catch (\Exception $e) {
-                            $totalSessions = 0;
-                            $maxSessionsToShow = 4;
-                        }
-                    @endphp
-                    
-                    @if($totalSessions > $maxSessionsToShow)
-                        <div class="training-session-card relative rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 h-80 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-                            <div class="text-center p-6">
-                                <div class="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mb-4 mx-auto">
-                                    <svg class="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                                    </svg>
-                                </div>
-                                <h3 class="text-xl font-bold text-gray-900 mb-2">المزيد من الجلسات</h3>
-                                <p class="text-gray-600 mb-4">اكتشف جميع جلسات التدريب المتاحة</p>
-                                <a href="{{ route('training-sessions.all') }}" class="inline-flex items-center px-6 py-3 bg-indigo-600 text-white font-semibold rounded-full hover:bg-indigo-700 transition-all duration-300 transform hover:scale-105">
-                                    <span>عرض الكل</span>
-                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                                    </svg>
-                                </a>
-                            </div>
-                        </div>
-                    @endif
                 </div>
             </div>
         @endif
