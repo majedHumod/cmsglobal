@@ -22,14 +22,16 @@
                                 تعرف على مدربينا المعتمدين المتخصصين في إرشادك خلال رحلتك مع الدعم الشخصي والتعليمات الواعية وممارسات العافية الشاملة
                             </p>
                         </div>
-                        
-                        <div>
-                            @php
-                                $contactWhatsapp = \App\Models\SiteSetting::get('contact_whatsapp');
-                            @endphp
-                            <a href="{{ $contactWhatsapp ? 'https://wa.me/' . str_replace(['+', ' ', '-'], '', $contactWhatsapp) : '#' }}" target="_blank" class="inline-flex items-center px-8 py-4 bg-white border-2 border-gray-300 text-gray-700 font-semibold rounded-full hover:bg-gray-50 hover:border-gray-400 transform hover:scale-105 transition-all duration-300 shadow-md hover:shadow-lg">
-                                <span>تواصل معنا</span>
-                            </a>
+                    @if($totalSessions > 4)
+                        <div class="flex items-center justify-center h-80">
+                            <div class="text-center">
+                                <a href="{{ route('training-sessions.all') }}" class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-semibold rounded-full hover:from-indigo-700 hover:to-blue-700 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl">
+                                    <span>عرض جميع الجلسات</span>
+                                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                                    </svg>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -58,11 +60,6 @@
                                     {{ $session->title }}
                                 </h3>
                                 
-                                <!-- Session Subtitle/Specialty -->
-                                <p class="text-sm text-white/90 mb-3 text-right" style="direction: rtl;">
-                                    متخصص في التدريب الشخصي
-                                </p>
-                                
                                 <!-- Session Description -->
                                 <p class="text-sm text-white/80 mb-4 leading-relaxed text-right" style="direction: rtl;">
                                     {{ Str::limit($session->description, 80) }}
@@ -89,38 +86,4 @@
                         </div>
                     @endforeach
                     
-                    <!-- إذا كان هناك أكثر من 3 جلسات، أضف رابط لعرض المزيد -->
-                    @php
-                        try {
-                            $totalSessions = \App\Models\TrainingSession::visible()->count();
-                        } catch (\Exception $e) {
-                            $totalSessions = $trainingSessions->count();
-                        }
-                    @endphp
-                    
-                    @if($totalSessions > 3)
-                        <div class="md:col-span-2 text-center">
-                            <a href="{{ route('training-sessions.all') }}" class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-semibold rounded-full hover:from-indigo-700 hover:to-blue-700 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl">
-                                <span>عرض جميع الجلسات</span>
-                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                                </svg>
-                            </a>
-                        </div>
-                    @endif
-                </div>
-            </div>
-        @endif
-    </div>
-</section>
-
-<style>
-    .training-session-card {
-        transition: all 0.3s ease;
-    }
-    
-    .training-session-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 20px 25px rgba(0, 0, 0, 0.1);
-    }
-</style>
+                    <!-- View All Sessions Button -->

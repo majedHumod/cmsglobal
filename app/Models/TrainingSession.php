@@ -69,12 +69,12 @@ class TrainingSession extends Model
     }
 
     /**
-     * Get visible sessions for homepage (3 sessions)
+     * Get visible sessions for homepage (4 sessions)
      */
     public static function getHomepageSessions()
     {
         return Cache::remember('homepage_training_sessions', 3600, function () {
-            return self::visible()->ordered()->limit(3)->get();
+            return self::visible()->ordered()->limit(4)->get();
         });
     }
 
