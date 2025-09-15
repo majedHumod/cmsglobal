@@ -205,13 +205,13 @@ class SiteSettingController extends Controller
         SiteSetting::set('training_sessions_title', $request->training_sessions_title, 'homepage', 'string', 'Training sessions section title');
         SiteSetting::set('training_sessions_description', $request->training_sessions_description, 'homepage', 'string', 'Training sessions section description');
         SiteSetting::set('training_sessions_count', $request->training_sessions_count, 'homepage', 'integer', 'Number of training sessions to display');
-        SiteSetting::set('training_sessions_enabled', $request->has('training_sessions_enabled'), 'homepage', 'boolean', 'Enable training sessions section');
+        SiteSetting::set('training_sessions_enabled', $request->training_sessions_enabled == '1', 'homepage', 'boolean', 'Enable training sessions section');
         
         // Update testimonials settings
         SiteSetting::set('testimonials_title', $request->testimonials_title, 'homepage', 'string', 'Testimonials section title');
         SiteSetting::set('testimonials_description', $request->testimonials_description, 'homepage', 'string', 'Testimonials section description');
         SiteSetting::set('testimonials_count', $request->testimonials_count, 'homepage', 'integer', 'Number of testimonials to display');
-        SiteSetting::set('testimonials_enabled', $request->has('testimonials_enabled'), 'homepage', 'boolean', 'Enable testimonials section');
+        SiteSetting::set('testimonials_enabled', $request->testimonials_enabled == '1', 'homepage', 'boolean', 'Enable testimonials section');
 
         return back()->with('success', 'تم تحديث إعدادات الصفحة الرئيسية بنجاح.');
     }

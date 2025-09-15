@@ -1,6 +1,6 @@
 <!-- قسم قصص النجاح -->
 @php
-    $testimonialsEnabled = \App\Models\SiteSetting::get('testimonials_enabled', true);
+    $testimonialsEnabled = (bool) \App\Models\SiteSetting::get('testimonials_enabled', true);
     $testimonialsTitle = \App\Models\SiteSetting::get('testimonials_title', 'ماذا يقول عملاؤنا');
     $testimonialsDescription = \App\Models\SiteSetting::get('testimonials_description', 'اكتشف تجارب عملائنا الحقيقية وكيف ساعدتهم خدماتنا في تحقيق أهدافهم وتحسين حياتهم بطرق مذهلة ومؤثرة.');
     $testimonialsCount = \App\Models\SiteSetting::get('testimonials_count', 3);

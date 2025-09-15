@@ -1,6 +1,6 @@
 <!-- قسم جلسات التدريب الخاصة -->
 @php
-    $trainingSectionsEnabled = \App\Models\SiteSetting::get('training_sessions_enabled', true);
+    $trainingSectionsEnabled = (bool) \App\Models\SiteSetting::get('training_sessions_enabled', true);
     $trainingSectionsTitle = \App\Models\SiteSetting::get('training_sessions_title', 'مدربونا الخبراء');
     $trainingSectionsDescription = \App\Models\SiteSetting::get('training_sessions_description', 'تعرف على مدربينا المعتمدين المتخصصين في إرشادك خلال رحلتك مع الدعم الشخصي والتعليمات الواعية وممارسات العافية الشاملة');
 @endphp

@@ -334,6 +334,7 @@
                         <div class="mt-6">
                             <div class="flex items-start">
                                 <div class="flex items-center h-5">
+                                    <input type="hidden" name="training_sessions_enabled" value="0">
                                     <input type="checkbox" name="training_sessions_enabled" id="training_sessions_enabled" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded" {{ \App\Models\SiteSetting::get('training_sessions_enabled', true) ? 'checked' : '' }}>
                                 </div>
                                 <div class="mr-3 text-sm">
@@ -381,6 +382,7 @@
                         <div class="mt-6">
                             <div class="flex items-start">
                                 <div class="flex items-center h-5">
+                                    <input type="hidden" name="testimonials_enabled" value="0">
                                     <input type="checkbox" name="testimonials_enabled" id="testimonials_enabled" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded" {{ \App\Models\SiteSetting::get('testimonials_enabled', true) ? 'checked' : '' }}>
                                 </div>
                                 <div class="mr-3 text-sm">
