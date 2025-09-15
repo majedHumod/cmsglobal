@@ -95,8 +95,10 @@
                     @php
                         try {
                             $totalSessions = \App\Models\TrainingSession::visible()->count();
+                            $maxSessionsToShow = \App\Models\SiteSetting::get('training_sessions_count', 4);
                         } catch (\Exception $e) {
                             $totalSessions = 0;
+                            $maxSessionsToShow = 4;
                         }
                     @endphp
                     
