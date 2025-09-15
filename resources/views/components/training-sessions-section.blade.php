@@ -22,16 +22,14 @@
                                 تعرف على مدربينا المعتمدين المتخصصين في إرشادك خلال رحلتك مع الدعم الشخصي والتعليمات الواعية وممارسات العافية الشاملة
                             </p>
                         </div>
-                    @if($totalSessions > 4)
-                        <div class="flex items-center justify-center h-80">
-                            <div class="text-center">
-                                <a href="{{ route('training-sessions.all') }}" class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-semibold rounded-full hover:from-indigo-700 hover:to-blue-700 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl">
-                                    <span>عرض جميع الجلسات</span>
-                                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                                    </svg>
-                                </a>
-                            </div>
+                        
+                        <div>
+                            <a href="{{ route('training-sessions.all') }}" class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-semibold rounded-xl hover:from-indigo-700 hover:to-blue-700 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl">
+                                <span>تصفح جميع الجلسات</span>
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                                </svg>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -86,4 +84,86 @@
                         </div>
                     @endforeach
                     
-                    <!-- View All Sessions Button -->
+                    <!-- View All Sessions Button (if more than 4 sessions exist) -->
+                    @php
+                        try {
+                            $totalSessions = \App\Models\TrainingSession::visible()->count();
+                        } catch (\Exception $e) {
+                            $totalSessions = 0;
+                        }
+                    @endphp
+                    
+                    @if($totalSessions > 4)
+                        <div class="training-session-card relative rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 h-80 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                            <div class="text-center p-6">
+                                <div class="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mb-4 mx-auto">
+                                    <svg class="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                    </svg>
+                                </div>
+                                <h3 class="text-xl font-bold text-gray-900 mb-2">المزيد من الجلسات</h3>
+                                <p class="text-gray-600 mb-4">اكتشف جميع جلسات التدريب المتاحة</p>
+                                <a href="{{ route('training-sessions.all') }}" class="inline-flex items-center px-6 py-3 bg-indigo-600 text-white font-semibold rounded-full hover:bg-indigo-700 transition-all duration-300 transform hover:scale-105">
+                                    <span>عرض الكل</span>
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        @endif
+    </div>
+</section>
+
+<style>
+    /* Training sessions specific styles */
+    .training-session-card {
+        transition: all 0.3s ease;
+    }
+    
+    .training-session-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 25px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Ensure proper spacing and no overlap */
+    .training-session-card .absolute {
+        position: absolute;
+    }
+    
+    .training-session-card .relative {
+        position: relative;
+    }
+    
+    /* RTL support for training sessions */
+    [dir="rtl"] .training-session-card {
+        text-align: right;
+    }
+    
+    /* Responsive design */
+    @media (max-width: 768px) {
+        .training-session-card {
+            height: 300px;
+        }
+        
+        .training-session-card h3 {
+            font-size: 1.125rem;
+        }
+        
+        .training-session-card p {
+            font-size: 0.875rem;
+        }
+    }
+    
+    /* Hover effects */
+    .training-session-card:hover .bg-white {
+        background-color: #f3f4f6;
+    }
+    
+    .training-session-card:hover .transform {
+        transform: scale(1.02);
+    }
+</style>
