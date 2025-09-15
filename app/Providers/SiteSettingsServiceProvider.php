@@ -57,6 +57,16 @@ class SiteSettingsServiceProvider extends ServiceProvider
                 'enable_registration' => true,
                 'default_locale' => 'ar',
                 'items_per_page' => 15
+            ],
+            'homepage' => [
+                'training_sessions_title' => 'مدربونا الخبراء',
+                'training_sessions_description' => 'تعرف على مدربينا المعتمدين المتخصصين في إرشادك خلال رحلتك مع الدعم الشخصي والتعليمات الواعية وممارسات العافية الشاملة',
+                'training_sessions_count' => 4,
+                'training_sessions_enabled' => true,
+                'testimonials_title' => 'ماذا يقول عملاؤنا',
+                'testimonials_description' => 'اكتشف تجارب عملائنا الحقيقية وكيف ساعدتهم خدماتنا في تحقيق أهدافهم وتحسين حياتهم بطرق مذهلة ومؤثرة.',
+                'testimonials_count' => 3,
+                'testimonials_enabled' => true
             ]
         ];
 
@@ -69,13 +79,15 @@ class SiteSettingsServiceProvider extends ServiceProvider
                 $contactSettings = SiteSetting::getGroup('contact')->toArray();
                 $socialSettings = SiteSetting::getGroup('social')->toArray();
                 $appSettings = SiteSetting::getGroup('app')->toArray();
+                $homepageSettings = SiteSetting::getGroup('homepage')->toArray();
                 
                 // Merge with defaults (so we always have all keys)
                 $dbSettings = [
                     'general' => array_merge($defaultSettings['general'], $generalSettings),
                     'contact' => array_merge($defaultSettings['contact'], $contactSettings),
                     'social' => array_merge($defaultSettings['social'], $socialSettings),
-                    'app' => array_merge($defaultSettings['app'], $appSettings)
+                    'app' => array_merge($defaultSettings['app'], $appSettings),
+                    'homepage' => array_merge($defaultSettings['homepage'], $homepageSettings)
                 ];
             }
         } catch (\Exception $e) {

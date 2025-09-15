@@ -74,7 +74,8 @@ class TrainingSession extends Model
     public static function getHomepageSessions()
     {
         return Cache::remember('homepage_training_sessions', 3600, function () {
-            return self::visible()->ordered()->limit(4)->get();
+            $count = \App\Models\SiteSetting::get('training_sessions_count', 4);
+            return self::visible()->ordered()->limit($count)->get();
         });
     }
 

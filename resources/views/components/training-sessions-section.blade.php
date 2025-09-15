@@ -1,4 +1,11 @@
 <!-- قسم جلسات التدريب الخاصة -->
+@php
+    $trainingSectionsEnabled = \App\Models\SiteSetting::get('training_sessions_enabled', true);
+    $trainingSectionsTitle = \App\Models\SiteSetting::get('training_sessions_title', 'مدربونا الخبراء');
+    $trainingSectionsDescription = \App\Models\SiteSetting::get('training_sessions_description', 'تعرف على مدربينا المعتمدين المتخصصين في إرشادك خلال رحلتك مع الدعم الشخصي والتعليمات الواعية وممارسات العافية الشاملة');
+@endphp
+
+@if($trainingSectionsEnabled)
 <section class="bg-white py-0" dir="rtl">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         @php
@@ -16,10 +23,10 @@
                     <div class="space-y-6">
                         <div>
                             <h2 class="text-4xl font-bold text-gray-900 mb-4">
-                                مدربونا الخبراء
+                                {{ $trainingSectionsTitle }}
                             </h2>
                             <p class="text-xl text-gray-600 leading-relaxed">
-                                تعرف على مدربينا المعتمدين المتخصصين في إرشادك خلال رحلتك مع الدعم الشخصي والتعليمات الواعية وممارسات العافية الشاملة
+                                {{ $trainingSectionsDescription }}
                             </p>
                         </div>
                         
@@ -117,6 +124,7 @@
         @endif
     </div>
 </section>
+@endif
 
 <style>
     /* Training sessions specific styles */

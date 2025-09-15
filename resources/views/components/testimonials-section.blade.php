@@ -1,11 +1,19 @@
 <!-- قسم قصص النجاح -->
+@php
+    $testimonialsEnabled = \App\Models\SiteSetting::get('testimonials_enabled', true);
+    $testimonialsTitle = \App\Models\SiteSetting::get('testimonials_title', 'ماذا يقول عملاؤنا');
+    $testimonialsDescription = \App\Models\SiteSetting::get('testimonials_description', 'اكتشف تجارب عملائنا الحقيقية وكيف ساعدتهم خدماتنا في تحقيق أهدافهم وتحسين حياتهم بطرق مذهلة ومؤثرة.');
+    $testimonialsCount = \App\Models\SiteSetting::get('testimonials_count', 3);
+@endphp
+
+@if($testimonialsEnabled)
 <section class="bg-gray-50 py-0" dir="rtl">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         @php
             try {
                 $testimonials = \App\Models\Testimonial::getVisibleTestimonials();
-                // عرض 3 قصص فقط في الصفحة الرئيسية
-                $testimonials = $testimonials->take(3);
+                // عرض عدد القصص المحدد في الإعدادات
+                $testimonials = $testimonials->take($testimonialsCount);
             } catch (\Exception $e) {
                 $testimonials = collect([]);
             }
@@ -18,10 +26,10 @@
                     <div class="space-y-6">
                         <div>
                             <h2 class="text-4xl font-bold text-gray-900 mb-4">
-                                ماذا يقول عملاؤنا
+                                {{ $testimonialsTitle }}
                             </h2>
                             <p class="text-xl text-gray-600 leading-relaxed">
-                                اكتشف تجارب عملائنا الحقيقية وكيف ساعدتهم خدماتنا في تحقيق أهدافهم وتحسين حياتهم بطرق مذهلة ومؤثرة.
+                                {{ $testimonialsDescription }}
                             </p>
                         </div>
                         
@@ -179,6 +187,7 @@
         @endif
     </div>
 </section>
+@endif
 
 <style>
     /* Testimonials specific styles */

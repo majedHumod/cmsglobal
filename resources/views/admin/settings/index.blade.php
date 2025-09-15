@@ -47,6 +47,14 @@
                         إعدادات التطبيق
                     </button>
                 </li>
+                <li role="presentation">
+                    <button class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300" id="homepage-tab" data-tabs-target="#homepage" type="button" role="tab" aria-controls="homepage" aria-selected="false">
+                        <svg class="w-5 h-5 ml-2 inline-block" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
+                        </svg>
+                        إعدادات الصفحة الرئيسية
+                    </button>
+                </li>
             </ul>
         </div>
 
@@ -279,6 +287,113 @@
                     <div class="flex justify-start">
                         <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                             حفظ إعدادات التطبيق
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Homepage Settings -->
+            <div class="hidden" id="homepage" role="tabpanel" aria-labelledby="homepage-tab">
+                <form action="{{ route('admin.settings.update-homepage') }}" method="POST" class="space-y-6">
+                    @csrf
+                    
+                    <!-- Training Sessions Settings -->
+                    <div class="border-b border-gray-200 pb-6">
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">إعدادات جلسات التدريب الخاصة</h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Training Sessions Title -->
+                            <div>
+                                <label for="training_sessions_title" class="block text-sm font-medium text-gray-700 text-right">عنوان القسم</label>
+                                <input type="text" name="training_sessions_title" id="training_sessions_title" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-right" value="{{ old('training_sessions_title', \App\Models\SiteSetting::get('training_sessions_title', 'مدربونا الخبراء')) }}">
+                                <p class="mt-1 text-sm text-gray-500 text-right">عنوان قسم جلسات التدريب في الصفحة الرئيسية.</p>
+                            </div>
+                            
+                            <!-- Number of Sessions -->
+                            <div>
+                                <label for="training_sessions_count" class="block text-sm font-medium text-gray-700 text-right">عدد الجلسات المعروضة</label>
+                                <select name="training_sessions_count" id="training_sessions_count" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                    <option value="2" {{ \App\Models\SiteSetting::get('training_sessions_count', 4) == 2 ? 'selected' : '' }}>2 جلسات</option>
+                                    <option value="3" {{ \App\Models\SiteSetting::get('training_sessions_count', 4) == 3 ? 'selected' : '' }}>3 جلسات</option>
+                                    <option value="4" {{ \App\Models\SiteSetting::get('training_sessions_count', 4) == 4 ? 'selected' : '' }}>4 جلسات</option>
+                                    <option value="6" {{ \App\Models\SiteSetting::get('training_sessions_count', 4) == 6 ? 'selected' : '' }}>6 جلسات</option>
+                                    <option value="8" {{ \App\Models\SiteSetting::get('training_sessions_count', 4) == 8 ? 'selected' : '' }}>8 جلسات</option>
+                                </select>
+                                <p class="mt-1 text-sm text-gray-500 text-right">عدد جلسات التدريب المعروضة في الصفحة الرئيسية.</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Training Sessions Description -->
+                        <div class="mt-6">
+                            <label for="training_sessions_description" class="block text-sm font-medium text-gray-700 text-right">وصف القسم</label>
+                            <textarea name="training_sessions_description" id="training_sessions_description" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-right">{{ old('training_sessions_description', \App\Models\SiteSetting::get('training_sessions_description', 'تعرف على مدربينا المعتمدين المتخصصين في إرشادك خلال رحلتك مع الدعم الشخصي والتعليمات الواعية وممارسات العافية الشاملة')) }}</textarea>
+                            <p class="mt-1 text-sm text-gray-500 text-right">وصف قسم جلسات التدريب في الصفحة الرئيسية.</p>
+                        </div>
+                        
+                        <!-- Enable Training Sessions -->
+                        <div class="mt-6">
+                            <div class="flex items-start">
+                                <div class="flex items-center h-5">
+                                    <input type="checkbox" name="training_sessions_enabled" id="training_sessions_enabled" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded" {{ \App\Models\SiteSetting::get('training_sessions_enabled', true) ? 'checked' : '' }}>
+                                </div>
+                                <div class="mr-3 text-sm">
+                                    <label for="training_sessions_enabled" class="font-medium text-gray-700">تفعيل قسم جلسات التدريب</label>
+                                    <p class="text-gray-500">إظهار قسم جلسات التدريب في الصفحة الرئيسية.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Testimonials Settings -->
+                    <div class="py-6">
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">إعدادات قصص النجاح</h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Testimonials Title -->
+                            <div>
+                                <label for="testimonials_title" class="block text-sm font-medium text-gray-700 text-right">عنوان القسم</label>
+                                <input type="text" name="testimonials_title" id="testimonials_title" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-right" value="{{ old('testimonials_title', \App\Models\SiteSetting::get('testimonials_title', 'ماذا يقول عملاؤنا')) }}">
+                                <p class="mt-1 text-sm text-gray-500 text-right">عنوان قسم قصص النجاح في الصفحة الرئيسية.</p>
+                            </div>
+                            
+                            <!-- Number of Testimonials -->
+                            <div>
+                                <label for="testimonials_count" class="block text-sm font-medium text-gray-700 text-right">عدد القصص المعروضة</label>
+                                <select name="testimonials_count" id="testimonials_count" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                    <option value="1" {{ \App\Models\SiteSetting::get('testimonials_count', 3) == 1 ? 'selected' : '' }}>قصة واحدة</option>
+                                    <option value="2" {{ \App\Models\SiteSetting::get('testimonials_count', 3) == 2 ? 'selected' : '' }}>قصتان</option>
+                                    <option value="3" {{ \App\Models\SiteSetting::get('testimonials_count', 3) == 3 ? 'selected' : '' }}>3 قصص</option>
+                                    <option value="4" {{ \App\Models\SiteSetting::get('testimonials_count', 3) == 4 ? 'selected' : '' }}>4 قصص</option>
+                                    <option value="5" {{ \App\Models\SiteSetting::get('testimonials_count', 3) == 5 ? 'selected' : '' }}>5 قصص</option>
+                                </select>
+                                <p class="mt-1 text-sm text-gray-500 text-right">عدد قصص النجاح المعروضة في الصفحة الرئيسية.</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Testimonials Description -->
+                        <div class="mt-6">
+                            <label for="testimonials_description" class="block text-sm font-medium text-gray-700 text-right">وصف القسم</label>
+                            <textarea name="testimonials_description" id="testimonials_description" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-right">{{ old('testimonials_description', \App\Models\SiteSetting::get('testimonials_description', 'اكتشف تجارب عملائنا الحقيقية وكيف ساعدتهم خدماتنا في تحقيق أهدافهم وتحسين حياتهم بطرق مذهلة ومؤثرة.')) }}</textarea>
+                            <p class="mt-1 text-sm text-gray-500 text-right">وصف قسم قصص النجاح في الصفحة الرئيسية.</p>
+                        </div>
+                        
+                        <!-- Enable Testimonials -->
+                        <div class="mt-6">
+                            <div class="flex items-start">
+                                <div class="flex items-center h-5">
+                                    <input type="checkbox" name="testimonials_enabled" id="testimonials_enabled" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded" {{ \App\Models\SiteSetting::get('testimonials_enabled', true) ? 'checked' : '' }}>
+                                </div>
+                                <div class="mr-3 text-sm">
+                                    <label for="testimonials_enabled" class="font-medium text-gray-700">تفعيل قسم قصص النجاح</label>
+                                    <p class="text-gray-500">إظهار قسم قصص النجاح في الصفحة الرئيسية.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-start">
+                        <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            حفظ إعدادات الصفحة الرئيسية
                         </button>
                     </div>
                 </form>

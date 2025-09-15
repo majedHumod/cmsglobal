@@ -107,6 +107,7 @@ Route::middleware([
         Route::post('/update-contact', [SiteSettingController::class, 'updateContact'])->name('update-contact');
         Route::post('/update-social', [SiteSettingController::class, 'updateSocial'])->name('update-social');
         Route::post('/update-app', [SiteSettingController::class, 'updateApp'])->name('update-app');
+        Route::post('/update-homepage', [SiteSettingController::class, 'updateHomepage'])->name('update-homepage');
     });
     
     // Landing Page routes - admin only

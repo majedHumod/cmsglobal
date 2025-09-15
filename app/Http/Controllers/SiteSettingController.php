@@ -179,6 +179,43 @@ class SiteSettingController extends Controller
     }
 
     /**
+     * Update the homepage settings
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function updateHomepage(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'training_sessions_title' => 'nullable|string|max:255',
+            'training_sessions_description' => 'nullable|string|max:500',
+            'training_sessions_count' => 'nullable|integer|min:1|max:12',
+            'training_sessions_enabled' => 'nullable|boolean',
+            'testimonials_title' => 'nullable|string|max:255',
+            'testimonials_description' => 'nullable|string|max:500',
+            'testimonials_count' => 'nullable|integer|min:1|max:10',
+            'testimonials_enabled' => 'nullable|boolean',
+        ]);
+
+        if ($validator->fails()) {
+            return back()->withErrors($validator)->withInput();
+        }
+
+        // Update training sessions settings
+        SiteSetting::set('training_sessions_title', $request->training_sessions_title, 'homepage', 'string', 'Training sessions section title');
+        SiteSetting::set('training_sessions_description', $request->training_sessions_description, 'homepage', 'string', 'Training sessions section description');
+        SiteSetting::set('training_sessions_count', $request->training_sessions_count, 'homepage', 'integer', 'Number of training sessions to display');
+        SiteSetting::set('training_sessions_enabled', $request->has('training_sessions_enabled'), 'homepage', 'boolean', 'Enable training sessions section');
+        
+        // Update testimonials settings
+        SiteSetting::set('testimonials_title', $request->testimonials_title, 'homepage', 'string', 'Testimonials section title');
+        SiteSetting::set('testimonials_description', $request->testimonials_description, 'homepage', 'string', 'Testimonials section description');
+        SiteSetting::set('testimonials_count', $request->testimonials_count, 'homepage', 'integer', 'Number of testimonials to display');
+        SiteSetting::set('testimonials_enabled', $request->has('testimonials_enabled'), 'homepage', 'boolean', 'Enable testimonials section');
+
+        return back()->with('success', 'تم تحديث إعدادات الصفحة الرئيسية بنجاح.');
+    }
+    /**
      * Handle file upload and return the file path
      *
      * @param \Illuminate\Http\UploadedFile $file
