@@ -100,7 +100,7 @@
                         }
                     @endphp
                     
-                    @if($totalSessions > 4)
+                    @if($totalSessions > $maxSessionsToShow)
                         <div class="training-session-card relative rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 h-80 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
                             <div class="text-center p-6">
                                 <div class="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mb-4 mx-auto">
