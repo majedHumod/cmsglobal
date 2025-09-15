@@ -64,6 +64,8 @@ class Testimonial extends Model
     public static function clearCache()
     {
         Cache::forget('visible_testimonials');
+        // Also clear the site settings cache to ensure fresh data
+        Cache::forget('settings_group_homepage');
     }
 
     /**
