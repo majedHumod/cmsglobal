@@ -98,6 +98,8 @@ class TrainingSession extends Model
     public static function clearCache()
     {
         Cache::forget('homepage_training_sessions');
+        // Also clear the site settings cache to ensure fresh data
+        Cache::forget('settings_group_homepage');
     }
 
     /**
