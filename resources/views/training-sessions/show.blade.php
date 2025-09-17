@@ -65,7 +65,7 @@
 
         <!-- Page Content -->
         <main class="pt-6 pb-12" dir="rtl">
-            <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
                 <!-- Breadcrumb Navigation -->
                 <nav class="flex mb-4" aria-label="Breadcrumb">
                     <ol class="inline-flex items-center space-x-1 md:space-x-3 space-x-reverse">
