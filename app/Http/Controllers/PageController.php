@@ -117,8 +117,15 @@ class PageController extends Controller
 
     public function show($slug)
     {
-        $page = Page::where('slug', $slug)
+        $page = Page::select([
+                'id', 'title', 'slug', 'content', 'excerpt', 'meta_title', 
+                'meta_description', 'featured_image', 'access_level', 
+                'required_membership_types', 'is_published', 'published_at', 
+                'user_id', 'created_at', 'updated_at'
+            ])
+            ->where('slug', $slug)
             ->where('is_published', true)
+            ->with(['user:id,name'])
             ->firstOrFail();
 
         // التحقق من صلاحية الوصول

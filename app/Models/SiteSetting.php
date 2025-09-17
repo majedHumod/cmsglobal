@@ -36,7 +36,7 @@ class SiteSetting extends Model
     {
         $cacheKey = 'setting_' . $key;
         
-        return Cache::remember($cacheKey, 3600, function () use ($key, $default) {
+        return Cache::remember($cacheKey, 7200, function () use ($key, $default) {
             $setting = self::where('key', $key)->first();
             
             if (!$setting) {
@@ -108,8 +108,11 @@ class SiteSetting extends Model
         $cacheKey = 'settings_group_' . $group;
 
         try {
-            return Cache::remember($cacheKey, 3600, function () use ($group) {
-                return self::where('group', $group)->get()->mapWithKeys(function ($setting) {
+            return Cache::remember($cacheKey, 7200, function () use ($group) {
+                return self::where('group', $group)
+                    ->select(['key', 'value', 'type'])
+                    ->get()
+                    ->mapWithKeys(function ($setting) {
                     // Handle different types of settings
                     $value = $setting->value;
                     switch ($setting->type) {

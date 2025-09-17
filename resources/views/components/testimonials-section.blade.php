@@ -70,7 +70,7 @@
                                 <div class="flex transition-transform duration-500 ease-in-out" :style="`transform: translateX(${currentSlide * 100}%)`">
                                     @foreach($testimonials as $testimonial)
                                         <div class="w-full flex-shrink-0">
-                                            <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-8 mx-2">
+                                            <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-8 mx-2" loading="lazy">
                                                 <!-- Quote Icon -->
                                                 <div class="flex justify-end mb-6">
                                                     <svg class="w-10 h-10 text-indigo-200" fill="currentColor" viewBox="0 0 24 24">
@@ -89,7 +89,7 @@
                                                 <div class="flex items-center">
                                                     @if($testimonial->image)
                                                         <div class="flex-shrink-0 mr-4">
-                                                            <img src="{{ Storage::url($testimonial->image) }}" alt="{{ $testimonial->name }}" class="w-16 h-16 rounded-full object-cover border-4 border-indigo-100" loading="lazy">
+                                                            <img src="{{ Storage::url($testimonial->image) }}" alt="{{ $testimonial->name }}" class="w-16 h-16 rounded-full object-cover border-4 border-indigo-100" loading="lazy" decoding="async">
                                                         </div>
                                                     @else
                                                         <div class="flex-shrink-0 mr-4">
@@ -139,7 +139,7 @@
                     @else
                         <!-- Single Testimonial -->
                         @foreach($testimonials as $testimonial)
-                            <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
+                            <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-8" loading="lazy">
                                 <!-- Quote Icon -->
                                 <div class="flex justify-end mb-6">
                                     <svg class="w-10 h-10 text-indigo-200" fill="currentColor" viewBox="0 0 24 24">
@@ -158,7 +158,7 @@
                                 <div class="flex items-center">
                                     @if($testimonial->image)
                                         <div class="flex-shrink-0 mr-4">
-                                            <img src="{{ Storage::url($testimonial->image) }}" alt="{{ $testimonial->name }}" class="w-16 h-16 rounded-full object-cover border-4 border-indigo-100" loading="lazy">
+                                            <img src="{{ Storage::url($testimonial->image) }}" alt="{{ $testimonial->name }}" class="w-16 h-16 rounded-full object-cover border-4 border-indigo-100" loading="lazy" decoding="async">
                                         </div>
                                     @else
                                         <div class="flex-shrink-0 mr-4">
@@ -193,6 +193,8 @@
     /* Testimonials specific styles */
     .testimonial-card {
         transition: all 0.3s ease;
+        will-change: transform;
+        transform: translateZ(0);
     }
     
     .testimonial-card:hover {

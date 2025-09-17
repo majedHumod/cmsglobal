@@ -51,10 +51,10 @@
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     @foreach($pages as $page)
-                        <div class="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-200">
+                        <div class="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-200" loading="lazy">
                             @if($page->featured_image)
                                 <div class="h-48 overflow-hidden">
-                                    <img src="{{ Storage::url($page->featured_image) }}" alt="{{ $page->title }}" class="w-full h-full object-cover" loading="lazy">
+                                    <img src="{{ Storage::url($page->featured_image) }}" alt="{{ $page->title }}" class="w-full h-full object-cover" loading="lazy" decoding="async">
                                 </div>
                             @else
                                 <div class="h-48 bg-gradient-to-br from-indigo-400 to-blue-500 flex items-center justify-center">
@@ -132,6 +132,8 @@
     /* Pages specific styles */
     .page-card {
         transition: all 0.3s ease;
+        will-change: transform;
+        transform: translateZ(0);
     }
     
     .page-card:hover {

@@ -53,8 +53,11 @@ class Testimonial extends Model
      */
     public static function getVisibleTestimonials()
     {
-        return Cache::remember('visible_testimonials', 3600, function () {
-            return self::visible()->ordered()->get();
+        return Cache::remember('visible_testimonials', 7200, function () {
+            return self::visible()
+                ->ordered()
+                ->select(['id', 'name', 'story_content', 'image', 'sort_order'])
+                ->get();
         });
     }
 

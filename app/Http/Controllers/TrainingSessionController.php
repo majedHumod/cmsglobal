@@ -85,6 +85,11 @@ class TrainingSessionController extends Controller
             abort(404);
         }
 
+        // Optimize query by selecting only needed fields
+        $trainingSession = TrainingSession::select([
+            'id', 'title', 'description', 'price', 'duration_hours', 
+            'image', 'is_visible', 'user_id'
+        ])->findOrFail($trainingSession->id);
         return view('training-sessions.show', compact('trainingSession'));
     }
 

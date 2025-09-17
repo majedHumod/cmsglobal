@@ -19,7 +19,10 @@ class LandingPageController extends Controller
      */
     public function show()
     {
-        $landingPage = LandingPage::getActive();
+        // Use cached landing page with optimized queries
+        $landingPage = Cache::remember('active_landing_page_full', 1800, function () {
+            return LandingPage::getActive();
+        });
         
         if (!$landingPage) {
             // If no landing page is active, redirect to login

@@ -53,8 +53,11 @@ class Faq extends Model
      */
     public static function getActive()
     {
-        return Cache::remember('active_faqs', 3600, function () {
-            return self::active()->ordered()->get();
+        return Cache::remember('active_faqs', 7200, function () {
+            return self::active()
+                ->ordered()
+                ->select(['id', 'question', 'answer', 'category', 'sort_order'])
+                ->get();
         });
     }
 
@@ -63,9 +66,10 @@ class Faq extends Model
      */
     public static function getGroupedByCategory()
     {
-        return Cache::remember('faqs_by_category', 3600, function () {
+        return Cache::remember('faqs_by_category', 7200, function () {
             return self::active()
                 ->ordered()
+                ->select(['id', 'question', 'answer', 'category', 'sort_order'])
                 ->get()
                 ->groupBy('category');
         });

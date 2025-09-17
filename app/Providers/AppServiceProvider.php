@@ -30,11 +30,17 @@ class AppServiceProvider extends ServiceProvider
             try {
                 // Only load pages if we're in a tenant context and the pages table exists
                 if (class_exists(\App\Models\Page::class)) {
-                    // جلب جميع الصفحات التي تظهر في القائمة والمنشورة
-                    $allMenuPages = \App\Models\Page::where('show_in_menu', true)
-                                   ->where('is_published', true)
-                                   ->orderBy('menu_order')
-                                   ->get();
+                    // Cache menu pages for better performance
+                    $allMenuPages = Cache::remember('menu_pages', 3600, function () {
+                        return \App\Models\Page::select([
+                                'id', 'title', 'slug', 'access_level', 
+                                'required_membership_types', 'menu_order'
+                            ])
+                            ->where('show_in_menu', true)
+                            ->where('is_published', true)
+                            ->orderBy('menu_order')
+                            ->get();
+                    });
                     
                     // تصفية الصفحات بناءً على صلاحيات المستخدم
                     $user = auth()->user();

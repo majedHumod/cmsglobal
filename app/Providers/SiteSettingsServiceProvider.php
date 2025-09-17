@@ -74,12 +74,22 @@ class SiteSettingsServiceProvider extends ServiceProvider
         $dbSettings = $defaultSettings;
         try {
             if (Schema::hasTable('site_settings')) {
-                // Get settings from database
-                $generalSettings = SiteSetting::getGroup('general')->toArray();
-                $contactSettings = SiteSetting::getGroup('contact')->toArray();
-                $socialSettings = SiteSetting::getGroup('social')->toArray();
-                $appSettings = SiteSetting::getGroup('app')->toArray();
-                $homepageSettings = SiteSetting::getGroup('homepage')->toArray();
+                // Get settings from database with caching
+                $generalSettings = Cache::remember('site_settings_general', 7200, function () {
+                    return SiteSetting::getGroup('general')->toArray();
+                });
+                $contactSettings = Cache::remember('site_settings_contact', 7200, function () {
+                    return SiteSetting::getGroup('contact')->toArray();
+                });
+                $socialSettings = Cache::remember('site_settings_social', 7200, function () {
+                    return SiteSetting::getGroup('social')->toArray();
+                });
+                $appSettings = Cache::remember('site_settings_app', 7200, function () {
+                    return SiteSetting::getGroup('app')->toArray();
+                });
+                $homepageSettings = Cache::remember('site_settings_homepage', 7200, function () {
+                    return SiteSetting::getGroup('homepage')->toArray();
+                });
                 
                 // Merge with defaults (so we always have all keys)
                 $dbSettings = [
