@@ -25,6 +25,12 @@
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="{{ Storage::url($landingPage->header_image) }}" as="image">
+    @if(\App\Models\SiteSetting::get('site_logo'))
+        <link rel="preload" href="{{ Storage::url(\App\Models\SiteSetting::get('site_logo')) }}" as="image">
+    @endif
 
     <!-- Custom Colors -->
     @php
@@ -73,6 +79,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            background-attachment: scroll;
+            will-change: transform;
         }
         
         .hero-section::before {
@@ -143,6 +151,7 @@
             display: flex;
             flex-direction: column;
             height: 100%;
+            will-change: transform;
         }
         
         .membership-card:hover {
@@ -180,7 +189,7 @@
     @include('components.landing-page-nav')
     
     <!-- Hero Section -->
-    <section class="hero-section" style="background-image: url('{{ Storage::url($landingPage->header_image) }}');">
+    <section class="hero-section" style="background-image: url('{{ Storage::url($landingPage->header_image) }}');" loading="eager">
         <div class="hero-content">
             <h1 class="hero-title" style="color: {{ $landingPage->header_text_color }};">{{ $landingPage->title }}</h1>
             
@@ -197,7 +206,7 @@
     </section>
     
     <!-- Content Section -->
-    <section class="content-section">
+    <section class="content-section" loading="lazy">
         <div class="prose prose-lg max-w-none">
             {!! $landingPage->content !!}
         </div>
@@ -228,7 +237,7 @@
                 @endphp
                 
                 @forelse($membershipTypes as $membershipType)
-                    <div class="bg-white rounded-lg overflow-hidden shadow-sm membership-card flex flex-col h-full">
+                    <div class="bg-white rounded-lg overflow-hidden shadow-sm membership-card flex flex-col h-full" loading="lazy">
                         <div class="p-6 flex flex-col h-full">
                             <h3 class="text-2xl font-bold text-gray-900 mb-2">{{ $membershipType->name }}</h3>
                             
@@ -317,7 +326,7 @@
     @include('components.testimonials-section')
     
     <!-- FAQ Section -->
-    <section class="bg-white py-16">
+    <section class="bg-white py-16" loading="lazy">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-12">
                 <h2 class="text-3xl font-bold text-gray-900">الأسئلة الشائعة</h2>
@@ -429,6 +438,40 @@
     <script>        
         // RTL support for the page
         document.documentElement.dir = 'rtl';
+        
+        // Performance optimizations
+        document.addEventListener('DOMContentLoaded', function() {
+            // Lazy load images that are not in viewport
+            const images = document.querySelectorAll('img[loading="lazy"]');
+            if ('IntersectionObserver' in window) {
+                const imageObserver = new IntersectionObserver((entries, observer) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const img = entry.target;
+                            img.src = img.dataset.src || img.src;
+                            img.classList.remove('lazy');
+                            observer.unobserve(img);
+                        }
+                    });
+                });
+                
+                images.forEach(img => imageObserver.observe(img));
+            }
+            
+            // Optimize scroll performance
+            let ticking = false;
+            function updateScrollPosition() {
+                // Throttle scroll events
+                if (!ticking) {
+                    requestAnimationFrame(() => {
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
+            }
+            
+            window.addEventListener('scroll', updateScrollPosition, { passive: true });
+        });
     </script>
 </body>
 </html>

@@ -44,11 +44,11 @@
                 <!-- Right Column: Training Sessions Cards -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     @foreach($trainingSessions as $session)
-                        <div class="training-session-card relative rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 h-80">
+                        <div class="training-session-card relative rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 h-80" loading="lazy">
                             <!-- Background Image -->
                             @if($session->image)
                                 <div class="absolute inset-0 w-full h-full">
-                                    <img src="{{ Storage::url($session->image) }}" alt="{{ $session->title }}" class="w-full h-full object-cover" loading="lazy">
+                                    <img src="{{ Storage::url($session->image) }}" alt="{{ $session->title }}" class="w-full h-full object-cover" loading="lazy" decoding="async">
                                 </div>
                             @else
                                 <!-- Fallback gradient background -->
@@ -101,6 +101,8 @@
     /* Training sessions specific styles */
     .training-session-card {
         transition: all 0.3s ease;
+        will-change: transform;
+        transform: translateZ(0);
     }
     
     .training-session-card:hover {
@@ -143,6 +145,6 @@
     }
     
     .training-session-card:hover .transform {
-        transform: scale(1.02);
+        transform: scale(1.02) translateZ(0);
     }
 </style>
