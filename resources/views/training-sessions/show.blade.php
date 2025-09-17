@@ -96,14 +96,14 @@
                     </ol>
                 </nav>
 
-                <article class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
+                    <article>
                     @if($trainingSession->image)
-                        <div class="w-full h-64 md:h-80">
+                        <div class="w-full h-64 md:h-80 mb-8 rounded-lg overflow-hidden">
                             <img src="{{ Storage::url($trainingSession->image) }}" alt="{{ $trainingSession->title }}" class="w-full h-full object-cover">
                         </div>
                     @endif
 
-                    <div class="p-6 md:p-8">
                         <header class="mb-8">
                             <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">{{ $trainingSession->title }}</h1>
                             
@@ -221,8 +221,8 @@
                                 </div>
                             </div>
                         @endauth
-                    </div>
-                </article>
+                    </article>
+                </div>
             </div>
         </main>
         
