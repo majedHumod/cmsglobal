@@ -325,56 +325,57 @@
                     </ol>
                 </nav>
 
-                <article class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
+                <!-- Page Content Container with FAQ-style design -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
+                    <article>
                     @if($page->featured_image)
-                        <div class="w-full h-64 md:h-80">
+                        <div class="w-full h-64 md:h-80 mb-8 rounded-lg overflow-hidden">
                             <img src="{{ Storage::url($page->featured_image) }}" alt="{{ $page->title }}" class="w-full h-full object-cover">
                         </div>
                     @endif
 
-                    <div class="p-6 md:p-8">
-                        <header class="mb-8">
-                            <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">{{ $page->title }}</h1>
+                    <header class="mb-8">
+                        <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">{{ $page->title }}</h1>
                             
-                            @if($page->access_level === 'membership')
-                                <div class="mb-4">
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-indigo-100 text-indigo-800">
-                                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"></path>
-                                        </svg>
-                                        محتوى خاص بالعضويات المدفوعة
-                                    </span>
-                                </div>
-                            @endif
-                            
-                            @if($page->excerpt)
-                                <p class="text-xl text-gray-600 leading-relaxed">{{ $page->excerpt }}</p>
-                            @endif
-
-                            <div class="flex items-center text-sm text-gray-500 mt-4">
-                                <span>نُشر بواسطة {{ $page->user->name }}</span>
-                                @if($page->published_at)
-                                    <span class="mx-2">•</span>
-                                    <time datetime="{{ $page->published_at->toISOString() }}">
-                                        {{ $page->published_at->format('d F Y') }}
-                                    </time>
-                                @endif
+                        @if($page->access_level === 'membership')
+                            <div class="mb-4">
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-indigo-100 text-indigo-800">
+                                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"></path>
+                                    </svg>
+                                    محتوى خاص بالعضويات المدفوعة
+                                </span>
                             </div>
-                        </header>
-
-                        <div class="prose prose-lg max-w-none text-right" dir="rtl">
-                            {!! $page->content !!}
-                        </div>
-
-                        @if($page->updated_at != $page->created_at)
-                            <footer class="mt-8 pt-6 border-t border-gray-200 text-right" dir="rtl">
-                                <p class="text-sm text-gray-500">
-                                    آخر تحديث: {{ $page->updated_at->format('d F Y H:i') }}
-                                </p>
-                            </footer>
                         @endif
+                            
+                        @if($page->excerpt)
+                            <p class="text-xl text-gray-600 leading-relaxed">{{ $page->excerpt }}</p>
+                        @endif
+
+                        <div class="flex items-center text-sm text-gray-500 mt-4">
+                            <span>نُشر بواسطة {{ $page->user->name }}</span>
+                            @if($page->published_at)
+                                <span class="mx-2">•</span>
+                                <time datetime="{{ $page->published_at->toISOString() }}">
+                                    {{ $page->published_at->format('d F Y') }}
+                                </time>
+                            @endif
+                        </div>
+                    </header>
+
+                    <div class="prose prose-lg max-w-none text-right" dir="rtl">
+                        {!! $page->content !!}
                     </div>
-                </article>
+
+                    @if($page->updated_at != $page->created_at)
+                        <footer class="mt-8 pt-6 border-t border-gray-200 text-right" dir="rtl">
+                            <p class="text-sm text-gray-500">
+                                آخر تحديث: {{ $page->updated_at->format('d F Y H:i') }}
+                            </p>
+                        </footer>
+                    @endif
+                    </article>
+                </div>
 
             </div>
         </main>

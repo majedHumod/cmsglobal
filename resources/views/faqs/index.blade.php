@@ -450,7 +450,7 @@
                 </div>
 
                 <!-- FAQ Content -->
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8" dir="rtl">
                     <div class="mb-8">
                         <h2 class="text-2xl font-bold text-gray-900 mb-2" id="section-title">المواضيع الشائعة</h2>
                         <p class="text-gray-600" id="section-description">الأسئلة الأكثر شيوعاً والتي يبحث عنها المستخدمون</p>

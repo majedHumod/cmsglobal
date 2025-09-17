@@ -321,8 +321,9 @@
                     </ol>
                 </nav>
 
-                <article class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
-                    <div class="p-6 md:p-8">
+                <!-- Profile Content Container with FAQ-style design -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
+                    <article>
                         <header class="mb-8">
                             <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">الملف الشخصي</h1>
                             
@@ -382,8 +383,8 @@
                                 </div>
                             @endif
                         </div>
-                    </div>
-                </article>
+                    </article>
+                </div>
             </div>
         </main>
         
