@@ -6,6 +6,7 @@ use App\Models\LandingPage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
 
 class LandingPageController extends Controller
 {
