@@ -149,4 +149,17 @@ class MealPlanController extends Controller
 
         return view('meal-plans.public', compact('mealPlans'));
     }
+
+    /**
+     * Display the specified meal plan for public viewing.
+     */
+    public function showPublic(MealPlan $mealPlan)
+    {
+        // Check if meal plan is active
+        if (!$mealPlan->is_active) {
+            abort(404);
+        }
+
+        return view('meal-plans.show-public', compact('mealPlan'));
+    }
 }

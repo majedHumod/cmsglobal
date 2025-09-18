@@ -24,6 +24,7 @@ Route::get('/', function() {
     }
 })->name('home');
 
+Route::get('/meal-plans/{mealPlan}', [MealPlanController::class, 'showPublic'])->name('meal-plans.show-public');
 // Public FAQs Route
 Route::get('/faqs', [FaqController::class, 'index'])->name('faqs.index');
 
